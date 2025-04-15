@@ -20,9 +20,8 @@ module.exports = {
         poppins: ["Poppins", "sans-serif"],
       },
       colors: {
-        gray: "#b2b2b2",
-        yellow: "#efff11",
-        black: "#070707",
+        gray: "#a9a9a9",
+        Blue: "#5937E0 ",
         Black: "#000000",
         White: "#ffffff",
       },

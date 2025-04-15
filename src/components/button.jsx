@@ -6,10 +6,10 @@ function Button({
   to = "/",                      // Default route
   height = "50px",
   width = "150px",
-  bgColor = "#efff11",            // Default background color
-  hoverBgColor = "#b2b2b2",       // Hover background color
+  bgColor = "#5937E0 ",            // Default background color
+  hoverBgColor = "#A9A9A9",       // Hover background color
   hoverTextColor = "white",       // Hover text color
-  activeColor = "#b2b2b2",        // Active color
+  activeColor = "#000000",        // Active color
   boxShadow = true,               // Shadow enabled by default
   rounded = "rounded-[10px]",     // ✅ Tailwind border radius (dynamic)
   onClick = null,                 // Optional click
@@ -20,7 +20,7 @@ function Button({
         className={`font-jakarta text-[20px] font-[500] px-4 lg:px-5 transition duration-300 ease-in-out ${rounded}`}
         style={{
           backgroundColor: bgColor,
-          color: "black",
+          color: "Black",
           height: height,
           width: width,
           transition: "background-color 0.2s, color 0.2s, transform 0.2s",
@@ -32,7 +32,7 @@ function Button({
         }}
         onMouseLeave={(e) => {
           e.target.style.backgroundColor = bgColor;
-          e.target.style.color = "black";
+          e.target.style.color = "Black";
         }}
         onMouseDown={(e) => (e.target.style.backgroundColor = activeColor)}
         onMouseUp={(e) => {
