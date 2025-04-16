@@ -29,5 +29,8 @@ export default function HeroSectionHome() {
         </div>
       </div>
     </div>
+
+    /*new code */
+    
   );
 }
