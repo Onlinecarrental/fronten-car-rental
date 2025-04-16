@@ -7,11 +7,12 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-black text-white fixed top-0 left-0 w-full z-10">
-      <div className="relative flex items-center justify-between max-w-screen-xl mx-auto p-4">
+    <nav className="bg-black text-white sticky top-0 w-full z-10">
+      
+      <div className=" flex items-center justify-between max-w-screen-xl mx-auto p-4">
         
         <Link to="/" className="text-[20px] font-[400] flex gap-2 items-center font-poppins text-white">
- <img src={logo} alt="car rental logo" className="w-[70px] h-[70px]" />
+ <img src={logo} alt="car rental logo" className="w-[50px] h-[50px]" />
           <span>AA Car Rental</span>
         </Link>
 
