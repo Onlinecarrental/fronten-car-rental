@@ -125,8 +125,8 @@ export default function CarRentalForm() {
   };
 
   return (
-    <div className="w-full flex justify-center items-center">
-      <BaseCard  width="1200px" height="auto" padding="24px">
+    <div className="w-full  flex justify-center relative bottom-16 items-center">
+      <BaseCard  width="1200px" className="" height="auto" padding="24px">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {/* Drop-off Location */}
           <div className="flex flex-col">

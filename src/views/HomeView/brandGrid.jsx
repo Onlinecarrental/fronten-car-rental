@@ -43,16 +43,19 @@ const CarBrandsGrid = () => {
     <div className="grid grid-cols-2 max-w-[900px]  mx-auto md:grid-cols-3 lg:grid-cols-6 gap-4">
       {carBrands.map((brand) => (
         <BaseCard
-        bgColor='gray'
+        boxShadow={false}
+        width='w-auto'
+        height='h-auto'
+        bgColor='bg-gray'
           key={brand.id} 
           onClick={() => handleCardClick(brand.path)}
           className="rounded-lg cursor-pointer"
         >
-          <div className="flex   flex-col items-center justify-center h-full p-4">
+          <div className="flex   flex-col items-center justify-center h-full ">
             <img 
               src={brand.logo} 
               
-              className="w-12 h-12 mb-2"
+              className="w-12 h-12 "
             />
             <p className="text-center text-sm font-medium">{brand.name}</p>
           </div>
