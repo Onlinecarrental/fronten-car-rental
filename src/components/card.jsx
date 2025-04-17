@@ -2,8 +2,8 @@ import React from "react";
 
 function BaseCard({
   children,
-  width = "650px",
-  height = "300px",
+  width = "auto",
+  height = "auto",
   bgColor = "#ffffff",
   padding = "16px", // Default padding added
   borderRadius = "25px" // Default Border Radius
