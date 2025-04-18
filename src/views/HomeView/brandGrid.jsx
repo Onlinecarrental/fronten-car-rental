@@ -15,6 +15,18 @@ import teslaLogo from '../../assets/tesla.svg';
 import hyundaiLogo from '../../assets/hyundai.svg';
 import audiLogo from '../../assets/audi.svg';
 import peugeotLogo from '../../assets/peugeot.svg';
+import suvLogo from '../../assets/suv.svg';
+import crossoverLogo from '../../assets/crossover.svg';
+import  wagonLogo from '../../assets/wagon.svg';
+import familyMBPLogo from '../../assets/family.svg';
+import sportCoupeLogo from '../../assets/sport.svg';
+import compactLogo from '../../assets/compact.svg';
+import coupLogo from '../../assets/coup.svg';
+import bMwLogo from '../../assets/sport.svg';
+import sedanLogo from '../../assets/sedan.svg';
+import limousineLogo from '../../assets/limo.svg';
+import convertableLogo from '../../assets/convertible.svg';
+import offroadLogo from '../../assets/offroad.svg';
 
 const CarBrandsGrid = () => {
   const navigate = useNavigate();
@@ -34,12 +46,32 @@ const CarBrandsGrid = () => {
     { id: 12, name: 'Peugeot', logo: peugeotLogo, path: '/cars/peugeot' }
   ];
   
+  const bodyType = [
+    { id: 13, name: 'SUV', logo: suvLogo, path: '/assets/suv.svg' },
+    { id: 14, name: 'Crossover', logo: crossoverLogo, path: '/suv/cross' },
+    { id: 15, name: 'Wagon', logo: wagonLogo, path: '/cars/mercedes' },
+    { id: 16, name: 'Family MBP', logo: familyMBPLogo, path: '/cars/honda' },
+    { id: 17, name: 'Sport Coupe', logo: sportCoupeLogo, path: '/cars/suzuki' },
+    { id: 18, name: 'Compact', logo: compactLogo, path: '/cars/nissan' },
+    { id: 19, name: 'Coup', logo: coupLogo, path: '/cars/chevrolet' },
+    { id: 20, name: 'BMW', logo: bMwLogo, path: '/cars/ford ' },
+    { id: 21, name: 'Sedan', logo: sedanLogo , path: '/cars/tesla' },
+    { id: 22, name: 'Limousine', logo: limousineLogo, path: '/cars/hyundai' },
+    { id: 23, name: 'Convertable', logo: convertableLogo, path: '/cars/audi' },
+    { id: 24, name: 'OFF Road', logo: offroadLogo, path: '/cars/peugeot' }
+  ];
+
   const handleCardClick = (path) => {
     navigate(path);
   };
   
   return (
+    <div className="flex flex-col gap-4">
+
     <div className= "w-full">
+
+      {/* rent by Brands */}
+      
     <div className="grid grid-cols-2 max-w-[900px]  mx-auto md:grid-cols-3 lg:grid-cols-6 gap-4">
       {carBrands.map((brand) => (
         <BaseCard
@@ -62,6 +94,35 @@ const CarBrandsGrid = () => {
         </BaseCard>
       ))}
     </div>
+
+      {/* rent by body type */}
+
+    <div className="grid grid-cols-2 max-w-[900px] mt-20 mx-auto md:grid-cols-3 lg:grid-cols-6 gap-4">
+      {bodyType.map((brand) => (
+        <BaseCard
+        boxShadow={false}
+        width='w-auto'
+        height='h-auto'
+        bgColor='bg-gray'
+          key={brand.id} 
+          onClick={() => handleCardClick(brand.path)}
+          className="rounded-lg cursor-pointer"
+        >
+          <div className="flex   flex-col items-center justify-center h-full ">
+            <img 
+              src={brand.logo} 
+              
+              className="w-12 h-12 "
+            />
+            <p className="text-center text-sm font-medium">{brand.name}</p>
+          </div>
+        </BaseCard>
+      ))}
+    </div>
+
+
+    </div>
+
     </div>
   );
 };
