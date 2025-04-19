@@ -15,7 +15,7 @@ export default function CarRentalForm() {
     if (isSubmitting) {
       validateForm();
     }
-  }, [isSubmitting, pickupLocation, dropoffLocation, pickupDate, dropoffDate]);
+  }, [isSubmitting]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -49,7 +49,7 @@ export default function CarRentalForm() {
   };
 
   const handleSubmit = () => {
-    setMessage('Form submitted successfully!');
+    setMessage('✅ Form submitted successfully!');
     console.log('Form submitted:', {
       pickupLocation,
       dropoffLocation,
@@ -66,34 +66,30 @@ export default function CarRentalForm() {
           {/* Drop-off Location */}
           <div className="flex flex-col">
             <label className="mb-2 text-sm font-medium text-gray-700">Drop-off Location</label>
-            <div className="relative">
-              <input
-                type="text"
-                className={`pl-10 w-full py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                  errors.dropoffLocation ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Search a location"
-                value={dropoffLocation}
-                onChange={(e) => setDropoffLocation(e.target.value)}
-              />
-            </div>
+            <input
+              type="text"
+              className={`pl-4 w-full py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                errors.dropoffLocation ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="Search a location"
+              value={dropoffLocation}
+              onChange={(e) => setDropoffLocation(e.target.value)}
+            />
             {errors.dropoffLocation && <p className="mt-1 text-xs text-red-500">{errors.dropoffLocation}</p>}
           </div>
 
           {/* Pick-up Location */}
           <div className="flex flex-col">
             <label className="mb-2 text-sm font-medium text-gray-700">Pick-up Location</label>
-            <div className="relative">
-              <input
-                type="text"
-                className={`pl-10 w-full py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                  errors.pickupLocation ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Search a location"
-                value={pickupLocation}
-                onChange={(e) => setPickupLocation(e.target.value)}
-              />
-            </div>
+            <input
+              type="text"
+              className={`pl-4 w-full py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                errors.pickupLocation ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="Search a location"
+              value={pickupLocation}
+              onChange={(e) => setPickupLocation(e.target.value)}
+            />
             {errors.pickupLocation && <p className="mt-1 text-xs text-red-500">{errors.pickupLocation}</p>}
           </div>
 
@@ -127,29 +123,28 @@ export default function CarRentalForm() {
 
           {/* Submit Button */}
           <div className="flex flex-col mt-[23px]">
-          <Button
-  title="Find the Vehicle"
-  width="auto"
-  boxShadow={false}
-  iconRight={
-    <svg
-      className="w-8 h-8"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 18l6-6-6-6" />
-    </svg>
-  }
-/>
-
-
+            <Button
+              title="Find the Vehicle"
+              width="auto"
+              boxShadow={false}
+              onClick={() => setIsSubmitting(true)}
+              iconRight={
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 18l6-6-6-6" />
+                </svg>
+              }
+            />
           </div>
         </div>
 
         {/* Message Display */}
-      
+        
       </BaseCard>
     </div>
   );
