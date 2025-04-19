@@ -129,21 +129,21 @@ export default function CarRentalForm() {
           <div className="flex flex-col mt-[23px]">
           <Button
   title="Find the Vehicle"
-  boxShadow={false}
   width="auto"
+  boxShadow={false}
   iconRight={
     <svg
-    className="w-8 h-8"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 18l6-6-6-6" />
-  </svg>
-  
+      className="w-8 h-8"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 18l6-6-6-6" />
+    </svg>
   }
 />
+
 
           </div>
         </div>

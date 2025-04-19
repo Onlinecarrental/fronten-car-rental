@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
 function Button({
   title,
+  iconRight = null,
   to = "/",
   height = "50px",
   width = "150px",
@@ -13,12 +13,11 @@ function Button({
   boxShadow = true,
   rounded = "rounded-[10px]",
   onClick = null,
-  iconRight = null, // 👈 NEW PROP
 }) {
   return (
     <Link to={onClick ? "#" : to} onClick={onClick || null}>
       <button
-        className={`font-jakarta text-[20px] font-[500] px-4 lg:px-5 transition duration-300 ease-in-out ${rounded} flex items-center justify-center gap-2`}
+        className={`font-jakarta text-[20px] font-[500] px-4 lg:px-5 transition duration-300 ease-in-out flex items-center justify-center gap-2 ${rounded}`}
         style={{
           backgroundColor: bgColor,
           color: "Black",
@@ -41,10 +40,8 @@ function Button({
           e.target.style.color = hoverTextColor;
         }}
       >
-        <span className="flex items-center gap-2">
-          {title}
-          {iconRight && iconRight}
-        </span>
+        {title}
+        {iconRight && <span className="ml-2">{iconRight}</span>}
       </button>
     </Link>
   );
