@@ -19,6 +19,8 @@ export default function HeroSectionHome() {
           <Button height="43px" width="auto" boxShadow={false} title="Book Now" to="/login" />
         </div>
 
+
+
         {/* Car Image */}
         <div className="w-full md:w-1/2  mt-8 flex justify-end">
           <img 

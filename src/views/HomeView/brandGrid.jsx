@@ -117,7 +117,7 @@ const CarBrandsGrid = () => {
             <p className="text-center text-sm font-medium">{brand.name}</p>
           </div>
         </BaseCard>
-      ))}
+          ))}
     </div>
 
 

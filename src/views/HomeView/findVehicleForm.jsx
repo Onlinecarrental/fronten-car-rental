@@ -56,9 +56,12 @@ export default function CarRentalForm() {
       pickupDate,
       dropoffDate,
     });
+   
+   
     setIsSubmitting(false);
   };
 
+   
   return (
     <div className="w-full flex justify-center relative bottom-16 items-center">
       <BaseCard width="max-w-[1280px]" height="auto" padding="24px">

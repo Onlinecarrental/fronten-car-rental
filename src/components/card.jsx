@@ -10,6 +10,9 @@ function BaseCard({
   boxShadow = true, // ✅ Default shadow enabled
   className = "",
 }) {
+  
+  
+  
   return (
     <div
       className={`relative rounded-[10px] border-gray-300 ${bgColor} ${padding} ${width} ${height} ${isFlexible ? "flex-1" : ""
