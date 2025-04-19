@@ -3,21 +3,22 @@ import { Link } from "react-router-dom";
 
 function Button({
   title,
-  to = "/",                      // Default route
+  to = "/",
   height = "50px",
   width = "150px",
-  bgColor = "#5937E0 ",            // Default background color
-  hoverBgColor = "#A9A9A9",       // Hover background color
-  hoverTextColor = "white",       // Hover text color
-  activeColor = "#000000",        // Active color
-  boxShadow = true,               // Shadow enabled by default
-  rounded = "rounded-[10px]",     // ✅ Tailwind border radius (dynamic)
-  onClick = null,                 // Optional click
+  bgColor = "#5937E0",
+  hoverBgColor = "#A9A9A9",
+  hoverTextColor = "white",
+  activeColor = "#000000",
+  boxShadow = true,
+  rounded = "rounded-[10px]",
+  onClick = null,
+  iconRight = null, // 👈 NEW PROP
 }) {
   return (
     <Link to={onClick ? "#" : to} onClick={onClick || null}>
       <button
-        className={`font-jakarta text-[20px] font-[500] px-4 lg:px-5 transition duration-300 ease-in-out ${rounded}`}
+        className={`font-jakarta text-[20px] font-[500] px-4 lg:px-5 transition duration-300 ease-in-out ${rounded} flex items-center justify-center gap-2`}
         style={{
           backgroundColor: bgColor,
           color: "Black",
@@ -40,7 +41,10 @@ function Button({
           e.target.style.color = hoverTextColor;
         }}
       >
-        {title}
+        <span className="flex items-center gap-2">
+          {title}
+          {iconRight && iconRight}
+        </span>
       </button>
     </Link>
   );

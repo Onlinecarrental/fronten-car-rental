@@ -1,6 +1,10 @@
 import React from "react";
 
-export default function HeadingTitle({ title, width = "100%", height = "10px", className = "" }) {
+export default function HeadingTitle({
+    title,
+    paragraph = "",
+    className = "",
+}) {
     return (
         <div className={`text-center ${className}`}>
             <h2
@@ -9,10 +13,11 @@ export default function HeadingTitle({ title, width = "100%", height = "10px", c
             >
                 {title}
             </h2>
-            <div
-                className="bg-black mx-auto rounded-full mt-[6px]"
-                style={{ width, height }}
-            ></div>
+            {paragraph && (
+                <p className="text-base font-poppins text-black mt-2 max-w-[600px] mx-auto">
+                    {paragraph}
+                </p>
+            )}
         </div>
     );
 }
