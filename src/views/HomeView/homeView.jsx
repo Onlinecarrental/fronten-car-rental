@@ -3,6 +3,10 @@ import HeroSectionHome from "./HeroSectionHomeView";
 import FindVehicleForm from "./findVehicleForm";
 import BrandBTypeGrid from "./brandGrid";
 import CarCollection from "./cardGrid";
+import Howitwork from "./howItWork";
+import ServicesBenefits from "./services";
+import CustomerTestimonials from "./customerreview";
+import WhyChooseUs from "./WhyChooseUs";
 
 export default function HomeView(){
     return(
@@ -12,6 +16,10 @@ export default function HomeView(){
            <FindVehicleForm/>
            <BrandBTypeGrid/>
            <CarCollection/>
+           <Howitwork/>
+           <ServicesBenefits/>
+           <CustomerTestimonials/>
+           <WhyChooseUs/>
         </div>
     )
 }
