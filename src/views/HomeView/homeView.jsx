@@ -8,6 +8,7 @@ import ServicesBenefits from "./services";
 import CustomerTestimonials from "./customerreview";
 import WhyChooseUs from "./WhyChooseUs";
 import FAQSection from "./Faqs";
+import ContactForm from "./contactus";
 
 export default function HomeView(){
     return(
@@ -22,6 +23,7 @@ export default function HomeView(){
            <CustomerTestimonials/>
            <WhyChooseUs/>
            <FAQSection/>
+           <ContactForm/>
         </div>
     )
 }

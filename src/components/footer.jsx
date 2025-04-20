@@ -1,129 +1,136 @@
-import React from "react";
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
-
+import React from 'react';
+import logo from "../assets/logo.svg"
 const Footer = () => {
   return (
-    <footer className="bg-black text-white w-full">
-      <div className="max-w-[1360px] mx-auto px-7 pt-7 pb-4">
-        {/* Main Flex Row */}
-        <div className="flex flex-col lg:flex-row justify-between gap-10">
-          {/* Left - Logo and Description */}
-          <div className="flex-1">
-            <div className="flex items-center mb-4">
-              <h2 className="text-[24px] font-jakarta font-bold">GPGCWS WEB PORTAL</h2>
+    <footer className="bg-black text-white py-8 font-jakarta px-4">
+      <div className="max-w-[1280px] mx-auto">
+        {/* Main Footer Content */}
+        <div className="flex flex-wrap justify-center">
+          {/* Logo and Description - 320px */}
+          <div className="w-full md:w-[320px] pr-8 mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <img src={logo} alt="car rental logo" className="w-[50px] h-[50px]" />
+                        <span>AA Car Rental</span>
             </div>
-            <p className="text-white font-poppins  text-lg leading-relaxed">
-              Welcome to Estrella, where brilliance meets innovation! We are a leading company
-              dedicated to delivering exceptional products and services to cater to your needs.
+            <h3 className="text-lg font-jakarta  font-bold mb-1">Professional Web Design</h3>
+            <p className="text-gray-400 text-sm font-jakarta">
+              Hi! My name is Owen Rogers and I'm a expert in web design and branding. I can help you make your website more attractive.
             </p>
           </div>
 
-          {/* Center - Links Section */}
-          <div className="flex flex-1 mt-6 justify-between gap-10">
-            {/* Quick Links */}
-            <div>
-              <h4 className="text-base font-jakarta font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-3 font-poppins text-white text-sm">
-                <li><a href="#" className="hover:text-yellow">Facilities</a></li>
-                <li><a href="#" className="hover:text-yellow">Admission</a></li>
-                <li><a href="#" className="hover:text-yellow">Academic</a></li>
-                <li><a href="#" className="hover:text-yellow">News & Events</a></li>
-              </ul>
-            </div>
-
-            {/* Popular Links */}
-            <div>
-              <h4 className="text-base font-jakarta font-semibold mb-4">Popular Links</h4>
-              <ul className="space-y-3 font-poppins text-white text-sm">
-                <li><a href="#" className="hover:text-yellow">Top Stories</a></li>
-                <li><a href="#" className="hover:text-yellow">About us</a></li>
-                <li><a href="#" className="hover:text-yellow">Fee Structure</a></li>
-                <li><a href="#" className="hover:text-yellow">Notice Board</a></li>
-              </ul>
-            </div>
-
-            {/* Faculty & Staff */}
-            <div>
-              <h4 className="text-base font-jakarta font-semibold mb-4">Faculty & Staff</h4>
-              <ul className="space-y-3  font-poppinstext-white text-sm">
-                <li><a href="#" className="hover:text-yellow">Principal</a></li>
-                <li><a href="#" className="hover:text-yellow">Teaching Faculty</a></li>
-                <li><a href="#" className="hover:text-yellow">Policy & Guidelines</a></li>
-                <li><a href="#" className="hover:text-yellow">Rules & Regulations</a></li>
-              </ul>
-            </div>
+          {/* Product Column - 160px */}
+          <div className="w-1/2 sm:w-1/3 md:w-[160px] mb-8 px-4">
+            <h3 className="text-lg font-semibold mb-4">Product</h3>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>Landing Page</li>
+              <li>Popup Builder</li>
+              <li>Web design</li>
+              <li>Content</li>
+              <li>Integrations</li>
+            </ul>
           </div>
 
-          {/* Right - Get in Touch */}
-          <div className="flex-1 mt-4">
-            <h4 className="text-[24px] text-center font-jakarta  font-bold mb-4">Get In Touch</h4>
-            <div className="space-y-5 text-whitetext-sm">
-              {/* Address */}
-              <div className="flex items-start">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#B2B2B2]">
-                  <MapPin size={24} color="white" />
-                </div>
-                <span className="ml-3 flex font-poppins text-[14px] items-center mt-3">NEAR HOCKEY STADIUM, FEROZPUR ROAD, LAHORE</span>
-              </div>
+          {/* Use Cases Column - 160px */}
+          <div className="w-1/2 sm:w-1/3 md:w-[160px] mb-8 px-4">
+            <h3 className="text-lg font-semibold mb-4">Use Cases</h3>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>Web designers</li>
+              <li>Marketers</li>
+              <li>Small Business</li>
+              <li>Website Builder</li>
+            </ul>
+          </div>
 
-              {/* Email */}
-              <div className="flex items-center">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#B2B2B2]">
-                  <Mail size={24} color="white" />
-                </div>
-                <span className="ml-3 flex text-[18px] font-poppins items-center ">gcbgulberg@gmail.com</span>
-              </div>
+          {/* Resources Column - 160px */}
+          <div className="w-1/2 sm:w-1/3 md:w-[160px] mb-8 px-4">
+            <h3 className="text-lg font-semibold mb-4">Resources</h3>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>Academy</li>
+              <li>Blog</li>
+              <li>Themes</li>
+              <li>Hosting</li>
+              <li>Developers</li>
+              <li>Support</li>
+            </ul>
+          </div>
 
-              {/* Phone */}
-              <div className="flex items-center">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#B2B2B2]">
-                  <Phone size={24} color="white" />
-                </div>
-                <span className="ml-3 flex text-[18px] font-poppins items-center">04299232116</span>
+          {/* Company Column - 160px */}
+          <div className="w-1/2 sm:w-1/3 md:w-[160px] mb-8 px-4">
+            <h3 className="text-lg font-semibold mb-4">Company</h3>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>About Us</li>
+              <li>Careers</li>
+              <li>FAQs</li>
+              <li>Teams</li>
+              <li>Contact Us</li>
+            </ul>
+          </div>
+
+          {/* Contact Us Column - 240px */}
+          <div className="w-full sm:w-2/3 md:w-[280px] mb-8 px-4">
+          <h3 className="text-lg font-semibold  mb-4">Contact Us</h3>
+            <div className="flex items-center space-x-2 text-sm text-gray-400 mb-2">
+              <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
+              </svg>
+              <span>Wisconsin Ave, Suite 700<br />Chevy Chase, Maryland 20815</span>
+            </div>
+            <div className="flex items-center space-x-2 text-sm text-gray-400 mb-6">
+              <svg className="w-5 h-5  flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+              </svg>
+              <span>support@figma.com</span>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Follow us</h3>
+              <div className="flex space-x-4">
+                {/* Facebook Icon */}
+                <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-black">
+                  <span className="sr-only">Facebook</span>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0014.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z" />
+                  </svg>
+                </a>
+                
+                {/* Telegram Icon */}
+                <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-black">
+                  <span className="sr-only">Telegram</span>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.05-.01-.14-.11-.17-.1-.03-.27.02-.38.09-.14.09-1.74 1.11-2.63 1.67-.29.18-.89.44-1.44.4-.53-.03-1.24-.33-1.85-.6-.76-.33-1.05-.53-1.02-1.14.02-.33.24-.67.61-.99.89-.77 8.07-3.49 8.55-3.59 1.41-.3 2.92-.14 3.25 1.73l-.33-.18z" />
+                  </svg>
+                </a>
+                
+                {/* Instagram Icon */}
+                <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-black">
+                  <span className="sr-only">Instagram</span>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                  </svg>
+                </a>
+                
+                {/* Globe/Web Icon */}
+                <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-black">
+                  <span className="sr-only">Website</span>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                  </svg>
+                </a>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Bottom Bar */}
-        <div className="mt-6 border-t border-gray-700 pt-6 flex flex-col lg:flex-row items-center justify-between gap-6">
-          <p className="text-white font-poppins  text-[18px]">© 2023 Estrella Inc. All rights reserved.</p>
-
-          {/* Social Icons with Official Background Colors */}
-          <div className="flex space-x-4 mr-12">
-            {/* Facebook */}
-            <a href="#" className="hover:opacity-80">
-              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 48 48">
-                <circle cx="24" cy="24" r="20" fill="#1877F2" />
-                <path fill="#FFF" d="M26.5 38V26h4l1-5h-5v-3c0-1.3.4-2.2 2.2-2.2H32V11c-.4-.1-1.9-.2-3.7-.2-3.7 0-6.3 2.3-6.3 6.5v3.5h-4v5h4v12h5.5z" />
-              </svg>
-            </a>
-
-            {/* Twitter */}
-            <a href="#" target="_blank" rel="noopener noreferrer">
-              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="36" height="36" viewBox="0 0 48 48">
-                <path fill="#03A9F4" d="M42,12.429c-1.323,0.586-2.746,0.977-4.247,1.162c1.526-0.906,2.7-2.351,3.251-4.058c-1.428,0.837-3.01,1.452-4.693,1.776C34.967,9.884,33.05,9,30.926,9c-4.08,0-7.387,3.278-7.387,7.32c0,0.572,0.067,1.129,0.193,1.67c-6.138-0.308-11.582-3.226-15.224-7.654c-0.64,1.082-1,2.349-1,3.686c0,2.541,1.301,4.778,3.285,6.096c-1.211-0.037-2.351-0.374-3.349-0.914c0,0.022,0,0.055,0,0.086c0,3.551,2.547,6.508,5.923,7.181c-0.617,0.169-1.269,0.263-1.941,0.263c-0.477,0-0.942-0.054-1.392-0.135c0.94,2.902,3.667,5.023,6.898,5.086c-2.528,1.96-5.712,3.134-9.174,3.134c-0.598,0-1.183-0.034-1.761-0.104C9.268,36.786,13.152,38,17.321,38c13.585,0,21.017-11.156,21.017-20.834c0-0.317-0.01-0.633-0.025-0.945C39.763,15.197,41.013,13.905,42,12.429"></path>
-              </svg>
-            </a>
-
-            {/* Instagram */}
-            <a href="#" target="_blank" rel="noopener noreferrer">
-        
-                
-            </a>
-
-            {/* LinkedIn */}
-            <a href="#" target="_blank" rel="noopener noreferrer">
-              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="36" height="36" viewBox="0 0 48 48">
-                <path fill="#0288D1" d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"></path><path fill="#FFF" d="M12 19H17V36H12zM14.485 17h-.028C12.965 17 12 15.888 12 14.499 12 13.08 12.995 12 14.514 12c1.521 0 2.458 1.08 2.486 2.499C17 15.887 16.035 17 14.485 17zM36 36h-5v-9.099c0-2.198-1.225-3.698-3.192-3.698-1.501 0-2.313 1.012-2.707 1.99C24.957 25.543 25 26.511 25 27v9h-5V19h5v2.616C25.721 20.5 26.85 19 29.738 19c3.578 0 6.261 2.25 6.261 7.274L36 36 36 36z"></path>
-              </svg>
-            </a>
+        {/* Bottom Footer */}
+        <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between text-xs text-gray-400">
+          <div>
+            © 2023 All Rights Reserved
           </div>
-          {/* Policies */}
-          <div className="flex space-x-8 font-normal ml-11 text-whitetext-[16px] font-poppins">
-            <a href="#" className="hover:text-yellow">Terms</a>
-            <a href="#" className="hover:text-yellow">Privacy</a>
-            <a href="#" className="hover:text-yellow">Cookies</a>
+          <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
+            <a href="#" className="hover:text-white">Privacy Policy</a>
+            <a href="#" className="hover:text-white">Terms of Use</a>
+            <a href="#" className="hover:text-white">Sales and Refunds</a>
+            <a href="#" className="hover:text-white">Legal</a>
+            <a href="#" className="hover:text-white">Site Map</a>
           </div>
         </div>
       </div>
@@ -131,4 +138,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default Footer;  
