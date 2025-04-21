@@ -3,6 +3,8 @@ import HerosectionAboutUs from "./heroSectionAboutUs";
 import ServicesBenefit from "./services";
 import TrustProperties from "./trustProperties";
 import CustomerSaying from "./customerSaying";
+import WhyChoose from "./whyChoose";
+
 export default function AboutUsView(){
     return(
 
@@ -12,6 +14,7 @@ export default function AboutUsView(){
            <CarCollection/>
            <ServicesBenefit/>
            <CustomerSaying/>
+           <WhyChoose/>
         </div>
     )
 }
