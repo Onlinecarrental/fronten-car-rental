@@ -20,7 +20,7 @@ const Navbar = () => {
         <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2">
           <ul className="flex space-x-8 text-[16px] font-[400] font-jakarta">
             <li><Link to="/" className="hover:text-[#efff11]">HOME</Link></li>
-            <li><Link to="/" className="hover:text-[#efff11]">BEST CARS</Link></li>
+            <li><Link to="/best-cars" className="hover:text-[#efff11]">BEST CARS</Link></li>
             <li><Link to="/" className="hover:text-[#efff11]">BLOGS</Link></li>
             <li><Link to="/" className="hover:text-[#efff11]">About Us</Link></li>
             <li><Link to="/" className="hover:text-[#efff11]">Contact Us</Link></li>
