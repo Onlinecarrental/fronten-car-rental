@@ -45,7 +45,7 @@ export default function CarCollection() {
            </div>
          
 
-    <div className="flex flex-col md:flex-row items-center p-6 bg-gray max-w-7xl mx-auto">
+    <div className="flex flex-col md:flex-row items-start mt-10 p-6 bg-gray max-w-7xl mx-auto">
       <div className="w-full md:w-1/2 pl-8 space-y-6 pr-4">
         <h2 className="text-4xl font-bold">We Are More Than</h2>
         
@@ -67,7 +67,7 @@ export default function CarCollection() {
               <img 
                 src="../src/assets/bluetick.svg"
                 alt="Checkmark" 
-                className="h-4 w-4"
+                className="h-6 w-6"
               />
             </div>
             <span className="text-base font-medium">24/7 Roadside Assistance</span>
@@ -78,7 +78,7 @@ export default function CarCollection() {
               <img 
                 src="../src/assets/bluetick.svg"
                 alt="Checkmark" 
-                className="h-4 w-4"
+                className="h-6 w-6"
               />
             </div>
             <span className="text-base font-medium">Free Cancellation & Return</span>
@@ -89,7 +89,7 @@ export default function CarCollection() {
               <img 
                 src="../src/assets/bluetick.svg" 
                 alt="Checkmark" 
-                className="h-4 w-4"
+                className="h-6 w-6"
               />
             </div>
             <span className="text-base font-medium">Rent Now Pay When You Arrive</span>

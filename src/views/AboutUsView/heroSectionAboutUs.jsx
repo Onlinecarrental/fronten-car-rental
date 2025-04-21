@@ -10,7 +10,7 @@ export default function HerosectionAboutUs() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 bg-black/20">
         <div
-          className="w-full h-full bg-cover opacity-50 bg-center"
+          className="w-full h-full bg-cover opacity-30 bg-center"
           style={{
             backgroundImage: `url(${heroImage})`,
           }}

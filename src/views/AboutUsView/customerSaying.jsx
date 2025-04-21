@@ -34,7 +34,7 @@ export default function CustomerSaying() {
 
   return (
     <div className="w-full bg-gray py-12 px-4">
-      <div className="max-w-[1250px] mx-auto">
+      <div className="max-w-[1120px] mx-auto">
         {/* Heading Section */}
         <div className="text-center mb-12">
           <h2 className="text-[40px] font-medium font-poppins text-black ">What Our Customers are</h2>
@@ -44,7 +44,7 @@ export default function CustomerSaying() {
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 font-jakarta md:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
-            <BaseCard height='h-auto' width='w-[380px]' key={index} >
+            <BaseCard height='h-auto' width='w-[350px]' key={index} >
               {/* Star Rating and Date */}
               <div className="flex justify-between items-center mb-4">
                 <div className="flex">

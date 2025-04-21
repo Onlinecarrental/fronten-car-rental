@@ -1,3 +1,4 @@
+import AllBestCars from "./bestAllCars";
 import HerosectionCar from "./heroSectionBestCar";
 
 export default function BestCarsView(){
@@ -5,6 +6,7 @@ export default function BestCarsView(){
 
         <div>
            <HerosectionCar/> 
+           <AllBestCars/>
            
         </div>
     )
