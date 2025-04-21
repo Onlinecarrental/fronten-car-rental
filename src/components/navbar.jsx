@@ -22,7 +22,7 @@ const Navbar = () => {
             <li><Link to="/" className="hover:text-[#efff11]">HOME</Link></li>
             <li><Link to="/best-cars" className="hover:text-[#efff11]">BEST CARS</Link></li>
             <li><Link to="/" className="hover:text-[#efff11]">BLOGS</Link></li>
-            <li><Link to="/" className="hover:text-[#efff11]">About Us</Link></li>
+            <li><Link to="/about-us" className="hover:text-[#efff11]">About Us</Link></li>
             <li><Link to="/" className="hover:text-[#efff11]">Contact Us</Link></li>
           </ul>
         </div>
@@ -49,9 +49,9 @@ const Navbar = () => {
       >
         <ul className="flex flex-col space-y-4 text-[16px] font-[400] font-jakarta">
           <li><Link to="/" className="hover:text-[#efff11]">HOME</Link></li>
-          <li><Link to="/" className="hover:text-[#efff11]">BEST CARS</Link></li>
+          <li><Link to="/best-cars" className="hover:text-[#efff11]">BEST CARS</Link></li>
           <li><Link to="/" className="hover:text-[#efff11]">BLOGS</Link></li>
-          <li><Link to="/" className="hover:text-[#efff11]">About Us</Link></li>
+          <li><Link to="/about-us" className="hover:text-[#efff11]">About Us</Link></li>
           <li><Link to="/" className="hover:text-[#efff11]">Contact Us</Link></li>
           <li>
             <Button height="43px" width="125px" title="Log Out" to="/login" />
