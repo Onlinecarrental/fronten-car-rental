@@ -23,7 +23,7 @@ const Navbar = () => {
             <li><Link to="/best-cars" className="hover:text-[#efff11]">BEST CARS</Link></li>
             <li><Link to="/customerreviews" className="hover:text-[#efff11]">Customer Review</Link></li>
            
-            <li><Link to="/" className="hover:text-[#efff11]">BLOGS</Link></li>
+            <li><Link to="/blogs" className="hover:text-[#efff11]">BLOGS</Link></li>
             <li><Link to="/about-us" className="hover:text-[#efff11]">About Us</Link></li>
             <li><Link to="/contactus" className="hover:text-[#efff11]">Contact Us</Link></li>
           </ul>
@@ -52,7 +52,7 @@ const Navbar = () => {
         <ul className="flex flex-col space-y-4 text-[16px] font-[400] font-jakarta">
           <li><Link to="/" className="hover:text-[#efff11]">HOME</Link></li>
           <li><Link to="/best-cars" className="hover:text-[#efff11]">BEST CARS</Link></li>
-          <li><Link to="/" className="hover:text-[#efff11]">BLOGS</Link></li>
+          <li><Link to="/blogs" className="hover:text-[#efff11]">BLOGS</Link></li>
           <li><Link to="/about-us" className="hover:text-[#efff11]">About Us</Link></li>
           <li><Link to="/contactus" className="hover:text-[#efff11]">Contact Us</Link></li>
           
