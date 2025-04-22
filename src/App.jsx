@@ -6,6 +6,7 @@ import HomeView from './views/HomeView/homeView';
 import BestCarsView from './views/BestCarsView/bestCarsView';
 import AboutUsView from './views/AboutUsView/aboutUsView';
 import CustomerReviewView from './views/customerREviewView/customerREview';
+import ContactUsView from './views/ContactUsView/contactUsView';
 const isAuthenticated = false; 
 const App = () => {
     return (
@@ -16,7 +17,7 @@ const App = () => {
                 <Route path="/best-cars" element={<BestCarsView/>} />
                 <Route path="/about-us" element={<AboutUsView/>} />
                 <Route path="/customerreviews" element={<CustomerReviewView/>} />
-                
+                <Route path="/contactus" element={<ContactUsView/>} />
                 </Routes>
                 </Layout>
         </Router>
