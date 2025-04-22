@@ -33,7 +33,7 @@ export default function CustomerTestimonials() {
   ];
 
   return (
-    <div className="w-full bg-gray-100 py-12 px-4">
+    <div className="w-full bg-white py-12 px-4">
       <div className="max-w-[1250px] mx-auto">
         {/* Heading Section */}
         <div className="text-center mb-12">
@@ -44,7 +44,7 @@ export default function CustomerTestimonials() {
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 font-jakarta md:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
-            <BaseCard height='h-auto' width='w-[380px]' key={index} >
+            <BaseCard height='h-auto' bgColor='bg-gray' width='w-[380px]' key={index} >
               {/* Star Rating and Date */}
               <div className="flex justify-between items-center mb-4">
                 <div className="flex">
@@ -54,14 +54,14 @@ export default function CustomerTestimonials() {
                     </svg>
                   ))}
                 </div>
-                <span className="text-gray text-sm">{testimonial.date}</span>
+                <span className="text-white text-sm">{testimonial.date}</span>
               </div>
 
               {/* Testimonial Text */}
               <p className="text-gray-600 text-sm mb-4">{testimonial.text}</p>
 
               {/* Horizontal Line */}
-              <hr className="my-4 border-gray" />
+              <hr className="my-4 border-white" />
 
               {/* Customer Info */}
               <div className="flex items-center">

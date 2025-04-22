@@ -264,7 +264,7 @@ export default function AllBestCars() {
         className={`px-4 py-2 rounded ${
           currentPage === number
             ? 'bg-Blue text-white'
-            : 'bg-gray text-gray-700 hover:bg-Blue'
+            : 'bg-gray text-white hover:bg-Blue'
         }`}
       >
         {number}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import heroImage from "../../assets/Bannerimage.jpg";
 import BaseCard from "../../components/card";
-
+import Button from '../../components/button';
 export default function HerosectionCar() {
   const [priceOpen, setPriceOpen] = useState(false);
   const [selectedPrice, setSelectedPrice] = useState("Low to High");
@@ -125,12 +125,7 @@ export default function HerosectionCar() {
               {/* Search Button */}
               <div className="min-w-[200px]">
                 <div className="h-6" /> {/* Spacer */}
-                <button
-                  onClick={handleSearch}
-                  className="w-full p-2 bg-purple-600 text-white rounded font-medium"
-                >
-                  Search
-                </button>
+                <Button title="Search" width='200px' height='41px' />
               </div>
             </div>
           </div>
