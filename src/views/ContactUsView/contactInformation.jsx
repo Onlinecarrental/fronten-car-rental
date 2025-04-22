@@ -69,7 +69,7 @@ export default function ContactInformation() {
         <div className="flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 pr-10 gap-6">
             {/* Support Card */}
-            <BaseCard padding="p-6" className="flex flex-colv w-[200px] h-[182px]">
+            <BaseCard padding="p-6" className="flex flex-colv w-[195px] h-[182px]">
               <div className="flex flex-col items-start">
                 <div className="bg-gray p-2 rounded-md mr-4">
                   <img 
@@ -87,7 +87,7 @@ export default function ContactInformation() {
             </BaseCard>
             
             {/* Working Time Card */}
-            <BaseCard padding="p-6" className="flex flex-col w-[200px] h-[182px]">
+            <BaseCard padding="p-6" className="flex flex-col w-[195px] h-[182px]">
               <div className="flex flex-col items-start">
                 <div className="bg-gray p-2 rounded-md mr-4">
                   <img 
@@ -105,7 +105,7 @@ export default function ContactInformation() {
             </BaseCard>
             
             {/* Contact Card */}
-            <BaseCard padding="p-6" className="flex flex-col w-[200px] h-[182px]">
+            <BaseCard padding="p-6" className="flex flex-col w-[195px] h-[182px]">
               <div className="flex flex-col items-start">
                 <div className="bg-gray p-2 rounded-md mr-4">
                   <img 
@@ -123,7 +123,7 @@ export default function ContactInformation() {
             </BaseCard>
             
             {/* Working Hours Card */}
-            <BaseCard padding="p-6" className="flex flex-col w-[200px] h-[182px]">
+            <BaseCard padding="p-6" className="flex flex-col w-[195px] h-[182px]">
               <div className="flex flex-col items-start">
                 <div className="bg-gray p-2 rounded-md mr-4">
                   <img 
