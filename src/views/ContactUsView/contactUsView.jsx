@@ -1,6 +1,7 @@
 import ContactInformation from "./contactInformation"
 
 import HeroSectionContactUs from "./heroSectionContactUs"
+import LocationSection from "./location"
 
 export default function ContactUsView(){
     return(
@@ -8,6 +9,7 @@ export default function ContactUsView(){
         <div>
           <HeroSectionContactUs/>
           <ContactInformation/>
+          <LocationSection/>
         </div>
     )
 }

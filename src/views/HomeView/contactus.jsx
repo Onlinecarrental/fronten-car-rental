@@ -84,7 +84,7 @@ const ContactForm = () => {
                 id="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`shadow-sm bg-gray-50 outline-none border ${errors.name ? "border-red-500" : "border-gray-300"
+                className={`shadow-sm bg-gray outline-none border ${errors.name ? "border-red-500" : "border-gray-300"
                   } text-black text-[18px] rounded-lg block w-full p-2.5 placeholder-black/50`}
                 placeholder="Enter your Name"
               />
@@ -101,7 +101,7 @@ const ContactForm = () => {
                 id="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`shadow-sm bg-gray-50 outline-none border ${errors.email ? "border-red-500" : "border-gray-300"
+                className={`shadow-sm bg-gray outline-none border ${errors.email ? "border-red-500" : "border-gray-300"
                   } text-black text-[18px] rounded-lg block w-full p-2.5 placeholder-black/50`}
                 placeholder="Enter your Email"
               />
@@ -119,7 +119,7 @@ const ContactForm = () => {
                 maxLength="500" // ⬅️ Limits to 500 characters
                 value={formData.message}
                 onChange={handleChange}
-                className={`block p-2.5 w-full text-[18px] outline-none text-black bg-gray-50 rounded-lg border ${errors.message ? "border-red-500" : "border-gray-300"
+                className={`block p-2.5 w-full text-[18px] outline-none text-black bg-gray rounded-lg border ${errors.message ? "border-red-500" : "border-gray-300"
                   } placeholder-black/50`}
                 placeholder="Type your Query here..."
               ></textarea>
@@ -142,7 +142,7 @@ const ContactForm = () => {
           </form>
         </BaseCard>
 
-        {/* Google Map inside ImageCard */}
+    
         <div>
         <img
     src={contactImage}

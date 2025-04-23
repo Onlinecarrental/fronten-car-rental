@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate ,Link } from 'react-router-dom';
 import BaseCard from '../../components/card';
 import interImg from '../../assets/CARD1.jpg';
 import Button from '../../components/button';
@@ -208,13 +209,15 @@ export default function AllBestCars() {
               <img src={car.image} alt={car.name} className="w-full h-full rounded-[15px] object-cover" />
             </div>
             <div className="p-4">
-              <div className='py-3'>
+             <Link to="/cardetail">             <div className='py-3'>
                 <h3 className="text-[20px] font-[600] text-black font-jakarta">{car.name}</h3>
-                <div className="mt-1 flex mb-3 items-end">
+              <div className="mt-1 flex mb-3 items-end">
                   <span className="text-[28px] font-bold">${car.price.toFixed(2)}</span>
                   <span className="text-[18px] ml-1">/day</span>
                 </div>
               </div>
+              </Link>
+ 
               <BaseCard bgColor='bg-gray' className='flex flex-row px-6 justify-between' boxShadow={false} width='w-300px' height='h-auto'>
                 <div className="flex flex-col items-center justify-center">
                   <Gauge size={18} className="text-gray-600" />
