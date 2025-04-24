@@ -9,17 +9,18 @@ function Button({
   width = "150px",
   bgColor = "bg-[#5937e0]",
   textColor = "text-white",
-  hoverBgColor = "hover:bg-[#a9a9a9]",     // Ensure lowercase color hex code
+  hoverBgColor = "hover:bg-[#a9a9a9]", // lowercase hex ensured
   hoverTextColor = "hover:text-white",
   rounded = "rounded-[10px]",
   shadow = "shadow-lg",
   onClick = null,
+  className = "", // 👈 added prop for extra classes
 }) {
   return (
     <Link to={onClick ? "#" : to} onClick={onClick || null}>
       <button
         className={`font-jakarta text-[20px] font-[500] px-4 lg:px-5 flex items-center justify-center gap-2 
-          ${bgColor} ${textColor} ${hoverBgColor} ${hoverTextColor} ${rounded} ${shadow} transition-all duration-300`}
+          ${bgColor} ${textColor} ${hoverBgColor} ${hoverTextColor} ${rounded} ${shadow} transition-all duration-300 ${className}`}
         style={{ height, width }}
       >
         {title}

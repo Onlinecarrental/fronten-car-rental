@@ -9,6 +9,7 @@ import CustomerReviewView from './views/customerREviewView/customerREview';
 import ContactUsView from './views/ContactUsView/contactUsView';
 import BlogsView from './views/BlogsView/blogView'
 import DetailCar from './views/BestCarsView/cardetailview';
+import BlogPost from './views/BlogsView/showblog';
 const isAuthenticated = false; 
 const App = () => {
     return (
@@ -22,6 +23,8 @@ const App = () => {
                 <Route path="/contactus" element={<ContactUsView/>} />
                 <Route path="/blogs" element={<BlogsView/>} />
                 <Route path="/cardetail" element={<DetailCar/>} />
+                
+                <Route path="/blogs/showblog" element={<BlogPost/>} />
                 </Routes>
                 </Layout>
         </Router>
