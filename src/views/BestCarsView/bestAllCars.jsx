@@ -237,7 +237,7 @@ export default function AllBestCars() {
                 </div>
               </BaseCard>
               <div className='mt-2 ml-[5px]'>
-                <Button boxShadow={false} title="Rent Now" width='320px' height='40px' />
+                <Button boxShadow={false} to='/bookingform' title="Rent Now" width='320px' height='40px' />
               </div>
             </div>
           </BaseCard>
