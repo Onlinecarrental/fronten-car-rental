@@ -38,7 +38,7 @@ export default function BookingForm() {
   };
 
   const validatePhone = (phone) => {
-    const re = /^[0-9]{10}$/; // Exactly 10 digits for Indian mobile numbers
+    const re = /^[0-9]{11}$/; // Exactly 10 digits for Indian mobile numbers
     return re.test(phone);
   };
   const parseDMY = (dateStr) => {
@@ -157,17 +157,17 @@ export default function BookingForm() {
         toPicker.destroy();
       };
     }
-  }, [currentStep, formData.dateFrom]);
+  }, [currentStep, formData.dateFrom]); 
   
   return (
     <div className="w-full mx-auto font-jakarta bg-white">
       <div className="p-4">
         {bookingSuccess ? (
-          <div className="text-center max-w-[700px]  p-14">
+          <div className="text-center max-w-[700px]  mx-auto p-14">
             <div className="text-green-500 text-5xl mb-4">✓</div>
             <h2 className="text-3xl font-[600]   mb-2">Booking Successful!</h2>
             <p className="text-[18px]">Your booking has been confirmed.</p>
-            <p className="mb-6 text-[18px]">Our agent will contact you shortly.</p>
+            <p className="mb-6 text-[18px]">Agent when see you they give you message.</p>
             <button 
               onClick={resetForm}
               className="px-4 py-4 bg-Blue text-[18px] text-white rounded-md"
@@ -180,10 +180,10 @@ export default function BookingForm() {
             <div className="text-center font-bold text-[35px] mb-8">BOOKING FORM</div>
 
             {/* Progress Steps */}
-            <div className="flex items-center justify-center mb-6">
+            <div className="flex items-center justify-center ">
               {[1, 2, 3].map((step, i) => (
                 <div key={i} className="flex items-center">
-                  <div className={` w-36  h-28 rounded-md flex items-center text-[24px] font-[500] justify-center ${step <= currentStep ? 'bg-black text-white' : 'bg-gray text-white'}`}>{step}</div>
+                  <div className={` w-20  h-20 rounded-md flex items-center text-[24px] font-[500] justify-center ${step <= currentStep ? 'bg-black text-white' : 'bg-gray text-white'}`}>{step}</div>
                   {step < 3 && <div className={`h-[10px] w-[8rem] ${step < currentStep ? 'bg-black' : 'bg-gray'}`}></div>}
                 </div>
               ))}
@@ -192,8 +192,8 @@ export default function BookingForm() {
             {/* Form Content */}
             <div className="p-4">
               {currentStep === 1 && (
-                <div className="bg-gray mx-auto max-w-[700px] p-20 rounded-md">
-                  <div className="mb-4 text-center mt-4 text-[28px] font-bold">Personal Detail</div>
+                <div className="bg-gray mx-auto max-w-[700px] p-4 rounded-md">
+                  <div className=" text-center  text-[28px] font-bold">Personal Detail</div>
                   <div className="mb-4 ">
                     <label className="block text-lg font-[500] mb-1">Name:</label>
                     <input
@@ -227,8 +227,8 @@ export default function BookingForm() {
                       name="mobile"
                       value={formData.mobile}
                       onChange={handleInputChange}
-                      placeholder="Enter 10-digit mobile number"
-                      maxLength="10"
+                      placeholder="Enter 11-digit mobile number"
+                      maxLength="11"
                       className="w-full p-2 border border-gray-300 rounded-md"
                     />
                     {errors.mobile && <p className="text-red-500 text-sm">{errors.mobile}</p>}
@@ -242,8 +242,8 @@ export default function BookingForm() {
               )}
 
               {currentStep === 2 && (
-                <div className="bg-gray mx-auto max-w-[700px] p-20 rounded-md">
-                  <div className="mb-4 text-center mt-4 text-[28px] font-bold">Booking Details</div>
+                <div className="bg-gray mx-auto max-w-[700px] p-4 rounded-md">
+                  <div className=" text-center  text-[28px] font-bold">Booking Details</div>
 
                   <div className="mb-4 ">
                     <label className="block text-lg font-[500] mb-1">Location:</label>
@@ -290,8 +290,8 @@ export default function BookingForm() {
               )}
 
 {currentStep === 3 && (
-  <div className="bg-gray mx-auto max-w-[700px] p-20 rounded-md">
-    <div className="mb-4 text-center mt-4 text-[28px] font-bold">Payment Details</div>
+  <div className="bg-gray mx-auto max-w-[700px] p-4 rounded-md">
+    <div className=" text-center  text-[28px] font-bold">Payment Details</div>
 
     <div className="mb-4 ">
       <label className="block text-lg font-[500] mb-1">Price:</label>
