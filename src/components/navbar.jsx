@@ -19,7 +19,6 @@ const Navbar = () => {
         {/* Center Menu (visible on lg and up) */}
         <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2">
           <ul className="flex space-x-5 text-[16px] font-[400] font-jakarta">
-            <li><Link to="/" className="hover:text-[#efff11]">HOME</Link></li>
             <li><Link to="/best-cars" className="hover:text-[#efff11]">BEST CARS</Link></li>
             <li><Link to="/customerreviews" className="hover:text-[#efff11]">Customer Review</Link></li>
            
