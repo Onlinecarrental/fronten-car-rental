@@ -3,7 +3,7 @@ import BaseCard from "../../components/card";
 import HeadingTitle from "../../components/heading";
 import Button from "../../components/button";
 import contactImage from "../../assets/contactus.svg"
-const ContactForm = () => {
+const HomeContactus = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -155,4 +155,4 @@ const ContactForm = () => {
   );
 };
 
-export default ContactForm;
+export default HomeContactus;

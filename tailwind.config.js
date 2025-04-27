@@ -19,6 +19,9 @@ module.exports = {
         jakarta: ["Plus Jakarta Sans", "sans-serif"],
         poppins: ["Poppins", "sans-serif"],
       },
+      backgroundImage: {
+        'custom-login-gradient': 'linear-gradient(119deg, rgb(0,0,0) 5%, rgb(89,55,224) 50%, rgb(0,0,0) 94%)',
+      },
       colors: {
         gray: "#a9a9a9",
         Blue: "#5937E0 ",
