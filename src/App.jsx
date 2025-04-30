@@ -12,7 +12,11 @@ import DetailCar from './views/BestCarsView/cardetailview';
 import BlogPost from './views/BlogsView/showblog';
 import BookingView from './views/BookingFormView/bookingFormView';
 import CarRentalLoginScreen from './views/homeView/mainHompage';
-
+import Login from './components/login';
+import Signup from './components/signup';
+import MainLayout from './components/mainLayout';
+import AgentPanelHomeView from './views/AgentsPanelView/agentHomeView/agentHomeview';
+import AddCarView from './views/AgentsPanelView/addCarView/addCarView';
 const isAuthenticated = false; 
 const App = () => {
     return (
@@ -28,7 +32,11 @@ const App = () => {
                 <Route path="/home/cardetail" element={<Layout><DetailCar/> </Layout>} />
                 <Route path="/home/bookingform" element={<Layout><BookingView/> </Layout>} />
                 <Route path="/" element={<CarRentalLoginScreen/>} />
-                
+                <Route path="/" element={<CarRentalLoginScreen/>} />
+                <Route path="/login" element={<Login/>} />
+                <Route path="/signup" element={<Signup/>} />
+                <Route path="/agent" element={<MainLayout><AgentPanelHomeView/></MainLayout>} />
+                <Route path="/addcar" element={<MainLayout><AddCarView/></MainLayout>} />
                 <Route path="/home/blogs/showblog" element={<Layout><BlogPost/> </Layout>} />
                 </Routes>
         </Router>
