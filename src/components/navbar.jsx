@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Button from "./button";
-import logo from "../assets/logo.svg"
+import logo from "../assets/logo.svg";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Logout handler for user
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/');
+  };
 
   return (
     <nav className="bg-black text-white sticky top-0 w-full z-10">
-      
-      <div className=" flex items-center justify-between max-w-screen-xl mx-auto p-4">
-        
+      <div className="flex items-center justify-between max-w-screen-xl mx-auto p-4">
         <Link to="/home" className="text-[20px] font-[400] flex gap-2 items-center font-poppins text-white">
- <img src={logo} alt="car rental logo" className="w-[50px] h-[50px]" />
+          <img src={logo} alt="car rental logo" className="w-[50px] h-[50px]" />
           <span>AA Car Rental</span>
         </Link>
 
@@ -21,18 +27,16 @@ const Navbar = () => {
           <ul className="flex space-x-5 text-[16px] font-[400] font-jakarta">
             <li><Link to="/home/best-cars" className="hover:text-[#efff11]">BEST CARS</Link></li>
             <li><Link to="/home/customerreviews" className="hover:text-[#efff11]">Customer Review</Link></li>
-           
             <li><Link to="/home/blogs" className="hover:text-[#efff11]">BLOGS</Link></li>
             <li><Link to="/home/about-us" className="hover:text-[#efff11]">About Us</Link></li>
-         <li><Link to="/home/contactus" className="hover:text-[#efff11]">Contact Us</Link></li>
-         <li><Link to="/home/bookingform" className="hover:text-[#efff11]">Booking</Link></li>
-           
+            <li><Link to="/home/contactus" className="hover:text-[#efff11]">Contact Us</Link></li>
+            <li><Link to="/home/bookingform" className="hover:text-[#efff11]">Booking</Link></li>
           </ul>
         </div>
 
         {/* Log Out button (right on desktop) */}
         <div className="hidden lg:block">
-          <Button height="43px" width="125px" title="Log Out" to="/login" />
+          <Button height="43px" width="125px" title="Log Out" onClick={handleLogout} />
         </div>
 
         {/* Mobile menu toggle */}
@@ -56,9 +60,9 @@ const Navbar = () => {
           <li><Link to="/home/blogs" className="hover:text-[#efff11]">BLOGS</Link></li>
           <li><Link to="/home/about-us" className="hover:text-[#efff11]">About Us</Link></li>
           <li><Link to="/home/contactus" className="hover:text-[#efff11]">Contact Us</Link></li>
-          
+          <li><Link to="/home/bookingform" className="hover:text-[#efff11]">Booking</Link></li>
           <li>
-            <Button height="43px" width="125px" title="Log Out" to="/login" />
+            <Button height="43px" width="125px" title="Log Out" onClick={handleLogout} />
           </li>
         </ul>
       </div>

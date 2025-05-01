@@ -1,8 +1,18 @@
 import React from "react";
 import Button from "./button"; // Importing your existing Button component
 import { FaEnvelope, FaCarAlt, FaCalendarAlt, FaListAlt, FaPhoneAlt, FaSignOutAlt } from "react-icons/fa"; // You may need to install this package
+import { useNavigate } from "react-router-dom"; // <-- Add this
 
 function Sidebar() {
+  const navigate = useNavigate(); // <-- Add this
+
+  // Logout handler for agent
+  const handleLogout = () => {
+    sessionStorage.removeItem('agent');
+    localStorage.removeItem('agent');
+    navigate('/');
+  };
+
   return (
     <div className="flex flex-col h-screen bg-black text-white w-64 p-4">
       {/* Logo and Title */}
@@ -82,6 +92,7 @@ function Sidebar() {
           hoverBgColor="hover:bg-indigo-700"
           className="justify-center"
           iconRight={<FaSignOutAlt />}
+          onClick={handleLogout} // <-- Add this
         />
       </div>
     </div>

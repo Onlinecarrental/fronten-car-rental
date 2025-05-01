@@ -3,7 +3,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/config';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const Login = () => {
+const AgentLogin = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState('');
@@ -11,8 +11,8 @@ const Login = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (localStorage.getItem('user')) {
-      navigate('/home');
+    if (localStorage.getItem('agent')) {
+      navigate('/agent');
     }
   }, [navigate]);
 
@@ -26,8 +26,8 @@ const Login = () => {
     e.preventDefault();
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      localStorage.setItem('user', JSON.stringify(result.user)); // sirf localStorage
-      navigate('/home');
+      localStorage.setItem('agent', JSON.stringify(result.user)); // sirf localStorage
+      navigate('/agent');
     } catch (error) {
       alert('Login failed: ' + error.message);
     }
@@ -51,7 +51,7 @@ const Login = () => {
         </div>
         {/* Right: Form */}
         <div className="flex flex-col justify-center px-10 py-8 w-96">
-          <h2 className="text-xl font-bold mb-2">Welcome to Login</h2>
+          <h2 className="text-xl font-bold mb-2">Agent Login</h2>
           <form onSubmit={handleLogin} className="space-y-3">
             <input
               type="email"
@@ -78,7 +78,7 @@ const Login = () => {
           </form>
           <div className="text-xs mt-3 text-center">
             Don't have an account?{' '}
-            <a href="/signup" className="text-blue-600 hover:underline">
+            <a href="/agent-signup" className="text-blue-600 hover:underline">
               Signup Now
             </a>
           </div>
@@ -88,4 +88,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AgentLogin;

@@ -9,14 +9,13 @@ const uploadToCloudinary = async (file, userId, fileType) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', 'upload_preset');
-  formData.append('public_id', `users/${userId}/cnic/${fileType}`);
+  formData.append('public_id', `agents/${userId}/license/${fileType}`);
 
   try {
     const response = await fetch('https://api.cloudinary.com/v1_1/dlinqw87p/image/upload', {
       method: 'POST',
       body: formData,
     });
-
     const data = await response.json();
     if (data.secure_url) {
       return data.secure_url;
@@ -30,7 +29,7 @@ const uploadToCloudinary = async (file, userId, fileType) => {
   }
 };
 
-const Signup = () => {
+const AgentSignup = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,16 +38,16 @@ const Signup = () => {
   const [cnic, setCnic] = useState('');
   const [cnicFront, setCnicFront] = useState(null);
   const [cnicBack, setCnicBack] = useState(null);
+  const [license, setLicense] = useState('');
+  const [licensePic, setLicensePic] = useState(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   // Validation helpers
   const validateEmail = (email) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
   const validatePhone = (phone) =>
     /^\d{11}$/.test(phone);
-
   const validateCnic = (cnic) =>
     /^\d{5}-\d{7}-\d{1}$/.test(cnic);
 
@@ -80,30 +79,40 @@ const Signup = () => {
       setError('Please upload both CNIC front and back images.');
       return;
     }
+    if (!license) {
+      setError('Please enter license card number.');
+      return;
+    }
+    if (!licensePic) {
+      setError('Please upload license card image.');
+      return;
+    }
 
     try {
       // Step 1: Create user with Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
 
-      // Step 2: Upload CNIC images to Cloudinary
+      // Step 2: Upload images to Cloudinary
       const frontUrl = await uploadToCloudinary(cnicFront, userId, 'cnic_front');
       const backUrl = await uploadToCloudinary(cnicBack, userId, 'cnic_back');
+      const licenseUrl = await uploadToCloudinary(licensePic, userId, 'license_pic');
 
-      // Step 3: Save user data to Firestore
-      await setDoc(doc(db, 'users', userId), {
+      // Step 3: Save agent data to Firestore (collection: agent)
+      await setDoc(doc(db, 'agent', userId), {
         name,
         email,
         phone,
         cnic,
         cnicFrontUrl: frontUrl,
         cnicBackUrl: backUrl,
+        license,
+        licensePicUrl: licenseUrl,
         createdAt: new Date(),
       });
 
-      // Step 4: Redirect to login page with email & password
       alert('Signup successful! Redirecting to login...');
-      navigate('/login', { state: { email, password } });
+      navigate('/agent-login', { state: { email, password } });
 
     } catch (error) {
       setError('Signup Error: ' + error.message);
@@ -128,7 +137,7 @@ const Signup = () => {
         </div>
         {/* Right: Form */}
         <div className="flex flex-col justify-center px-10 py-8 w-96">
-          <h2 className="text-xl font-bold mb-2">Wellcome to Signup</h2>
+          <h2 className="text-xl font-bold mb-2">Agent Signup</h2>
           <form onSubmit={handleSignup} className="space-y-3">
             {error && (
               <div className="bg-red-100 text-red-700 px-3 py-2 rounded">{error}</div>
@@ -199,6 +208,22 @@ const Signup = () => {
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
             />
+            <input
+              type="text"
+              placeholder="License Card Number"
+              value={license}
+              onChange={(e) => setLicense(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+            <label className="block mt-2">License Card Image:</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setLicensePic(e.target.files[0])}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
             <button
               type="submit"
               className="w-full bg-yellow-300 text-black font-semibold py-2 rounded-md mt-2 hover:bg-yellow-400 transition"
@@ -207,8 +232,8 @@ const Signup = () => {
             </button>
           </form>
           <div className="text-xs mt-3 text-center">
-            Already have a account?{' '}
-            <Link to="/login" className="text-blue-600 hover:underline">
+            Already have an account?{' '}
+            <Link to="/agent-login" className="text-blue-600 hover:underline">
               Login Now
             </Link>
           </div>
@@ -218,4 +243,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default AgentSignup;
