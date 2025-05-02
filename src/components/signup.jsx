@@ -52,6 +52,15 @@ const Signup = () => {
   const validateCnic = (cnic) =>
     /^\d{5}-\d{7}-\d{1}$/.test(cnic);
 
+  // CNIC input handler with auto-dash
+  const handleCnicChange = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, ''); // sirf digits
+    if (value.length > 5) value = value.slice(0, 5) + '-' + value.slice(5);
+    if (value.length > 13) value = value.slice(0, 13) + '-' + value.slice(13, 14);
+    if (value.length > 15) value = value.slice(0, 15); // max length
+    setCnic(value);
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
     setError('');
@@ -178,7 +187,7 @@ const Signup = () => {
               type="text"
               placeholder="CNIC (12345-1234567-1)"
               value={cnic}
-              onChange={(e) => setCnic(e.target.value)}
+              onChange={handleCnicChange}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
               maxLength={15}

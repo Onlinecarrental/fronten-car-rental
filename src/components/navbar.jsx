@@ -62,7 +62,7 @@ const Navbar = () => {
           <li><Link to="/home/contactus" className="hover:text-[#efff11]">Contact Us</Link></li>
           <li><Link to="/home/bookingform" className="hover:text-[#efff11]">Booking</Link></li>
           <li>
-            <Button height="43px" width="125px" title="Log Out" onClick={handleLogout} />
+            <Button height="43px" to="/" width="125px" title="Log Out" onClick={handleLogout} />
           </li>
         </ul>
       </div>
