@@ -39,7 +39,7 @@ function Sidebar() {
         
         <Button 
           title="Add a Car" 
-          to="/addcar"
+          to="/agent/addcar"
           bgColor="bg-white" 
           textColor="text-black" 
           width="100%" 
@@ -50,7 +50,7 @@ function Sidebar() {
         
         <Button 
           title="Bookings" 
-          to="/booking-management"
+          to="/agent/booking-management"
           bgColor="bg-white" 
           textColor="text-black" 
           width="100%" 
@@ -61,7 +61,7 @@ function Sidebar() {
         
         <Button 
           title="Car Lists" 
-          to="/carlist"
+          to="/agent/carlist"
           bgColor="bg-white" 
           textColor="text-black" 
           width="100%" 
@@ -71,7 +71,8 @@ function Sidebar() {
         />
         
         <Button 
-          title="Contact us" 
+          title="Contact us"
+          to="/agent/contactus" 
           bgColor="bg-white" 
           textColor="text-black" 
           width="100%" 

@@ -1,3 +1,4 @@
+import AllCarList from "./allCarsList";
 import CarListCards from "./carListCards";
 import MyCarListHeading from "./myCarListHeading";
 
@@ -9,6 +10,7 @@ export default function MyCarListView(){
          <div>
                   <MyCarListHeading/>
                   <CarListCards/>
+                  <AllCarList/>
                   
          </div>
     )

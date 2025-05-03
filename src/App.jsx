@@ -22,6 +22,7 @@ import MyCarListView from './views/AgentsPanelView/myCarListView/myCarListView';
 import AgentSignup from './components/AgentSignup';
 import AgentLogin from './components/AgentLogin';
 import ProtectedRoute from './components/ProtectedRoute';
+import AgentContactUsView from './views/AgentsPanelView/agentContactUsView/agentContactUsView';
 
 const isAuthenticated = false; 
 const App = () => {
@@ -132,6 +133,15 @@ const App = () => {
                     element={
                         <ProtectedRoute type="agent">
                             <MyCarListView />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/agent/contactus"
+                    element={
+                        <ProtectedRoute type="agent">
+                            <AgentContactUsView/>
                         </ProtectedRoute>
                     }
                 />
