@@ -13,6 +13,7 @@ function Sidebar() {
     navigate('/');
   };
 
+
   return (
     <div className="flex flex-col h-screen bg-black text-white w-64 p-4">
       {/* Logo and Title */}
@@ -39,7 +40,7 @@ function Sidebar() {
         
         <Button 
           title="Add a Car" 
-          to="/agent/addcar"
+          to="/addcar"
           bgColor="bg-white" 
           textColor="text-black" 
           width="100%" 
@@ -50,7 +51,7 @@ function Sidebar() {
         
         <Button 
           title="Bookings" 
-          to="/agent/booking-management"
+          to="/booking-management"
           bgColor="bg-white" 
           textColor="text-black" 
           width="100%" 
@@ -61,7 +62,7 @@ function Sidebar() {
         
         <Button 
           title="Car Lists" 
-          to="/agent/carlist"
+          to="/carlist"
           bgColor="bg-white" 
           textColor="text-black" 
           width="100%" 
@@ -71,8 +72,7 @@ function Sidebar() {
         />
         
         <Button 
-          title="Contact us"
-          to="/agent/contactus" 
+          title="Contact us" 
           bgColor="bg-white" 
           textColor="text-black" 
           width="100%" 

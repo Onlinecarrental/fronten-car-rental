@@ -108,6 +108,7 @@ const Signup = () => {
         cnicFrontUrl: frontUrl,
         cnicBackUrl: backUrl,
         createdAt: new Date(),
+        role: "customer"
       });
 
       // Step 4: Redirect to login page with email & password

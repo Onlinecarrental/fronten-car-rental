@@ -9,7 +9,7 @@ export default function MyCarListView(){
     return(
          <div>
                   <MyCarListHeading/>
-                  <CarListCards/>
+
                   <AllCarList/>
                   
          </div>

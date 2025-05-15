@@ -1,67 +1,104 @@
-import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import HeadingTitle from '../../components/heading';
+import BaseCard from '../../components/card';
+import { ChevronDown } from 'lucide-react'; // Add this import
 
-export default function FAQSection() {
-  const faqs = [
-    {
-      question: "What is the difference between a UI and UX Designer?",
-      answer: "A UI (User Interface) Designer focuses on the visual elements of a product such as buttons, icons, spacing, typography, and color schemes. They create the look and feel of an interface. A UX (User Experience) Designer focuses on the overall feel and functionality of the product, how users interact with it, and ensuring it meets user needs through research, testing, and iteration."
+export default function Faqs() {
+  const [faqData, setFaqData] = useState({
+    header: {
+      title: 'Frequently Asked Questions',
+      description: 'Find answers to common questions about our car rental services'
     },
-    {
-      question: "How to become a UI designer?",
-      answer: "To become a UI designer: 1) Learn design fundamentals including color theory, typography, and layout. 2) Master design tools like Figma, Adobe XD, or Sketch. 3) Study UI principles and patterns. 4) Build a portfolio of projects. 5) Practice by redesigning existing interfaces. 6) Get feedback from professional designers. 7) Network in the design community and apply for entry-level positions or internships."
-    },
-    {
-      question: "What is the difference between a UI and UX Designer?",
-      answer: "UI Designers create the visual elements users interact with, focusing on aesthetics and presentation. UX Designers focus on the entire user journey and experience, conducting research to understand user needs and behaviors. While UI is about how things look, UX is about how things work and feel from the user's perspective."
-    },
-    {
-      question: "How to become a UI designer?",
-      answer: "The path to becoming a UI designer includes: learning visual design principles, developing proficiency with industry-standard tools, understanding accessibility standards, creating a strong portfolio, gaining practical experience through projects or internships, staying updated with design trends, and potentially pursuing relevant education or certification programs."
-    },
-    {
-      question: "How to become a UI designer?",
-      answer: "To become a UI designer, start by learning the fundamentals of visual design, developing technical skills with design software, building a portfolio showcasing your work, networking with other designers, seeking mentorship, participating in design challenges, and applying for junior positions to gain professional experience."
-    }
-  ];
-
+    faqs: []
+  });
+  const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(null);
+
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/homepage/faqs');
+        if (response.data.success) {
+          // Handle both old and new data structure
+          const content = response.data.data.content;
+          setFaqData(prevState => ({
+            ...prevState,
+            ...(content.header && { header: content.header }),
+            faqs: Array.isArray(content.faqs) ? content.faqs : []
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching FAQs:', error);
+        // Keep default values on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFaqs();
+  }, []);
 
   const toggleAccordion = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
-  return (
-    <div className="max-w-[1250px] mx-auto p-6 bg-white">
-     <HeadingTitle title="Frequently asked questions"
-     paragraph='To make working easy and hassle-free, we provide a variety of services and advantages. We have you covered with a variety of services and flexible rental terms.'/>
+  if (loading) {
+    return (
+      <div className="w-full bg-white py-12 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto mb-8"></div>
+            <div className="space-y-4">
+              {[1, 2, 3].map((item) => (
+                <div key={item} className="h-20 bg-gray-200 rounded"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-      <div className="space-y-3 max-w-[920px] mt-12 mx-auto">
-        {faqs.map((faq, index) => (
-          <div 
-            key={index} 
-            className="bg-gray rounded cursor-pointer"
-          >
-            <button
-              className="flex justify-between items-center w-full p-4 text-left"
+  return (
+    <div className="w-full bg-white py-12 px-4">
+      <div className="max-w-6xl mx-auto">
+        <HeadingTitle 
+          title={faqData.header.title}
+          paragraph={faqData.header.description}
+        />
+        
+        <div className="mt-12 space-y-4">
+          {faqData.faqs.map((faq, index) => (
+            <BaseCard 
+              key={index}
+              width="w-full"
+              height="auto"
+              className="cursor-pointer hover:shadow-lg transition-all duration-300"
               onClick={() => toggleAccordion(index)}
             >
-              <span className="font-medium">{faq.question}</span>
-              <ChevronDown 
-                className={`transform text-Blue transition-transform ${activeIndex === index ? 'rotate-180' : ''}`}
-                size={20}
-              />
-            </button>
-            {activeIndex === index && (
-              <div className="p-4 pt-2  bg-black  text-white">
-                <p>{faq.answer}</p>
+              <div className="p-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-semibold text-lg">{faq.question}</h3>
+                  <ChevronDown 
+                    className={`w-6 h-6 transition-transform duration-300 ${
+                      activeIndex === index ? 'transform rotate-180' : ''
+                    }`}
+                  />
+                </div>
+                <div className={`
+                  mt-4 text-gray-600
+                  transition-all duration-300 ease-in-out
+                  ${activeIndex === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}
+                `}>
+                  <p>{faq.answer}</p>
+                </div>
               </div>
-            )}
-          </div>
-        ))}
+            </BaseCard>
+          ))}
+        </div>
       </div>
-
     </div>
   );
 }

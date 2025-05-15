@@ -10,8 +10,8 @@ const Navbar = () => {
 
   // Logout handler for user
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/');
+    localStorage.clear(); // Clear all localStorage
+    navigate('/', { replace: true }); // Use replace to prevent going back
   };
 
   return (

@@ -49,14 +49,27 @@ export default function AgentContactUsInfo() {
     setErrors((prevErrors) => ({ ...prevErrors, [id]: "" }));
   };
   
-  // ✅ **Handle Form Submit**
-  const handleSubmit = (e) => {
+  // ✅ **Handle Form Submit (with API)**
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      alert("Form submitted successfully!");
-      // ✅ Reset form after submission
-      setFormData({ name: "", email: "", message: "" });
-      setErrors({});
+      try {
+        const res = await fetch('http://localhost:5000/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...formData, role: 'agent' })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(data.errors ? data.errors.map(e => e.msg).join('\n') : data.error);
+          return;
+        }
+        alert("Form submitted successfully!");
+        setFormData({ name: "", email: "", message: "" });
+        setErrors({});
+      } catch (err) {
+        alert("Failed to submit: " + err.message);
+      }
     }
   };
 

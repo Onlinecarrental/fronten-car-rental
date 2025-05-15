@@ -11,7 +11,7 @@ import BlogsView from './views/BlogsView/blogView';
 import DetailCar from './views/BestCarsView/cardetailview';
 import BlogPost from './views/BlogsView/showblog';
 import BookingView from './views/BookingFormView/bookingFormView';
-import CarRentalLoginScreen from './views/homeView/mainHompage';
+import CarRentalLoginScreen from './views/HomeView/mainHompage';
 import Login from './components/login';
 import Signup from './components/signup';
 import MainLayout from './components/mainLayout';
@@ -23,9 +23,19 @@ import AgentSignup from './components/AgentSignup';
 import AgentLogin from './components/AgentLogin';
 import ProtectedRoute from './components/ProtectedRoute';
 import AgentContactUsView from './views/AgentsPanelView/agentContactUsView/agentContactUsView';
+import AdminDashboard from './views/AdminDashboardView/adminpanel';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
+import BlogManagement from './views/AdminDashboardView/BlogManagement/BlogManagement';
 
 const isAuthenticated = false; 
 const App = () => {
+    React.useEffect(() => {
+        // Check if user is on login page and has stored data
+        if (window.location.pathname === '/' && localStorage.getItem('user')) {
+            localStorage.clear(); // Clear stored data when on login page
+        }
+    }, []);
+
     return (
         <Router>
             <Routes>
@@ -33,73 +43,72 @@ const App = () => {
                 <Route
                     path="/home"
                     element={
-                        <ProtectedRoute type="user">
+                        
                             <Layout><HomeView /></Layout>
-                        </ProtectedRoute>
+                
                     }
                 />
                 <Route
                     path="/home/best-cars"
                     element={
-                        <ProtectedRoute type="user">
+                    
                             <Layout><BestCarsView /></Layout>
-                        </ProtectedRoute>
+        
                     }
                 />
                 <Route
                     path="/home/about-us"
                     element={
-                        <ProtectedRoute type="user">
+                        
                             <Layout><AboutUsView /></Layout>
-                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/home/customerreviews"
                     element={
-                        <ProtectedRoute type="user">
+                        
                             <Layout><CustomerReviewView /></Layout>
-                        </ProtectedRoute>
+                
                     }
                 />
                 <Route
                     path="/home/contactus"
                     element={
-                        <ProtectedRoute type="user">
+                        
                             <Layout><ContactUsView /></Layout>
-                        </ProtectedRoute>
+                
                     }
                 />
                 <Route
                     path="/home/blogs"
                     element={
-                        <ProtectedRoute type="user">
+                    
                             <Layout><BlogsView /></Layout>
-                        </ProtectedRoute>
+            
                     }
                 />
                 <Route
-                    path="/home/cardetail"
+                    path="/home/best-cars/:id"
                     element={
-                        <ProtectedRoute type="user">
+                        
                             <Layout><DetailCar /></Layout>
-                        </ProtectedRoute>
+                
                     }
                 />
                 <Route
                     path="/home/bookingform"
                     element={
-                        <ProtectedRoute type="user">
+                        <ProtectedRoute type="customer">
                             <Layout><BookingView /></Layout>
                         </ProtectedRoute>
                     }
                 />
                 <Route
-                    path="/home/blogs/showblog"
+                    path="/home/blogs/:id"
                     element={
-                        <ProtectedRoute type="user">
+                        
                             <Layout><BlogPost /></Layout>
-                        </ProtectedRoute>
+            
                     }
                 />
 
@@ -107,17 +116,25 @@ const App = () => {
                 <Route
                     path="/agent"
                     element={
-                        <ProtectedRoute type="agent">
+                    
                             <MainLayout><AgentPanelHomeView /></MainLayout>
-                        </ProtectedRoute>
+            
                     }
                 />
                 <Route
                     path="/agent/addcar"
                     element={
-                        <ProtectedRoute type="agent">
+                        
                             <MainLayout><AddCarView /></MainLayout>
-                        </ProtectedRoute>
+            
+                    }
+                />
+                 <Route
+                    path="/agent/addcar/:id"
+                    element={
+                        
+                            <MainLayout><AddCarView /></MainLayout>
+            
                     }
                 />
                 <Route
@@ -131,9 +148,9 @@ const App = () => {
                 <Route
                     path="/agent/carlist"
                     element={
-                        <ProtectedRoute type="agent">
+                        
                             <MyCarListView />
-                        </ProtectedRoute>
+                    
                     }
                 />
 
@@ -143,6 +160,21 @@ const App = () => {
                         <ProtectedRoute type="agent">
                             <AgentContactUsView/>
                         </ProtectedRoute>
+                    }
+                />
+
+                {/* Admin routes */}
+                <Route
+                    path="/admin"
+                    element={
+                        
+                            <AdminDashboard />
+                    }
+                />
+                <Route
+                    path="/admin/blogs"
+                    element={
+                        <BlogManagement />
                     }
                 />
 

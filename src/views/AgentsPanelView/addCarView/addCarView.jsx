@@ -10,8 +10,6 @@ export default function AddCarView(){
          <div>
                   <AddCarHeading/>
                   <AddCarInfo/>
-                  <AddCarFeatures/>
-                  <AddExtraFeatures/>
          </div>
     )
 }

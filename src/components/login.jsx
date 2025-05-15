@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/config';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase/config';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,8 +28,32 @@ const Login = () => {
     e.preventDefault();
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      localStorage.setItem('user', JSON.stringify(result.user)); // sirf localStorage
-      navigate('/home');
+      const userEmail = result.user.email.toLowerCase();
+
+      // Get user role from Firestore
+      const userDoc = await getDoc(doc(db, "users", userEmail));
+      
+      if (userDoc.exists()) {
+        const role = userDoc.data().role;
+        if (role === 'agent' || role === 'admin') {
+          alert('Please use agent/admin login page');
+          return;
+        }
+        
+        // Store BOTH user data and role type
+        const userData = {
+          email: userEmail,
+          role: 'customer',
+          uid: result.user.uid
+        };
+
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('customer', 'true'); // Add role-specific flag
+
+        navigate('/home', { replace: true });
+      } else {
+        alert('User not found');
+      }
     } catch (error) {
       alert('Login failed: ' + error.message);
     }

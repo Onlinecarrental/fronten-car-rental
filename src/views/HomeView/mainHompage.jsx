@@ -24,7 +24,7 @@ export default function CarRentalLoginScreen() {
         <img src={LOGO} alt="logo" className='rounded-full w-[120px] h-[120px]' />
         <h1 className="text-[36px] font-bold mb-2">Welcome to AA Car Rental</h1>
         <div className="text-center text-[24px] opacity-80">
-          <p>Welcome to AA Car Rental! Welcome to AA Car Rental</p>
+          <p>Welcome to AA Car Rental! Welcome to AA IA Car Rental</p>
           <p className='text-center'> Welcome to AA Car Rental</p>
         </div>
       </div>

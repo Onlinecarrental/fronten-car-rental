@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase/config';
+import { auth, db } from '../firebase/config';
+import { getDoc, doc } from 'firebase/firestore';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const AgentLogin = () => {
@@ -11,8 +12,10 @@ const AgentLogin = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (localStorage.getItem('agent')) {
-      navigate('/agent');
+    const user = localStorage.getItem('user');
+    const isAgent = localStorage.getItem('agent');
+    if (user && isAgent) {
+        navigate('/agent', { replace: true });
     }
   }, [navigate]);
 
@@ -26,8 +29,32 @@ const AgentLogin = () => {
     e.preventDefault();
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      localStorage.setItem('agent', JSON.stringify(result.user)); // sirf localStorage
-      navigate('/agent');
+      const userEmail = result.user.email.toLowerCase();
+
+      // Get user role from Firestore
+      const userDoc = await getDoc(doc(db, "users", userEmail));
+      
+      if (userDoc.exists()) {
+        const role = userDoc.data().role;
+        if (role !== 'agent') {
+          alert('Please use appropriate login page');
+          return;
+        }
+
+        // Store BOTH user data and role type
+        const userData = {
+          email: userEmail,
+          role: 'agent',
+          uid: result.user.uid
+        };
+
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('agent', 'true'); // Add role-specific flag
+
+        navigate('/agent', { replace: true });
+      } else {
+        alert('User not found');
+      }
     } catch (error) {
       alert('Login failed: ' + error.message);
     }
