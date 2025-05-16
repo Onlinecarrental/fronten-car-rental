@@ -147,50 +147,75 @@ export default function HomepageManagement({ section = 'hero' }) {
       setError(null);
       console.log(`Updating section: ${sectionType}`);
 
-      let response;
-
       // If it's FormData (for files)
       if (formData instanceof FormData) {
-        // Add sectionType to FormData
-        const content = JSON.parse(formData.get('content'));
-        formData.set('content', JSON.stringify({
-          ...content,
-          sectionType
+        // Don't modify the original content, create a new one
+        const originalContent = JSON.parse(formData.get('content'));
+        console.log('Original content:', originalContent);
+
+        // Create a new FormData instance
+        const newFormData = new FormData();
+        
+        // Add the content with proper structure
+        newFormData.append('content', JSON.stringify({
+          header: originalContent.header,
+          items: originalContent.items
         }));
 
-        response = await axios.patch(
+        // If there's an icon file, add it
+        if (formData.has('icon')) {
+          newFormData.append('icon', formData.get('icon'));
+        }
+
+        console.log('Sending FormData:', {
+          content: JSON.parse(newFormData.get('content')),
+          hasIcon: newFormData.has('icon')
+        });
+
+        const response = await axios.patch(
           `http://localhost:5000/api/homepage/${sectionType}`,
-          formData,
+          newFormData,
           {
-            headers: { 'Content-Type': 'multipart/form-data' }
+            headers: { 
+              'Content-Type': 'multipart/form-data'
+            }
           }
         );
+
+        if (response.data.success) {
+          console.log('Update successful:', response.data);
+          await fetchSections();
+          return response.data;
+        }
+
+        throw new Error(response.data.message || 'Update failed');
       } 
       // If it's regular JSON data
       else {
-        response = await axios.patch(
+        const response = await axios.patch(
           `http://localhost:5000/api/homepage/${sectionType}`,
           {
-            sectionType,
             content: formData
           },
           {
             headers: { 'Content-Type': 'application/json' }
           }
         );
+
+        if (response.data.success) {
+          console.log('Update successful:', response.data);
+          await fetchSections();
+          return response.data;
+        }
+
+        throw new Error(response.data.message || 'Update failed');
       }
-
-      if (response.data.success) {
-        console.log('Update successful:', response.data);
-        await fetchSections();
-        setEditingSection(null);
-        return response.data;
-      }
-
-      throw new Error(response.data.message || 'Update failed');
-
     } catch (error) {
-      console.error('Error updating section:', error);
+      console.error('Error updating section:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
       setError(error.response?.data?.message || error.message);
       throw error;
     }

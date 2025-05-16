@@ -31,50 +31,44 @@ export default function HeroSection({ sections, setSections, editingSection, set
         description: heroData.description.trim()
       };
 
+      let result;
+
       if (heroData.imageFile) {
+        // Handle image upload
         const formData = new FormData();
         formData.append('image', heroData.imageFile);
         formData.append('content', JSON.stringify(content));
-        
-        try {
-          // Validate file size again before upload
-          if (heroData.imageFile.size > 5 * 1024 * 1024) {
-            throw new Error('Image size must be less than 5MB');
-          }
 
-          const result = await handleUpdate('hero', formData);
-          console.log('Update result:', result); // Debug log
-
-          if (result.success) {
-            setEditingSection(null);
-            // Show success message
-            alert('Hero section updated successfully!');
-          } else {
-            throw new Error(result.message || 'Failed to update');
-          }
-        } catch (networkError) {
-          console.error('Network Error:', networkError);
-          setUpdateStatus({ loading: false, error: 'Connection error. Please try again.' });
-          throw networkError;
+        if (heroData.imageFile.size > 5 * 1024 * 1024) {
+          throw new Error('Image size must be less than 5MB');
         }
+
+        result = await handleUpdate('hero', formData);
       } else {
-        try {
-          const result = await handleUpdate('hero', content);
-          console.log('Update result:', result); // Debug log
-
-          if (result.success) {
-            setEditingSection(null);
-            // Show success message
-            alert('Hero section updated successfully!');
-          } else {
-            throw new Error(result.message || 'Failed to update');
-          }
-        } catch (networkError) {
-          console.error('Network Error:', networkError);
-          setUpdateStatus({ loading: false, error: 'Connection error. Please try again.' });
-          throw networkError;
-        }
+        // Handle content-only update
+        result = await handleUpdate('hero', content);
       }
+
+      if (result?.success) {
+        // Update local state
+        setSections(prev => ({
+          ...prev,
+          hero: {
+            ...prev.hero,
+            title: content.title,
+            description: content.description,
+            ...(result.data?.content?.image && { image: result.data.content.image }),
+            imageFile: null,
+            imagePreview: null
+          }
+        }));
+        
+        setEditingSection(null);
+        alert('Hero section updated successfully!');
+      } else {
+        throw new Error(result?.message || 'Failed to update');
+      }
+
     } catch (error) {
       console.error('Error saving hero section:', error);
       setUpdateStatus({ loading: false, error: error.message });
@@ -95,29 +89,29 @@ export default function HeroSection({ sections, setSections, editingSection, set
     }
   };
 
-  // Update handleImageChange to include better error handling
+  // Fix the template literal in the alert
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-  
+
     // Validate file type
     if (!file.type.startsWith('image/')) {
       alert('Please upload an image file');
       return;
     }
-    
+
     // Validate file size (5MB limit)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       alert('File size should be less than 5MB');
       return;
     }
-  
+
     const reader = new FileReader();
     reader.onerror = () => {
       alert('Error reading file');
     };
-    
+
     reader.onloadend = () => {
       setSections(prev => ({
         ...prev,
@@ -128,7 +122,7 @@ export default function HeroSection({ sections, setSections, editingSection, set
         }
       }));
     };
-  
+
     reader.readAsDataURL(file);
   };
 
@@ -198,9 +192,8 @@ export default function HeroSection({ sections, setSections, editingSection, set
               <button
                 onClick={handleSave}
                 disabled={updateStatus.loading}
-                className={`flex items-center gap-2 px-4 py-2 ${
-                  updateStatus.loading ? 'bg-gray-400' : 'bg-green-600'
-                } text-white rounded`}
+                className={`flex items-center gap-2 px-4 py-2 ${updateStatus.loading ? 'bg-gray-400' : 'bg-green-600'
+                  } text-white rounded`}
               >
                 <Save size={18} />
                 <span>{updateStatus.loading ? 'Saving...' : 'Save Changes'}</span>

@@ -11,26 +11,59 @@ export default function ServicesBenefits() {
     items: []
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
+        setLoading(true);
+        console.log('Fetching services...');
         const response = await axios.get('http://localhost:5000/api/homepage/services');
-        if (response.data.success) {
-          setServiceData(response.data.data.content);
+        console.log('Services response:', response.data);
+        
+        if (response.data.success && response.data.data?.content) {
+          const content = response.data.data.content;
+          console.log('Content received:', content);
+          
+          setServiceData({
+            header: {
+              title: content.header?.title || serviceData.header.title,
+              description: content.header?.description || serviceData.header.description
+            },
+            items: Array.isArray(content.items) ? content.items : []
+          });
         }
       } catch (error) {
-        console.error('Error fetching services:', error);
+        console.error('Fetch error:', error);
+        setError('Failed to load services. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchServices();
+    
+    // Poll for updates every 5 seconds
+    const interval = setInterval(fetchServices, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bg-gray py-8 px-4 w-full">
+        <div className="max-w-[1250px] mx-auto text-center">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto mb-8"></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1120px] mx-auto">
+              {[1, 2, 3].map((item) => (
+                <div key={item} className="bg-gray-200 h-48 rounded"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -40,16 +73,49 @@ export default function ServicesBenefits() {
           title={serviceData.header.title}
           paragraph={serviceData.header.description}
         />
+
+        {error && (
+          <div className="text-red-600 mb-8 bg-red-50 p-4 rounded">
+            {error}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 max-w-[1120px] mx-auto mt-8 md:grid-cols-3 gap-8">
           {serviceData.items.map((service, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <div className="bg-white border-4 border-black p-2 rounded-full mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={service.iconPath} />
-                </svg>
+            <div 
+              key={index} 
+              className="flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+            >
+              <div className="bg-gray-100 p-4 rounded-full mb-4">
+                {service.icon ? (
+                  <img 
+                    src={service.icon}
+                    alt={service.title}
+                    className="h-8 w-8 object-contain"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'fallback-icon.svg';
+                    }}
+                  />
+                ) : (
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-8 w-8 text-blue-600" 
+                    fill="none" 
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path 
+                      strokeLinecap="round"
+                      strokeLinejoin="round" 
+                      strokeWidth={2}
+                      d={service.iconPath} 
+                    />
+                  </svg>
+                )}
               </div>
-              <h3 className="font-bold mb-2">{service.title}</h3>
-              <p className="text-sm text-gray-700">{service.description}</p>
+              <h3 className="font-bold text-xl mb-3">{service.title}</h3>
+              <p className="text-gray-600 text-center">{service.description}</p>
             </div>
           ))}
         </div>
