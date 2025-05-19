@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Edit2, Save, RotateCcw, Plus, Trash } from 'lucide-react';
 
 export default function FaqsSection({ sections, setSections, editingSection, setEditingSection, handleUpdate }) {
-  // Default data structure
+  const [updateStatus, setUpdateStatus] = useState({
+    loading: false,
+    error: null,
+    success: null
+  });
+
   const defaultData = {
     header: {
       title: 'Frequently Asked Questions',
@@ -11,7 +16,6 @@ export default function FaqsSection({ sections, setSections, editingSection, set
     faqs: []
   };
 
-  // Ensure data structure with null checks
   const sectionData = {
     header: {
       title: sections?.faqs?.header?.title ?? defaultData.header.title,
@@ -26,40 +30,151 @@ export default function FaqsSection({ sections, setSections, editingSection, set
     setEditingSection('faqs-header');
   };
 
-  const handleHeaderSave = () => {
-    const formData = new FormData();
-    formData.append('content', JSON.stringify(sectionData));
-    handleUpdate('faqs', formData);
-    setEditingSection(null);
+  const handleHeaderSave = async () => {
+    try {
+      setUpdateStatus({ loading: true, error: null, success: null });
+
+      if (!sectionData.header.title.trim() || !sectionData.header.description.trim()) {
+        throw new Error('Title and description are required');
+      }
+
+      const content = {
+        header: {
+          title: sectionData.header.title.trim(),
+          description: sectionData.header.description.trim()
+        },
+        faqs: sectionData.faqs
+      };
+
+      const result = await handleUpdate('faqs', content);
+
+      if (result?.success) {
+        setSections(prev => ({
+          ...prev,
+          faqs: result.data.content
+        }));
+        setEditingSection(null);
+        setUpdateStatus({
+          loading: false,
+          error: null,
+          success: 'Header updated successfully!'
+        });
+      } else {
+        throw new Error(result?.message || 'Failed to update');
+      }
+    } catch (error) {
+      console.error('Error saving header:', error);
+      setUpdateStatus({
+        loading: false,
+        error: error.message,
+        success: null
+      });
+    }
+  };
+
+  const handleFaqSave = async (index) => {
+    try {
+      setUpdateStatus({ loading: true, error: null, success: null });
+
+      const faq = sectionData.faqs[index];
+      if (!faq.question?.trim() || !faq.answer?.trim()) {
+        throw new Error('Question and answer are required');
+      }
+
+      const content = {
+        header: sectionData.header,
+        faqs: sectionData.faqs.map(f => ({
+          ...f,
+          question: f.question.trim(),
+          answer: f.answer.trim()
+        }))
+      };
+
+      const result = await handleUpdate('faqs', content);
+
+      if (result?.success) {
+        setSections(prev => ({
+          ...prev,
+          faqs: result.data.content
+        }));
+        setEditingSection(null);
+        setUpdateStatus({
+          loading: false,
+          error: null,
+          success: 'FAQ updated successfully!'
+        });
+      }
+    } catch (error) {
+      console.error('Error saving FAQ:', error);
+      setUpdateStatus({
+        loading: false,
+        error: error.message,
+        success: null
+      });
+    }
   };
 
   const addNewFaq = () => {
-    const newFaqs = [...sectionData.faqs, {
-      question: '',
-      answer: ''
-    }];
-    setSections({
-      ...sections,
+    setSections(prev => ({
+      ...prev,
       faqs: {
-        ...sectionData,
-        faqs: newFaqs
+        ...prev.faqs,
+        faqs: [
+          ...(prev.faqs?.faqs || []),
+          { question: '', answer: '' }
+        ]
       }
-    });
+    }));
+    setEditingSection(`faq-${sectionData.faqs.length}`);
   };
 
-  const deleteFaq = (index) => {
-    const newFaqs = sectionData.faqs.filter((_, i) => i !== index);
-    setSections({
-      ...sections,
-      faqs: {
-        ...sectionData,
+  const deleteFaq = async (index) => {
+    try {
+      setUpdateStatus({ loading: true, error: null, success: null });
+
+      const newFaqs = sectionData.faqs.filter((_, i) => i !== index);
+      const content = {
+        header: sectionData.header,
         faqs: newFaqs
+      };
+
+      const result = await handleUpdate('faqs', content);
+
+      if (result?.success) {
+        setSections(prev => ({
+          ...prev,
+          faqs: result.data.content
+        }));
+        setUpdateStatus({
+          loading: false,
+          error: null,
+          success: 'FAQ deleted successfully!'
+        });
       }
-    });
+    } catch (error) {
+      console.error('Error deleting FAQ:', error);
+      setUpdateStatus({
+        loading: false,
+        error: error.message,
+        success: null
+      });
+    }
   };
 
   return (
     <div className="space-y-8">
+      {updateStatus.error && (
+        <div className="bg-red-50 text-red-600 p-4 rounded mb-4">
+          {updateStatus.error}
+        </div>
+      )}
+
+      {updateStatus.success && (
+        <div className="bg-green-50 text-green-600 p-4 rounded mb-4">
+          {updateStatus.success}
+        </div>
+      )}
+
       {/* Header Section */}
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex justify-between items-center mb-4">
@@ -196,7 +311,7 @@ export default function FaqsSection({ sections, setSections, editingSection, set
                   <div className="flex justify-between">
                     <div className="flex gap-2">
                       <button
-                        onClick={handleHeaderSave}
+                        onClick={() => handleFaqSave(index)}
                         className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                       >
                         <Save size={18} />
@@ -236,6 +351,14 @@ export default function FaqsSection({ sections, setSections, editingSection, set
           ))}
         </div>
       </div>
+
+      {updateStatus.loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl">
+            <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

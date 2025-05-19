@@ -3,82 +3,45 @@ import { Edit2, Save, RotateCcw, Plus, Trash, AlertCircle, Upload } from 'lucide
 import axios from 'axios';
 
 export default function ServicesSection({ sections, setSections, editingSection, setEditingSection, handleUpdate }) {
-  const [updateStatus, setUpdateStatus] = useState({ 
-    loading: false, 
+  const [updateStatus, setUpdateStatus] = useState({
+    loading: false,
     error: null,
-    success: null 
+    success: null
   });
 
-  const handleServiceSave = async (index) => {
+  // Access items array correctly from sections structure
+  const services = sections?.services?.items || [];
+
+  const handleServiceSave = async () => {
     try {
-      setUpdateStatus({ loading: true, error: null, success: null });
+      setUpdateStatus({ loading: true, error: null });
 
-      const service = sections.services[index];
-      
-      // Validate content
-      if (!service.title?.trim() || !service.description?.trim()) {
-        throw new Error('Title and description are required');
-      }
-
-      // Prepare content object
       const content = {
-        title: service.title.trim(),
-        description: service.description.trim()
+        header: sections.services.header,
+        items: services.map(item => ({
+          title: item.title.trim(),
+          description: item.description.trim(),
+          icon: item.icon
+        }))
       };
 
-      let result;
-
-      if (service.icon instanceof File) {
-        // Handle image upload
-        const formData = new FormData();
-        formData.append('icon', service.icon);
-        formData.append('content', JSON.stringify(content));
-
-        if (service.icon.size > 5 * 1024 * 1024) {
-          throw new Error('Icon size must be less than 5MB');
-        }
-
-        result = await handleUpdate('services', formData);
-      } else {
-        // Handle content-only update
-        result = await handleUpdate('services', content);
-      }
+      const result = await handleUpdate('services', content);
 
       if (result?.success) {
-        // Update local state
-        const updatedServices = [...sections.services];
-        updatedServices[index] = {
-          ...updatedServices[index],
-          ...content,
-          ...(result.data?.content?.icon && { icon: result.data.content.icon }),
-          iconFile: null,
-          iconPreview: null
-        };
-
         setSections(prev => ({
           ...prev,
-          services: updatedServices
+          services: result.data.content
         }));
-        
         setEditingSection(null);
         setUpdateStatus({
           loading: false,
           error: null,
-          success: 'Service updated successfully!'
+          success: 'Services updated successfully!'
         });
-
-        // Clear success message after 3 seconds
-        setTimeout(() => {
-          setUpdateStatus(prev => ({ ...prev, success: null }));
-        }, 3000);
-      } else {
-        throw new Error(result?.message || 'Failed to update service');
       }
-
     } catch (error) {
-      console.error('Error saving service:', error);
-      setUpdateStatus({ 
-        loading: false, 
+      setUpdateStatus({
+        loading: false,
         error: error.message,
         success: null
       });
@@ -119,10 +82,13 @@ export default function ServicesSection({ sections, setSections, editingSection,
   const addNewService = () => {
     setSections(prev => ({
       ...prev,
-      services: [
+      services: {
         ...prev.services,
-        { title: '', description: '', icon: null }
-      ]
+        items: [
+          ...(prev.services?.items || []),
+          { title: '', description: '', icon: null }
+        ]
+      }
     }));
   };
 
@@ -161,7 +127,7 @@ export default function ServicesSection({ sections, setSections, editingSection,
       </div>
 
       <div className="grid gap-4">
-        {sections.services.map((service, index) => (
+        {services.map((service, index) => (
           <div key={index} className="bg-white rounded-lg shadow p-4">
             {editingSection === `service-${index}` ? (
               <div className="space-y-4">

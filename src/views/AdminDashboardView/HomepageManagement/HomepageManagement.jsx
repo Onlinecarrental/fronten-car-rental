@@ -48,7 +48,7 @@ export default function HomepageManagement({ section = 'hero' }) {
       faqs: []
     }
   });
-  
+
   const [editingSection, setEditingSection] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -61,7 +61,7 @@ export default function HomepageManagement({ section = 'hero' }) {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await axios.get('http://localhost:5000/api/homepage');
       console.log('API Response:', response.data);
 
@@ -104,7 +104,7 @@ export default function HomepageManagement({ section = 'hero' }) {
 
       if (response.data.success) {
         let formattedData = {};
-        
+
         // Handle both array and object responses
         if (Array.isArray(response.data.data)) {
           formattedData = response.data.data.reduce((acc, section) => {
@@ -142,39 +142,21 @@ export default function HomepageManagement({ section = 'hero' }) {
     }
   };
 
+  // Update the handleUpdate function
   const handleUpdate = async (sectionType, formData) => {
     try {
       setError(null);
-      console.log(`Updating section: ${sectionType}`);
+      console.log(`Updating section: ${sectionType}`, formData);
 
-      // If it's FormData (for files)
       if (formData instanceof FormData) {
-        // Don't modify the original content, create a new one
-        const originalContent = JSON.parse(formData.get('content'));
-        console.log('Original content:', originalContent);
-
-        // Create a new FormData instance
-        const newFormData = new FormData();
-        
-        // Add the content with proper structure
-        newFormData.append('content', JSON.stringify({
-          header: originalContent.header,
-          items: originalContent.items
-        }));
-
-        // If there's an icon file, add it
-        if (formData.has('icon')) {
-          newFormData.append('icon', formData.get('icon'));
+        // Log FormData contents for debugging
+        for (let pair of formData.entries()) {
+          console.log('FormData entry:', pair[0], pair[1]);
         }
-
-        console.log('Sending FormData:', {
-          content: JSON.parse(newFormData.get('content')),
-          hasIcon: newFormData.has('icon')
-        });
 
         const response = await axios.patch(
           `http://localhost:5000/api/homepage/${sectionType}`,
-          newFormData,
+          formData,
           {
             headers: { 
               'Content-Type': 'multipart/form-data'
@@ -184,55 +166,71 @@ export default function HomepageManagement({ section = 'hero' }) {
 
         if (response.data.success) {
           console.log('Update successful:', response.data);
-          await fetchSections();
+
+          // Update local state with the new data
+          setSections(prev => ({
+            ...prev,
+            [sectionType]: response.data.data.content
+          }));
+
           return response.data;
         }
 
         throw new Error(response.data.message || 'Update failed');
-      } 
-      // If it's regular JSON data
-      else {
+      } else {
+        // For non-FormData updates (text only)
         const response = await axios.patch(
           `http://localhost:5000/api/homepage/${sectionType}`,
-          {
-            content: formData
-          },
-          {
-            headers: { 'Content-Type': 'application/json' }
+          { content: formData },
+          { 
+            headers: { 
+              'Content-Type': 'application/json' 
+            } 
           }
         );
 
         if (response.data.success) {
-          console.log('Update successful:', response.data);
-          await fetchSections();
+          setSections(prev => ({
+            ...prev,
+            [sectionType]: response.data.data.content
+          }));
           return response.data;
         }
 
         throw new Error(response.data.message || 'Update failed');
       }
     } catch (error) {
-      console.error('Error updating section:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
-      setError(error.response?.data?.message || error.message);
+      console.error('Error updating section:', error);
+      setError(error.message);
       throw error;
     }
   };
 
-  // Helper function to prepare form data
+  // Add a helper function to get complete image URL
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    return imagePath.startsWith('http')
+      ? imagePath
+      : `http://localhost:5000${imagePath}`;
+  };
+
+  // Update the prepareFormData helper function
   const prepareFormData = (sectionType, data) => {
     const formData = new FormData();
 
-    // If there's an image file
+    // Handle image file
     if (data.image instanceof File) {
       formData.append('image', data.image);
     }
 
-    // Remove image from content if it exists
-    const { image, ...contentData } = data;
-    
+    // Handle icon file if present
+    if (data.icon instanceof File) {
+      formData.append('icon', data.icon);
+    }
+
+    // Remove file objects from content
+    const { image, icon, ...contentData } = data;
+
     // Add content as stringified JSON
     formData.append('content', JSON.stringify(contentData));
 

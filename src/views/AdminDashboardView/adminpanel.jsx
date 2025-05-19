@@ -394,6 +394,26 @@ export default function AdminDashboard() {
       return <HomepageManagement section="faqs" />;
     }
 
+    // About Us sections
+    if (activeTab === 'aboutus-hero') {
+      return <AboutUsManagement section="hero" />;
+    }
+    if (activeTab === 'aboutus-services') {
+      return <AboutUsManagement section="services" />;
+    }
+    if (activeTab === 'aboutus-trust') {
+      return <AboutUsManagement section="trust" />;
+    }
+    if (activeTab === 'aboutus-whychoose') {
+      return <AboutUsManagement section="whyChoose" />;
+    }
+    if (activeTab === 'aboutus-cars') {
+      return <AboutUsManagement section="carCollection" />;
+    }
+    if (activeTab === 'aboutus-faqs') {
+      return <AboutUsManagement section="faqs" />;
+    }
+
     // Other sections
     switch (activeTab) {
       case 'dashboard':

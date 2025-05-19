@@ -7,56 +7,129 @@ import CarCollectionSection from './components/CarCollectionSection';
 import FaqsSection from './components/FaqsSection';
 import ServicesSection from './components/ServicesSection';
 
-export default function AboutUsManagement({ initialSection = 'hero' }) {
-  const [sections, setSections] = useState({
-    hero: {},
-    trust: [],
-    services: [],
-    whyChoose: [],
-    carCollection: [],
-    faqs: []
-  });
+const defaultSections = {
+  hero: {
+    header: {
+      title: 'About Our Car Rental',
+      description: 'Your trusted partner in mobility'
+    },
+    image: null
+  },
+  trust: {
+    header: {
+      title: 'Trust & Reliability',
+      description: 'Why customers trust us'
+    },
+    items: []
+  },
+  services: {
+    header: {
+      title: 'Our Services',
+      description: 'What we offer'
+    },
+    items: []
+  },
+  whyChoose: {
+    header: {
+      title: 'Why Choose Us',
+      description: 'Reasons to choose our service'
+    },
+    reasons: []
+  },
+  carCollection: {
+    header: {
+      title: 'Our Car Collection',
+      description: 'Explore our fleet'
+    },
+    cars: []
+  },
+  faqs: {
+    header: {
+      title: 'Frequently Asked Questions',
+      description: 'Common questions answered'
+    },
+    items: []
+  }
+};
+
+export default function AboutUsManagement({ section = 'hero' }) {
+  const [sections, setSections] = useState(defaultSections);
   const [editingSection, setEditingSection] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeSection, setActiveSection] = useState(initialSection);
+  const [error, setError] = useState(null);
+  const [activeSection, setActiveSection] = useState(section); // Use the passed section prop
+
+  useEffect(() => {
+    // Update activeSection when section prop changes
+    setActiveSection(section);
+  }, [section]);
+
+  const fetchSections = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await axios.get('http://localhost:5000/api/about');
+      
+      if (response.data.success) {
+        setSections(prev => ({
+          ...prev,
+          ...response.data.data
+        }));
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch sections');
+      }
+    } catch (error) {
+      console.error('Error fetching about sections:', error);
+      setError('Failed to load content. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdate = async (sectionType, data) => {
+    try {
+      setError(null);
+      
+      let requestData;
+      let headers = {};
+
+      if (data instanceof FormData) {
+        requestData = data;
+        headers['Content-Type'] = 'multipart/form-data';
+      } else {
+        requestData = { content: data };
+        headers['Content-Type'] = 'application/json';
+      }
+
+      const response = await axios.patch(
+        `http://localhost:5000/api/about/${sectionType}`,
+        requestData,
+        { headers }
+      );
+
+      if (response.data.success) {
+        // Update local state with new data
+        setSections(prev => ({
+          ...prev,
+          [sectionType]: response.data.data.content
+        }));
+        
+        setEditingSection(null);
+        return response.data;
+      } else {
+        throw new Error(response.data.message || 'Update failed');
+      }
+    } catch (error) {
+      console.error('Error updating section:', error);
+      setError(error.message);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     fetchSections();
   }, []);
-
-  const fetchSections = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/about');
-      setSections(response.data.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching about sections:', error);
-    }
-  };
-
-  const handleUpdate = async (sectionType, content) => {
-    try {
-      const formData = new FormData();
-      if (content.image instanceof File) {
-        formData.append('image', content.image);
-      }
-      formData.append('content', JSON.stringify(content));
-
-      await axios.patch(
-        `http://localhost:5000/api/about/${sectionType}`,
-        formData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        }
-      );
-      fetchSections();
-      setEditingSection(null);
-    } catch (error) {
-      console.error('Error updating section:', error);
-    }
-  };
-
-  if (loading) return <div>Loading...</div>;
 
   const sectionProps = {
     sections,
@@ -66,71 +139,44 @@ export default function AboutUsManagement({ initialSection = 'hero' }) {
     handleUpdate
   };
 
+  const renderSection = () => {
+    switch (section) {
+      case 'hero':
+        return <HeroSection {...sectionProps} />;
+      case 'services':
+        return <ServicesSection {...sectionProps} />;
+      case 'trust':
+        return <TrustSection {...sectionProps} />;
+      case 'whyChoose':
+        return <WhyChooseSection {...sectionProps} />;
+      case 'carCollection':
+        return <CarCollectionSection {...sectionProps} />;
+      case 'faqs':
+        return <FaqsSection {...sectionProps} />;
+      default:
+        return <HeroSection {...sectionProps} />;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">About Us Page Management</h2>
       
-      {/* Section Navigation */}
-      <div className="flex space-x-4 mb-6">
-        <button
-          className={`px-4 py-2 rounded ${activeSection === 'hero' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => setActiveSection('hero')}
-        >
-          Hero Section
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${activeSection === 'services' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => setActiveSection('services')}
-        >
-          Services
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${activeSection === 'trust' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => setActiveSection('trust')}
-        >
-          Trust Section
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${activeSection === 'whyChoose' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => setActiveSection('whyChoose')}
-        >
-          Why Choose Us
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${activeSection === 'carCollection' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => setActiveSection('carCollection')}
-        >
-          Car Collection
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${activeSection === 'faqs' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => setActiveSection('faqs')}
-        >
-          FAQs
-        </button>
-      </div>
+      {error && (
+        <div className="bg-red-50 text-red-600 p-4 rounded mb-6">
+          {error}
+        </div>
+      )}
 
-      {/* Section Content */}
-      <div className="mt-6">
-        {activeSection === 'hero' && (
-          <HeroSection {...sectionProps} />
-        )}
-        {activeSection === 'services' && (
-          <ServicesSection {...sectionProps} />
-        )}
-        {activeSection === 'trust' && (
-          <TrustSection {...sectionProps} />
-        )}
-        {activeSection === 'whyChoose' && (
-          <WhyChooseSection {...sectionProps} />
-        )}
-        {activeSection === 'carCollection' && (
-          <CarCollectionSection {...sectionProps} />
-        )}
-        {activeSection === 'faqs' && (
-          <FaqsSection {...sectionProps} />
-        )}
-      </div>
+      {renderSection()}
     </div>
   );
 }

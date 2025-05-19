@@ -1,11 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { Edit2, Save, RotateCcw, Plus, Trash, AlertCircle } from 'lucide-react';
 
+// Add serviceIcons constant at the top
+const serviceIcons = {
+  shield: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
+  speed: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+  support: "M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+};
+
+// Add IconSelector component at the top after the serviceIcons constant
+const IconSelector = ({ selected, onSelect }) => (
+  <div className="grid grid-cols-3 gap-2 mb-4">
+    {Object.entries(serviceIcons).map(([iconName, path]) => (
+      <button
+        key={iconName}
+        onClick={() => onSelect(iconName)}
+        className={`p-2 rounded flex flex-col items-center ${selected === iconName ? 'bg-blue-100 ring-2 ring-blue-500' : 'bg-gray-50 hover:bg-gray-100'
+          }`}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 text-blue-600"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d={path}
+          />
+        </svg>
+        <span className="text-xs mt-1 capitalize">{iconName}</span>
+      </button>
+    ))}
+  </div>
+);
+
 export default function ServicesSection({ sections = {}, setSections, editingSection, setEditingSection, handleUpdate }) {
-  const [updateStatus, setUpdateStatus] = useState({ 
-    loading: false, 
+  const [updateStatus, setUpdateStatus] = useState({
+    loading: false,
     error: null,
-    success: null 
+    success: null
   });
   const [initialized, setInitialized] = useState(false);
 
@@ -79,93 +116,44 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
   // Update the handleServiceSave function with better error handling
   const handleServiceSave = async (index) => {
     try {
-      console.log('Starting save...');
-      setUpdateStatus({ loading: true, error: null, success: null });
+      setUpdateStatus({ loading: true, error: null });
 
-      // Validate service
       const service = sections.services?.items?.[index];
-      if (!service) {
-        throw new Error('Service not found');
-      }
+      if (!service) throw new Error('Service not found');
 
       if (!service.title?.trim() || !service.description?.trim()) {
         throw new Error('Title and description are required');
       }
 
-      // Create content object
       const content = {
-        header: sections.services.header || defaultServices.header,
+        header: sections.services.header,
         items: sections.services.items.map((item, i) => ({
           title: item.title.trim(),
           description: item.description.trim(),
-          iconPath: item.iconPath || '',
-          icon: item.icon && !(item.icon instanceof File) ? item.icon : null
+          iconType: item.iconType || 'shield'
         }))
       };
 
-      // Create FormData and append content
-      const formData = new FormData();
-      formData.append('content', JSON.stringify(content));
+      const result = await handleUpdate('services', content);
 
-      // Handle icon file if present
-      if (service.icon instanceof File) {
-        if (service.icon.size > 5 * 1024 * 1024) {
-          throw new Error('Icon must be less than 5MB');
-        }
-        formData.append('icon', service.icon);
+      if (result.success) {
+        setSections(prev => ({
+          ...prev,
+          services: content
+        }));
+        setEditingSection(null);
+        setUpdateStatus({
+          loading: false,
+          error: null,
+          success: 'Service updated successfully!'
+        });
+      } else {
+        throw new Error(result.message || 'Failed to update');
       }
-
-      console.log('Sending request with:', {
-        content: JSON.parse(formData.get('content')),
-        hasIcon: formData.has('icon')
-      });
-
-      // Send update request
-      const result = await handleUpdate('services', formData);
-
-      if (!result?.success) {
-        throw new Error(result?.message || 'Failed to update service');
-      }
-
-      // Update local state
-      setSections(prev => ({
-        ...prev,
-        services: {
-          ...prev.services,
-          items: prev.services.items.map((item, i) => 
-            i === index ? {
-              ...item,
-              title: service.title.trim(),
-              description: service.description.trim(),
-              icon: result.data?.icon || item.icon,
-              iconPath: item.iconPath
-            } : item
-          )
-        }
-      }));
-
-      setEditingSection(null);
-      setUpdateStatus({
-        loading: false,
-        error: null,
-        success: 'Service updated successfully!'
-      });
-
-      setTimeout(() => {
-        setUpdateStatus(prev => ({ ...prev, success: null }));
-      }, 3000);
-
     } catch (error) {
-      console.error('Save error:', {
-        error,
-        message: error.message,
-        response: error.response?.data
-      });
-
       setUpdateStatus({
         loading: false,
-        error: error.response?.data?.message || error.message,
-        success: null
+        error: error.message
       });
     }
   };
@@ -212,7 +200,7 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
 
         // Show success notification
         alert(`Service "${service.title}" has been saved!`);
-        
+
         setTimeout(() => {
           setUpdateStatus(prev => ({ ...prev, success: null }));
         }, 3000);
@@ -232,17 +220,17 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
     console.log('Current sections:', sections);
     console.log('Services data:', sections.services);
     console.log('Items:', sections.services?.items);
-    
+
     if (!sections.services) {
       console.error('No services data found');
       return false;
     }
-    
+
     if (!Array.isArray(sections.services.items)) {
       console.error('Items is not an array:', sections.services.items);
       return false;
     }
-    
+
     return true;
   };
 
@@ -273,27 +261,29 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
 
   // Update the addNewService function
   const addNewService = () => {
-    console.log('Adding new service');
+    if (items.length >= 3) {
+      setUpdateStatus({
+        loading: false,
+        error: 'Maximum 3 services allowed',
+        success: null
+      });
+      return;
+    }
+
     const newService = {
       title: '',
       description: '',
-      iconPath: 'M12 6v6m0 0v6m0-6h6m-6 0H6',
-      icon: null
+      iconType: 'shield'
     };
 
-    setSections(prev => {
-      const updatedSections = {
-        ...prev,
-        services: {
-          ...prev.services,
-          items: [...(prev.services?.items || []), newService]
-        }
-      };
-      console.log('Updated sections after adding:', updatedSections);
-      return updatedSections;
-    });
+    setSections(prev => ({
+      ...prev,
+      services: {
+        ...prev.services,
+        items: [...(prev.services?.items || []), newService]
+      }
+    }));
 
-    // Start editing the new service immediately
     const newIndex = sections.services?.items?.length || 0;
     setEditingSection(`service-${newIndex}`);
   };
@@ -315,7 +305,7 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
   const handleImageChange = (e, index) => {
     const file = e.target.files?.[0];
     if (!file) return;
-  
+
     if (!file.type.startsWith('image/')) {
       setUpdateStatus({
         loading: false,
@@ -324,7 +314,7 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
       });
       return;
     }
-  
+
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
       setUpdateStatus({
@@ -334,13 +324,13 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
       });
       return;
     }
-  
+
     // Update service with new image
     setSections(prev => ({
       ...prev,
       services: {
         ...prev.services,
-        items: prev.services.items.map((item, i) => 
+        items: prev.services.items.map((item, i) =>
           i === index ? { ...item, icon: file } : item
         )
       }
@@ -373,7 +363,7 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
       {updateStatus.loading && <LoadingIndicator />}
       {updateStatus.success && <SuccessIndicator message={updateStatus.success} />}
       {updateStatus.error && <ErrorIndicator message={updateStatus.error} />}
-      
+
       {updateStatus.error && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
           <AlertCircle size={18} />
@@ -505,12 +495,17 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Icon</label>
-                  <input
-                    type="file"
-                    onChange={(e) => handleImageChange(e, index)}
-                    accept="image/*"
-                    className="w-full p-2 border rounded"
+                  <label className="block text-sm font-medium mb-1">Select Icon</label>
+                  <IconSelector
+                    selected={service.iconType || 'shield'}
+                    onSelect={(iconType) => {
+                      const newServices = [...items];
+                      newServices[index] = {
+                        ...service,
+                        iconType
+                      };
+                      setSections({ ...sections, services: { ...servicesData, items: newServices } });
+                    }}
                   />
                 </div>
 
@@ -548,7 +543,7 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
                   <div className="bg-gray-100 p-2 rounded-full">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
+                      className="h-6 w-6 text-blue-600"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -557,7 +552,7 @@ export default function ServicesSection({ sections = {}, setSections, editingSec
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d={service.iconPath}
+                        d={serviceIcons[service.iconType] || serviceIcons.shield}
                       />
                     </svg>
                   </div>

@@ -1,14 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Edit2, Save, RotateCcw } from 'lucide-react';
 
 export default function HeroSection({ sections, setSections, editingSection, setEditingSection, handleUpdate }) {
-  const handleSave = () => {
-    const heroData = {
-      title: sections.hero?.title || '',
-      tagline: sections.hero?.tagline || '',
-      image: sections.hero?.image
-    };
-    handleUpdate('hero', heroData);
+  const [updateStatus, setUpdateStatus] = useState({
+    loading: false,
+    error: null,
+    success: null
+  });
+
+  const handleSave = async () => {
+    try {
+      setUpdateStatus({ loading: true, error: null });
+
+      const content = {
+        header: sections.hero.header,
+        image: sections.hero.image
+      };
+
+      let formData;
+      if (sections.hero.imageFile) {
+        formData = new FormData();
+        formData.append('image', sections.hero.imageFile);
+        formData.append('content', JSON.stringify(content));
+      }
+
+      const result = await handleUpdate('hero', formData || content);
+
+      if (result?.success) {
+        setSections(prev => ({
+          ...prev,
+          hero: {
+            ...result.data.content,
+            imageFile: null
+          }
+        }));
+        setEditingSection(null);
+        setUpdateStatus({
+          loading: false,
+          error: null,
+          success: 'Hero section updated successfully!'
+        });
+      }
+    } catch (error) {
+      setUpdateStatus({
+        loading: false,
+        error: error.message,
+        success: null
+      });
+    }
   };
 
   return (

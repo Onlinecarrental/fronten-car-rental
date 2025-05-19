@@ -1,7 +1,22 @@
-import React from 'react';
-  import { Edit2, Save, RotateCcw, Plus, Trash, Shield, Clock, Trophy } from 'lucide-react';
+import React, { useState } from 'react';
+import { Edit2, Save, RotateCcw, Plus, Trash, Shield, Clock, Trophy, Star, ThumbsUp, Award } from 'lucide-react';
+
+const reasonIcons = {
+  'shield-check': <Shield className="w-6 h-6 text-blue-600" />,
+  'clock': <Clock className="w-6 h-6 text-green-600" />,
+  'trophy': <Trophy className="w-6 h-6 text-yellow-600" />,
+  'star': <Star className="w-6 h-6 text-purple-600" />,
+  'thumbs-up': <ThumbsUp className="w-6 h-6 text-indigo-600" />,
+  'award': <Award className="w-6 h-6 text-red-600" />
+};
 
 export default function WhyChooseSection({ sections, setSections, editingSection, setEditingSection, handleUpdate }) {
+  const [updateStatus, setUpdateStatus] = useState({
+    loading: false,
+    error: null,
+    success: null
+  });
+
   const defaultData = {
     header: {
       title: 'Why Choose Us',
@@ -26,31 +41,48 @@ export default function WhyChooseSection({ sections, setSections, editingSection
 
   const handleHeaderSave = async () => {
     try {
-      const formData = new FormData();
+      setUpdateStatus({ loading: true, error: null });
+
+      if (!sectionData.header.title.trim() || !sectionData.header.description.trim()) {
+        throw new Error('Title and description are required');
+      }
+
       const content = {
-        header: sectionData.header,
+        header: {
+          title: sectionData.header.title.trim(),
+          description: sectionData.header.description.trim()
+        },
         reasons: sectionData.reasons
       };
-      
-      formData.append('content', JSON.stringify(content));
-      await handleUpdate('whyChoose', formData);
-      setEditingSection(null);
+
+      const result = await handleUpdate('whyChoose', content);
+
+      if (result?.success) {
+        setSections(prev => ({
+          ...prev,
+          whyChoose: result.data.content
+        }));
+        setEditingSection(null);
+        setUpdateStatus({
+          loading: false,
+          error: null,
+          success: 'Header updated successfully!'
+        });
+      } else {
+        throw new Error(result?.message || 'Failed to update');
+      }
     } catch (error) {
       console.error('Error saving header:', error);
+      setUpdateStatus({
+        loading: false,
+        error: error.message,
+        success: null
+      });
     }
   };
 
   const getIconComponent = (iconName) => {
-    switch (iconName) {
-      case 'shield-check':
-        return <Shield className="w-6 h-6" />;
-      case 'clock':
-        return <Clock className="w-6 h-6" />;
-      case 'trophy':
-        return <Trophy className="w-6 h-6" />;
-      default:
-        return null;
-    }
+    return reasonIcons[iconName] || <Shield className="w-6 h-6 text-blue-600" />;
   };
 
   const addNewReason = () => {
@@ -59,13 +91,15 @@ export default function WhyChooseSection({ sections, setSections, editingSection
       description: '',
       icon: 'shield-check'
     };
-    setSections({
-      ...sections,
+
+    setSections(prev => ({
+      ...prev,
       whyChoose: {
-        ...sectionData,
-        reasons: [...sectionData.reasons, newReason]
+        ...prev.whyChoose,
+        reasons: [...prev.whyChoose.reasons, newReason]
       }
-    });
+    }));
+    setEditingSection(`whyChoose-${sectionData.reasons.length}`);
   };
 
   const updateReason = (index, field, value) => {
@@ -82,46 +116,94 @@ export default function WhyChooseSection({ sections, setSections, editingSection
 
   const handleReasonSave = async (index) => {
     try {
-      const formData = new FormData();
+      setUpdateStatus({ loading: true, error: null });
+
+      const reason = sectionData.reasons[index];
+      if (!reason.title.trim() || !reason.description.trim()) {
+        throw new Error('Title and description are required');
+      }
+
       const content = {
         header: sectionData.header,
-        reasons: sectionData.reasons
+        reasons: sectionData.reasons.map((r, i) => ({
+          ...r,
+          title: r.title.trim(),
+          description: r.description.trim(),
+          icon: r.icon || 'shield-check'
+        }))
       };
-      
-      formData.append('content', JSON.stringify(content));
-      await handleUpdate('whyChoose', formData);
-      setEditingSection(null);
+
+      const result = await handleUpdate('whyChoose', content);
+
+      if (result?.success) {
+        setSections(prev => ({
+          ...prev,
+          whyChoose: result.data.content
+        }));
+        setEditingSection(null);
+        setUpdateStatus({
+          loading: false,
+          error: null,
+          success: `Reason "${reason.title}" updated successfully!`
+        });
+      }
     } catch (error) {
       console.error('Error saving reason:', error);
+      setUpdateStatus({
+        loading: false,
+        error: error.message,
+        success: null
+      });
     }
   };
 
   const deleteReason = async (index) => {
     try {
+      setUpdateStatus({ loading: true, error: null });
+
       const newReasons = sectionData.reasons.filter((_, i) => i !== index);
       const content = {
         header: sectionData.header,
         reasons: newReasons
       };
 
-      setSections({
-        ...sections,
-        whyChoose: {
-          ...sectionData,
-          reasons: newReasons
-        }
-      });
+      const result = await handleUpdate('whyChoose', content);
 
-      const formData = new FormData();
-      formData.append('content', JSON.stringify(content));
-      await handleUpdate('whyChoose', formData);
+      if (result?.success) {
+        setSections(prev => ({
+          ...prev,
+          whyChoose: result.data.content
+        }));
+        setUpdateStatus({
+          loading: false,
+          error: null,
+          success: 'Reason deleted successfully!'
+        });
+      }
     } catch (error) {
       console.error('Error deleting reason:', error);
+      setUpdateStatus({
+        loading: false,
+        error: error.message,
+        success: null
+      });
     }
   };
 
   return (
     <div className="space-y-8">
+      {updateStatus.error && (
+        <div className="bg-red-50 text-red-600 p-4 rounded mb-4">
+          {updateStatus.error}
+        </div>
+      )}
+
+      {updateStatus.success && (
+        <div className="bg-green-50 text-green-600 p-4 rounded mb-4">
+          {updateStatus.success}
+        </div>
+      )}
+
       {/* Header Section */}
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex justify-between items-center mb-4">
@@ -245,6 +327,9 @@ export default function WhyChooseSection({ sections, setSections, editingSection
                       <option value="shield-check">Shield</option>
                       <option value="clock">Clock</option>
                       <option value="trophy">Trophy</option>
+                      <option value="star">Star</option>
+                      <option value="thumbs-up">Thumbs Up</option>
+                      <option value="award">Award</option>
                     </select>
                     <div className="mt-2">
                       {getIconComponent(reason.icon)}
@@ -307,6 +392,14 @@ export default function WhyChooseSection({ sections, setSections, editingSection
           ))}
         </div>
       </div>
+
+      {updateStatus.loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl">
+            <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

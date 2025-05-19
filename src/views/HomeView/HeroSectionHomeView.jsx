@@ -3,6 +3,12 @@ import axios from 'axios';
 import Button from '../../components/button';
 import carimage from '../../assets/car 2 1.svg';
 
+const getImageUrl = (path) => {
+  if (!path) return carimage;
+  if (path.startsWith('http')) return path;
+  return `http://localhost:5000/${path.replace(/^\/+/, '')}`;
+};
+
 export default function HeroSectionHome() {
   const [heroData, setHeroData] = useState({
     title: '',
@@ -22,9 +28,7 @@ export default function HeroSectionHome() {
 
         if (response.data.success && response.data.data) {
           const content = response.data.data.content || {};
-          const imageUrl = content.image
-            ? `http://localhost:5000/${content.image}`.replace(/\/\//g, '/')
-            : carimage;
+          const imageUrl = getImageUrl(content.image);
 
           // Preload the image
           const img = new Image();
@@ -40,6 +44,7 @@ export default function HeroSectionHome() {
           };
 
           img.onerror = () => {
+            console.error('Failed to load image:', imageUrl);
             setHeroData(prev => ({
               ...prev,
               image: carimage

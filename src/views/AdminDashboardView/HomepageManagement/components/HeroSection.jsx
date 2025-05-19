@@ -2,6 +2,13 @@ import React, { useRef, useState } from 'react';
 import { Edit2, Save, RotateCcw, Upload } from 'lucide-react';
 import axios from 'axios';
 
+// Add this helper function after imports
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  return `http://localhost:5000/${path.replace(/^\/+/, '')}`;
+};
+
 export default function HeroSection({ sections, setSections, editingSection, setEditingSection, handleUpdate }) {
   const isEditing = editingSection === 'hero';
   const heroData = sections.hero || {};
@@ -16,6 +23,7 @@ export default function HeroSection({ sections, setSections, editingSection, set
     setEditingSection(null);
   };
 
+  // Update the handleSave function
   const handleSave = async () => {
     try {
       setUpdateStatus({ loading: true, error: null });
@@ -28,36 +36,28 @@ export default function HeroSection({ sections, setSections, editingSection, set
       // Prepare the content object
       const content = {
         title: heroData.title.trim(),
-        description: heroData.description.trim()
+        description: heroData.description.trim(),
+        image: heroData.image // Keep existing image if not updating
       };
 
       let result;
 
       if (heroData.imageFile) {
-        // Handle image upload
         const formData = new FormData();
         formData.append('image', heroData.imageFile);
         formData.append('content', JSON.stringify(content));
-
-        if (heroData.imageFile.size > 5 * 1024 * 1024) {
-          throw new Error('Image size must be less than 5MB');
-        }
-
         result = await handleUpdate('hero', formData);
       } else {
-        // Handle content-only update
         result = await handleUpdate('hero', content);
       }
 
       if (result?.success) {
-        // Update local state
+        // Update local state with new image path
         setSections(prev => ({
           ...prev,
           hero: {
             ...prev.hero,
-            title: content.title,
-            description: content.description,
-            ...(result.data?.content?.image && { image: result.data.content.image }),
+            ...result.data.content,
             imageFile: null,
             imagePreview: null
           }
@@ -68,13 +68,9 @@ export default function HeroSection({ sections, setSections, editingSection, set
       } else {
         throw new Error(result?.message || 'Failed to update');
       }
-
     } catch (error) {
       console.error('Error saving hero section:', error);
       setUpdateStatus({ loading: false, error: error.message });
-      alert(`Failed to save changes: ${error.message}`);
-    } finally {
-      setUpdateStatus(prev => ({ ...prev, loading: false }));
     }
   };
 
@@ -181,9 +177,13 @@ export default function HeroSection({ sections, setSections, editingSection, set
                 </button>
                 {(heroData.imagePreview || heroData.image) && (
                   <img
-                    src={heroData.imagePreview || heroData.image}
+                    src={heroData.imagePreview || getImageUrl(heroData.image)}
                     alt="Preview"
                     className="h-20 w-20 object-cover rounded"
+                    onError={(e) => {
+                      console.error('Failed to load image:', e.target.src);
+                      e.target.style.display = 'none';
+                    }}
                   />
                 )}
               </div>
