@@ -19,6 +19,7 @@ import AgentPanelHomeView from './views/AgentsPanelView/agentHomeView/agentHomev
 import AddCarView from './views/AgentsPanelView/addCarView/addCarView';
 import BookingManagementView from './views/AgentsPanelView/bookingManagementView/bookingManagementView';
 import MyCarListView from './views/AgentsPanelView/myCarListView/myCarListView';
+import AgentMsgView from './views/AgentsPanelView/agentMsgView/agentMsgView';
 import AgentSignup from './components/AgentSignup';
 import AgentLogin from './components/AgentLogin';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -26,8 +27,9 @@ import AgentContactUsView from './views/AgentsPanelView/agentContactUsView/agent
 import AdminDashboard from './views/AdminDashboardView/adminpanel';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import BlogManagement from './views/AdminDashboardView/BlogManagement/BlogManagement';
+import ChatWidget from './components/ChatWidget';
 
-const isAuthenticated = false; 
+const isAuthenticated = false;
 const App = () => {
     React.useEffect(() => {
         // Check if user is on login page and has stored data
@@ -43,56 +45,64 @@ const App = () => {
                 <Route
                     path="/home"
                     element={
-                        
-                            <Layout><HomeView /></Layout>
-                
+
+                        <Layout><HomeView /></Layout>
+
                     }
                 />
                 <Route
                     path="/home/best-cars"
                     element={
-                    
-                            <Layout><BestCarsView /></Layout>
-        
+
+                        <Layout><BestCarsView /></Layout>
+
                     }
                 />
                 <Route
                     path="/home/about-us"
                     element={
-                        
-                            <Layout><AboutUsView /></Layout>
+
+                        <Layout><AboutUsView /></Layout>
                     }
                 />
                 <Route
                     path="/home/customerreviews"
                     element={
-                        
-                            <Layout><CustomerReviewView /></Layout>
-                
+
+                        <Layout><CustomerReviewView /></Layout>
+
                     }
                 />
                 <Route
                     path="/home/contactus"
                     element={
-                        
-                            <Layout><ContactUsView /></Layout>
-                
+
+                        <Layout><ContactUsView /></Layout>
+
                     }
                 />
                 <Route
                     path="/home/blogs"
                     element={
-                    
-                            <Layout><BlogsView /></Layout>
-            
+
+                        <Layout><BlogsView /></Layout>
+
                     }
                 />
                 <Route
                     path="/home/best-cars/:id"
                     element={
-                        
-                            <Layout><DetailCar /></Layout>
-                
+
+                        <Layout><DetailCar /></Layout>
+
+                    }
+                />
+                <Route
+                    path="/chatwidget"
+                    element={
+
+                        <Layout><ChatWidget /></Layout>
+
                     }
                 />
                 <Route
@@ -106,9 +116,9 @@ const App = () => {
                 <Route
                     path="/home/blogs/:id"
                     element={
-                        
-                            <Layout><BlogPost /></Layout>
-            
+
+                        <Layout><BlogPost /></Layout>
+
                     }
                 />
 
@@ -116,25 +126,25 @@ const App = () => {
                 <Route
                     path="/agent"
                     element={
-                    
-                            <MainLayout><AgentPanelHomeView /></MainLayout>
-            
+
+                        <MainLayout><AgentPanelHomeView /></MainLayout>
+
                     }
                 />
                 <Route
                     path="/agent/addcar"
                     element={
-                        
-                            <MainLayout><AddCarView /></MainLayout>
-            
+
+                        <MainLayout><AddCarView /></MainLayout>
+
                     }
                 />
-                 <Route
+                <Route
                     path="/agent/addcar/:id"
                     element={
-                        
-                            <MainLayout><AddCarView /></MainLayout>
-            
+
+                        <MainLayout><AddCarView /></MainLayout>
+
                     }
                 />
                 <Route
@@ -148,9 +158,9 @@ const App = () => {
                 <Route
                     path="/agent/carlist"
                     element={
-                        
-                            <MyCarListView />
-                    
+
+                        <MyCarListView />
+
                     }
                 />
 
@@ -158,8 +168,17 @@ const App = () => {
                     path="/agent/contactus"
                     element={
                         <ProtectedRoute type="agent">
-                            <AgentContactUsView/>
+                            <AgentContactUsView />
                         </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/agent/messages"
+                    element={
+
+                        <MainLayout><AgentMsgView /></MainLayout>
+
                     }
                 />
 
@@ -167,8 +186,8 @@ const App = () => {
                 <Route
                     path="/admin"
                     element={
-                        
-                            <AdminDashboard />
+
+                        <AdminDashboard />
                     }
                 />
                 <Route

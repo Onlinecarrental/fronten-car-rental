@@ -13,13 +13,16 @@ const defaultSections = {
       title: 'About Our Car Rental',
       description: 'Your trusted partner in mobility'
     },
-    image: null
+    image: null,
+    bannerImage: null
   },
   trust: {
     header: {
       title: 'Trust & Reliability',
-      description: 'Why customers trust us'
+      description: 'Why customers trust us',
+      subtitle: 'Our Commitment'
     },
+    bannerImage: null,
     items: []
   },
   services: {
@@ -27,6 +30,7 @@ const defaultSections = {
       title: 'Our Services',
       description: 'What we offer'
     },
+    bannerImage: null,
     items: []
   },
   whyChoose: {
@@ -34,6 +38,7 @@ const defaultSections = {
       title: 'Why Choose Us',
       description: 'Reasons to choose our service'
     },
+    bannerImage: null,
     reasons: []
   },
   carCollection: {
@@ -41,6 +46,13 @@ const defaultSections = {
       title: 'Our Car Collection',
       description: 'Explore our fleet'
     },
+    decoration: {
+      title: '',
+      description: '',
+      features: [],
+      image: null
+    },
+    bannerSvg: null,
     cars: []
   },
   faqs: {
@@ -48,6 +60,7 @@ const defaultSections = {
       title: 'Frequently Asked Questions',
       description: 'Common questions answered'
     },
+    bannerImage: null,
     items: []
   }
 };
@@ -57,10 +70,9 @@ export default function AboutUsManagement({ section = 'hero' }) {
   const [editingSection, setEditingSection] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeSection, setActiveSection] = useState(section); // Use the passed section prop
+  const [activeSection, setActiveSection] = useState(section);
 
   useEffect(() => {
-    // Update activeSection when section prop changes
     setActiveSection(section);
   }, [section]);
 
@@ -68,12 +80,12 @@ export default function AboutUsManagement({ section = 'hero' }) {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await axios.get('http://localhost:5000/api/about');
-      
+
       if (response.data.success) {
         setSections(prev => ({
-          ...prev,
+          ...defaultSections, // Ensure default structure
           ...response.data.data
         }));
       } else {
@@ -90,7 +102,7 @@ export default function AboutUsManagement({ section = 'hero' }) {
   const handleUpdate = async (sectionType, data) => {
     try {
       setError(null);
-      
+
       let requestData;
       let headers = {};
 
@@ -109,12 +121,11 @@ export default function AboutUsManagement({ section = 'hero' }) {
       );
 
       if (response.data.success) {
-        // Update local state with new data
         setSections(prev => ({
           ...prev,
           [sectionType]: response.data.data.content
         }));
-        
+
         setEditingSection(null);
         return response.data;
       } else {
@@ -140,7 +151,7 @@ export default function AboutUsManagement({ section = 'hero' }) {
   };
 
   const renderSection = () => {
-    switch (section) {
+    switch (activeSection) {
       case 'hero':
         return <HeroSection {...sectionProps} />;
       case 'services':
@@ -169,7 +180,7 @@ export default function AboutUsManagement({ section = 'hero' }) {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">About Us Page Management</h2>
-      
+
       {error && (
         <div className="bg-red-50 text-red-600 p-4 rounded mb-6">
           {error}

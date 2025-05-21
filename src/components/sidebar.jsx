@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "./button"; // Importing your existing Button component
-import { FaEnvelope, FaCarAlt, FaCalendarAlt, FaListAlt, FaPhoneAlt, FaSignOutAlt } from "react-icons/fa"; // You may need to install this package
+import { FaEnvelope, FaCarAlt, FaCalendarAlt, FaListAlt, FaPhoneAlt, FaSignOutAlt, FaComments } from "react-icons/fa"; // You may need to install this package
 import { useNavigate } from "react-router-dom"; // <-- Add this
 
 function Sidebar() {
@@ -27,69 +27,75 @@ function Sidebar() {
       {/* Navigation Menu */}
       <div className="flex flex-col flex-grow space-y-2">
 
-      <Button 
-          title="Messages" 
-          bgColor="bg-white" 
-          textColor="text-black" 
-          width="100%" 
-          rounded="rounded-md" 
+        <Button
+          title="Messages"
+          to="/agent/messages"
+          bgColor="bg-white"
+          textColor="text-black"
+          width="100%"
+          rounded="rounded-md"
           hoverBgColor="hover:bg-gray"
           className="justify-center"
-           
+          iconLeft={<FaComments />}
         />
-        
-        <Button 
-          title="Add a Car" 
-          to="/addcar"
-          bgColor="bg-white" 
-          textColor="text-black" 
-          width="100%" 
-          rounded="rounded-md" 
+
+        <Button
+          title="Add a Car"
+          to="/agent/addcar"
+          bgColor="bg-white"
+          textColor="text-black"
+          width="100%"
+          rounded="rounded-md"
           hoverBgColor="hover:bg-gray"
           className="justify-center"
-        /> 
-        
-        <Button 
-          title="Bookings" 
-          to="/booking-management"
-          bgColor="bg-white" 
-          textColor="text-black" 
-          width="100%" 
-          rounded="rounded-md" 
-          hoverBgColor="hover:bg-gray"
-          className="justify-center"
+          iconLeft={<FaCarAlt />}
         />
-        
-        <Button 
-          title="Car Lists" 
-          to="/carlist"
-          bgColor="bg-white" 
-          textColor="text-black" 
-          width="100%" 
-          rounded="rounded-md" 
+
+        <Button
+          title="Bookings"
+          to="/agent/booking-management"
+          bgColor="bg-white"
+          textColor="text-black"
+          width="100%"
+          rounded="rounded-md"
           hoverBgColor="hover:bg-gray"
           className="justify-center"
+          iconLeft={<FaCalendarAlt />}
         />
-        
-        <Button 
-          title="Contact us" 
-          bgColor="bg-white" 
-          textColor="text-black" 
-          width="100%" 
-          rounded="rounded-md" 
+
+        <Button
+          title="Car Lists"
+          to="/agent/carlist"
+          bgColor="bg-white"
+          textColor="text-black"
+          width="100%"
+          rounded="rounded-md"
           hoverBgColor="hover:bg-gray"
           className="justify-center"
+          iconLeft={<FaListAlt />}
+        />
+
+        <Button
+          title="Contact us"
+          to="/agent/contactus"
+          bgColor="bg-white"
+          textColor="text-black"
+          width="100%"
+          rounded="rounded-md"
+          hoverBgColor="hover:bg-gray"
+          className="justify-center"
+          iconLeft={<FaPhoneAlt />}
         />
       </div>
 
       {/* Logout Button at Bottom */}
       <div className="mt-auto">
-        <Button 
-          title="Log out" 
-          bgColor="bg-indigo-600" 
-          textColor="text-white" 
-          width="100%" 
-          rounded="rounded-md" 
+        <Button
+          title="Log out"
+          bgColor="bg-indigo-600"
+          textColor="text-white"
+          width="100%"
+          rounded="rounded-md"
           hoverBgColor="hover:bg-indigo-700"
           className="justify-center"
           iconRight={<FaSignOutAlt />}
