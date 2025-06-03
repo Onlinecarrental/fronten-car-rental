@@ -173,16 +173,40 @@ export default function AddCarInfo() {
     try {
       // Get the logged-in agent's ID
       const userData = JSON.parse(localStorage.getItem('user'));
-      if (!userData || !userData.uid) {
+      console.log('Raw user data from localStorage:', userData);
+      
+      if (!userData) {
         setSubmitStatus({
           show: true,
           success: false,
-          message: 'Please log in as an agent to add cars'
+          message: 'No user data found. Please log in again.'
         });
         return;
       }
 
-      console.log('Current user data:', userData);
+      if (!userData.uid) {
+        setSubmitStatus({
+          show: true,
+          success: false,
+          message: 'Invalid user data. Please log in again.'
+        });
+        return;
+      }
+
+      if (userData.role !== 'agent') {
+        setSubmitStatus({
+          show: true,
+          success: false,
+          message: 'Only agents can add cars. Please log in as an agent.'
+        });
+        return;
+      }
+
+      console.log('Current user data:', {
+        uid: userData.uid,
+        email: userData.email,
+        role: userData.role
+      });
 
       // Validate required fields
       const requiredFields = [
@@ -273,8 +297,17 @@ export default function AddCarInfo() {
         id: createdCar._id,
         name: createdCar.name,
         agentId: createdCar.agentId,
+        agent_id: createdCar.agent_id,
+        agent: createdCar.agent,
+        userId: createdCar.userId,
+        user_id: createdCar.user_id,
         status: createdCar.status
       });
+
+      // Verify agent ID was saved
+      if (!createdCar.agentId && !createdCar.agent_id && !createdCar.agent && !createdCar.userId && !createdCar.user_id) {
+        throw new Error('Car was created but agent ID was not saved');
+      }
 
       setSubmitStatus({
         show: true,
@@ -292,7 +325,7 @@ export default function AddCarInfo() {
       setSubmitStatus({
         show: true,
         success: false,
-        message: isEditing ? 'Failed to update car' : 'Failed to add car'
+        message: error.message || (isEditing ? 'Failed to update car' : 'Failed to add car')
       });
     }
   };

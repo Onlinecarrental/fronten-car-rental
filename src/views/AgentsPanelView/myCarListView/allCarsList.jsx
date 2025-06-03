@@ -112,14 +112,32 @@ const AllCarsList = () => {
       
       // Get the logged-in agent's ID
       const userData = JSON.parse(localStorage.getItem('user'));
-      if (!userData || !userData.uid) {
+      console.log('Raw user data from localStorage:', userData);
+      
+      if (!userData) {
         console.error('No user data found in localStorage');
         navigate('/agent-login');
         return;
       }
 
+      if (!userData.uid) {
+        console.error('No user ID found in user data');
+        navigate('/agent-login');
+        return;
+      }
+
+      if (userData.role !== 'agent') {
+        console.error('User is not an agent:', userData.role);
+        navigate('/agent-login');
+        return;
+      }
+
       const agentId = userData.uid;
-      console.log('Fetching cars for agent:', agentId);
+      console.log('Fetching cars for agent:', {
+        agentId,
+        email: userData.email,
+        role: userData.role
+      });
       
       // Fetch all cars
       const response = await axios.get('http://localhost:5000/api/cars');
@@ -154,7 +172,12 @@ const AllCarsList = () => {
           
           // If no agent ID is found, log a warning
           if (!carAgentId) {
-            console.warn('Car has no agent ID:', car);
+            console.warn('Car has no agent ID:', {
+              carId: car._id,
+              carName: car.name,
+              allFields: Object.keys(car)
+            });
+            return false; // Don't include cars without an agent ID
           }
           
           return carAgentId === agentId;
