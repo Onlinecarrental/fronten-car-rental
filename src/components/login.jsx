@@ -10,11 +10,26 @@ const Login = () => {
   const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   // Redirect if already logged in
   useEffect(() => {
-    if (localStorage.getItem('user')) {
-      navigate('/home');
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const userData = JSON.parse(user);
+        if (userData.role === 'customer') {
+          navigate('/home');
+        } else if (userData.role === 'agent') {
+          navigate('/agent');
+        } else if (userData.role === 'admin') {
+          navigate('/admin');
+        }
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        localStorage.removeItem('user');
+      }
     }
   }, [navigate]);
 
@@ -26,36 +41,87 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
+    
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      const userEmail = result.user.email.toLowerCase();
+      console.log('Attempting login with:', { email });
+      
+      // Validate email format
+      if (!email || !email.includes('@')) {
+        throw new Error('Please enter a valid email address');
+      }
 
-      // Get user role from Firestore
-      const userDoc = await getDoc(doc(db, "users", userEmail));
+      // Validate password
+      if (!password || password.length < 6) {
+        throw new Error('Password must be at least 6 characters long');
+      }
+
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log('Login successful:', result.user.email);
+      
+      const userEmail = result.user.email.toLowerCase();
+      const userId = result.user.uid;
+
+      // First check in users collection
+      const userDoc = await getDoc(doc(db, "users", userId));
       
       if (userDoc.exists()) {
         const role = userDoc.data().role;
         if (role === 'agent' || role === 'admin') {
-          alert('Please use agent/admin login page');
+          setError('Please use agent/admin login page');
           return;
         }
         
-        // Store BOTH user data and role type
+        // Store user data and role type
         const userData = {
           email: userEmail,
           role: 'customer',
-          uid: result.user.uid
+          uid: userId
         };
 
         localStorage.setItem('user', JSON.stringify(userData));
-        localStorage.setItem('customer', 'true'); // Add role-specific flag
+        localStorage.setItem('customer', 'true');
 
         navigate('/home', { replace: true });
       } else {
-        alert('User not found');
+        // If not found in users collection, check in agent collection
+        const agentDoc = await getDoc(doc(db, "agent", userId));
+        if (agentDoc.exists()) {
+          setError('Please use agent login page');
+          return;
+        }
+        
+        setError('User not found in the system');
       }
     } catch (error) {
-      alert('Login failed: ' + error.message);
+      console.error('Login error:', error);
+      
+      // Handle specific Firebase auth errors
+      switch (error.code) {
+        case 'auth/invalid-email':
+          setError('Invalid email address format');
+          break;
+        case 'auth/user-disabled':
+          setError('This account has been disabled');
+          break;
+        case 'auth/user-not-found':
+          setError('No account found with this email');
+          break;
+        case 'auth/wrong-password':
+          setError('Incorrect password');
+          break;
+        case 'auth/too-many-requests':
+          setError('Too many failed attempts. Please try again later');
+          break;
+        case 'auth/network-request-failed':
+          setError('Network error. Please check your internet connection');
+          break;
+        default:
+          setError(error.message || 'Login failed. Please try again');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,6 +144,11 @@ const Login = () => {
         {/* Right: Form */}
         <div className="flex flex-col justify-center px-10 py-8 w-96">
           <h2 className="text-xl font-bold mb-2">Welcome to Login</h2>
+          {error && (
+            <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
+            </div>
+          )}
           <form onSubmit={handleLogin} className="space-y-3">
             <input
               type="email"
@@ -86,6 +157,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
             <input
               type="password"
@@ -94,12 +166,16 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
             <button
               type="submit"
-              className="w-full bg-yellow-300 text-black font-semibold py-2 rounded-md mt-2 hover:bg-yellow-400 transition"
+              className={`w-full bg-yellow-300 text-black font-semibold py-2 rounded-md mt-2 transition ${
+                loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-yellow-400'
+              }`}
+              disabled={loading}
             >
-              Login
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
           <div className="text-xs mt-3 text-center">

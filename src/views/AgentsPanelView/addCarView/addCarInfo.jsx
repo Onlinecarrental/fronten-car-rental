@@ -171,6 +171,19 @@ export default function AddCarInfo() {
     e.preventDefault();
     
     try {
+      // Get the logged-in agent's ID
+      const userData = JSON.parse(localStorage.getItem('user'));
+      if (!userData || !userData.uid) {
+        setSubmitStatus({
+          show: true,
+          success: false,
+          message: 'Please log in as an agent to add cars'
+        });
+        return;
+      }
+
+      console.log('Current user data:', userData);
+
       // Validate required fields
       const requiredFields = [
         'name', 'model', 'year', 'licenseNo', 'color', 'seats',
@@ -200,6 +213,14 @@ export default function AddCarInfo() {
 
       const formDataToSend = new FormData();
 
+      // Add agent ID with multiple field names to ensure it's saved
+      formDataToSend.append('agentId', userData.uid);
+      formDataToSend.append('agent_id', userData.uid);
+      formDataToSend.append('agent', userData.uid);
+      formDataToSend.append('userId', userData.uid);
+      formDataToSend.append('user_id', userData.uid);
+      console.log('Adding car with agent ID:', userData.uid);
+
       // Add all text fields
       Object.keys(formData).forEach(field => {
         if (field !== 'coverImage' && field !== 'image1' && field !== 'image2' && field !== 'image3' && field !== 'image4') {
@@ -209,6 +230,15 @@ export default function AddCarInfo() {
 
       // Add features
       formDataToSend.append('features', JSON.stringify(selectedFeatures));
+
+      // Add status field
+      formDataToSend.append('status', 'available');
+
+      // Log the complete form data
+      console.log('Form data being sent:', {
+        ...Object.fromEntries(formDataToSend.entries()),
+        features: selectedFeatures
+      });
 
       // Add images only if they're new or changed
       if (formData.coverImage) {
@@ -231,6 +261,21 @@ export default function AddCarInfo() {
         }
       });
 
+      console.log('API Response:', response.data);
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Failed to add car');
+      }
+
+      // Verify the car was created with the correct agent ID
+      const createdCar = response.data.data;
+      console.log('Created car data:', {
+        id: createdCar._id,
+        name: createdCar.name,
+        agentId: createdCar.agentId,
+        status: createdCar.status
+      });
+
       setSubmitStatus({
         show: true,
         success: true,
@@ -239,7 +284,7 @@ export default function AddCarInfo() {
 
       // Show success message before redirecting
       setTimeout(() => {
-        navigate('/home/best-cars');
+        navigate('/agent/carlist');
       }, 2000);
 
     } catch (error) {

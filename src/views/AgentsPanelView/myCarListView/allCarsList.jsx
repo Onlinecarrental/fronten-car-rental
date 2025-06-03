@@ -102,6 +102,7 @@ const AllCarsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('all');
   const carsPerPage = 4;
 
   const fetchCars = async () => {
@@ -109,12 +110,65 @@ const AllCarsList = () => {
       setLoading(true);
       setError(null);
       
-      const response = await axios.get('http://localhost:5000/api/cars', {
-        timeout: 5000 // 5 second timeout
-      });
+      // Get the logged-in agent's ID
+      const userData = JSON.parse(localStorage.getItem('user'));
+      if (!userData || !userData.uid) {
+        console.error('No user data found in localStorage');
+        navigate('/agent-login');
+        return;
+      }
+
+      const agentId = userData.uid;
+      console.log('Fetching cars for agent:', agentId);
+      
+      // Fetch all cars
+      const response = await axios.get('http://localhost:5000/api/cars');
+      console.log('Full API Response:', JSON.stringify(response.data, null, 2));
       
       if (response.data.success) {
-        setCars(response.data.data);
+        // Log the first car to see its structure
+        if (response.data.data.length > 0) {
+          console.log('Sample car data structure:', JSON.stringify(response.data.data[0], null, 2));
+        }
+
+        // Filter cars for this agent
+        const agentCars = response.data.data.filter(car => {
+          // Log all fields in the car object
+          console.log('Car object fields:', Object.keys(car));
+          console.log('Car data:', JSON.stringify({
+            id: car._id,
+            name: car.name,
+            agentId: car.agentId,
+            agent_id: car.agent_id,
+            agent: car.agent,
+            userId: car.userId,
+            user_id: car.user_id,
+            currentAgentId: agentId
+          }, null, 2));
+          
+          // Check all possible agent ID fields
+          const carAgentId = car.agentId || car.agent_id || car.agent || car.userId || car.user_id;
+          console.log('Car agent ID:', carAgentId);
+          console.log('Current agent ID:', agentId);
+          console.log('Match:', carAgentId === agentId);
+          
+          // If no agent ID is found, log a warning
+          if (!carAgentId) {
+            console.warn('Car has no agent ID:', car);
+          }
+          
+          return carAgentId === agentId;
+        });
+        
+        console.log('Filtered agent cars:', JSON.stringify(agentCars, null, 2));
+        
+        // Apply status filter if not 'all'
+        if (statusFilter !== 'all') {
+          const filteredCars = agentCars.filter(car => car.status === statusFilter);
+          setCars(filteredCars);
+        } else {
+          setCars(agentCars);
+        }
       } else {
         throw new Error(response.data.message || 'Failed to fetch cars');
       }
@@ -135,8 +189,29 @@ const AllCarsList = () => {
   };
 
   useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem('user');
+    if (!userData) {
+      console.log('No user data found, redirecting to login');
+      navigate('/agent-login');
+      return;
+    }
+
+    try {
+      const parsedUserData = JSON.parse(userData);
+      if (!parsedUserData.uid || parsedUserData.role !== 'agent') {
+        console.log('Invalid user data or not an agent, redirecting to login');
+        navigate('/agent-login');
+        return;
+      }
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      navigate('/agent-login');
+      return;
+    }
+
     fetchCars();
-  }, []);
+  }, [statusFilter, navigate]);
 
   const handleEdit = async (car) => {
     try {
@@ -180,84 +255,45 @@ const AllCarsList = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-8 text-red-500">
-        <p>{error}</p>
-        <button 
-          onClick={fetchCars}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Try Again
-        </button>
-      </div>
-    );
-  }
-
-  const totalPages = Math.ceil(cars.length / carsPerPage);
-  const currentCars = cars.slice(
-    (currentPage - 1) * carsPerPage,
-    currentPage * carsPerPage
-  );
-
   return (
     <div className="p-8 bg-white">
       <div className="flex justify-between mb-8">
-        <h1 className="text-2xl font-bold">Car Management</h1>
-        <Button 
-          title="Add New Car" 
-          bgColor="bg-blue-600" 
-          textColor="text-white"
-          width="120px"
-          onClick={() => navigate('/agent/addcar')}
-        />
+        <h1 className="text-2xl font-bold">My Cars</h1>
+        <div className="flex gap-4">
+          <select 
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-4 py-2 border rounded-md"
+          >
+            <option value="all">All Cars</option>
+            <option value="available">Available</option>
+            <option value="rented">Rented</option>
+          </select>
+          <Button 
+            title="Add New Car" 
+            bgColor="bg-blue-600" 
+            textColor="text-white"
+            width="120px"
+            onClick={() => navigate('/agent/addcar')}
+          />
+        </div>
       </div>
       
-      <div className="bg-white p-4 rounded-lg flex flex-wrap justify-center gap-16 mb-8">
-        <BaseCard
-          width="w-full md:w-auto"
-          height="h-auto"
-          padding="px-16 py-8"
-          bgColor="bg-gray"
-          className="flex flex-col items-center justify-center border"
-        >
-          <div className="bg-gray p-2 rounded-md border mb-2">
-            <FaClock className="text-black" />
-          </div>
-          <p className="text-center font-medium">Total Cars</p>
-          <p className="text-center text-xl font-bold">{cars.length}</p>
-        </BaseCard>
-      </div>
-
-      {currentCars.length > 0 ? (
-        <div className="flex flex-col items-center justify-center py-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-8">
-            {currentCars.map((car) => (
-              <Card 
-                key={car._id} 
-                car={car} 
-                onEdit={handleEdit} 
-                onDelete={handleDelete} 
-              />
-            ))}
-          </div>
-          {totalPages > 1 && (
-            <Pagination
-              totalPages={totalPages}
-              currentPage={currentPage}
-              setPage={setCurrentPage}
-            />
-          )}
+      {loading ? (
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
-      ) : (
+      ) : error ? (
+        <div className="text-center py-8 text-red-500">
+          <p>{error}</p>
+          <button 
+            onClick={fetchCars}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Try Again
+          </button>
+        </div>
+      ) : cars.length === 0 ? (
         <div className="text-center py-16 text-gray-500">
           <p className="text-xl mb-4">No cars available</p>
           <Button 
@@ -267,6 +303,26 @@ const AllCarsList = () => {
             width="160px"
             onClick={() => navigate('/agent/addcar')}
           />
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-8">
+            {cars.slice((currentPage - 1) * carsPerPage, currentPage * carsPerPage).map((car) => (
+              <Card 
+                key={car._id} 
+                car={car} 
+                onEdit={handleEdit} 
+                onDelete={handleDelete} 
+              />
+            ))}
+          </div>
+          {Math.ceil(cars.length / carsPerPage) > 1 && (
+            <Pagination
+              totalPages={Math.ceil(cars.length / carsPerPage)}
+              currentPage={currentPage}
+              setPage={setCurrentPage}
+            />
+          )}
         </div>
       )}
     </div>
