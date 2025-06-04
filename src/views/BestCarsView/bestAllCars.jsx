@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import BaseCard from '../../components/card';
 
 export default function AllBestCars() {
+  const navigate = useNavigate();
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -64,6 +65,21 @@ export default function AllBestCars() {
     pageNumbers.push(i);
   }
 
+  const handleRentNow = (car) => {
+    // Navigate to booking form with car details
+    navigate('/booking-form', { 
+      state: { 
+        carDetails: {
+          id: car._id,
+          name: car.name,
+          model: car.model,
+          dailyRate: car.dailyRate,
+          weeklyRate: car.weeklyRate
+        }
+      }
+    });
+  };
+
   return (
     <div className="bg-white w-full">
       <div className="flex flex-col md:flex-row gap-4 mt-20 flex-wrap justify-center">
@@ -88,6 +104,12 @@ export default function AllBestCars() {
                   <div>Transmission: {car.transmission}</div>
                   <div>Fuel: {car.fuelType}</div>
                 </div>
+                <button
+                  onClick={() => handleRentNow(car)}
+                  className="w-full mt-4 bg-Blue text-white py-2 rounded-md hover:bg-blue-600 transition-colors"
+                >
+                  Rent Now
+                </button>
               </div>
             </div>
           </BaseCard>

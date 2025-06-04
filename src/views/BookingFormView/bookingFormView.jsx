@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import 'flatpickr/dist/flatpickr.css';
 import flatpickr from 'flatpickr';
 
 export default function BookingForm() {
+  const location = useLocation();
+  const carDetails = location.state?.carDetails;
+
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -11,9 +15,12 @@ export default function BookingForm() {
     location: '',
     dateFrom: '',
     dateTo: '',
-    price: '',
+    price: carDetails?.dailyRate || '',
     paymentMethod: 'Credit Card',
-    paymentNumber: ''
+    paymentNumber: '',
+    carId: carDetails?.id || '',
+    carName: carDetails?.name || '',
+    carModel: carDetails?.model || ''
   });
 
   const [errors, setErrors] = useState({});
@@ -120,9 +127,12 @@ export default function BookingForm() {
       location: '',
       dateFrom: '',
       dateTo: '',
-      price: '',
+      price: carDetails?.dailyRate || '',
       paymentMethod: 'Credit Card',
-      paymentNumber: ''
+      paymentNumber: '',
+      carId: carDetails?.id || '',
+      carName: carDetails?.name || '',
+      carModel: carDetails?.model || ''
     });
     setCurrentStep(1);
     setBookingSuccess(false);
@@ -178,6 +188,31 @@ export default function BookingForm() {
         ) : (
           <>
             <div className="text-center font-bold text-[35px] mb-8">BOOKING FORM</div>
+            
+            {/* Display selected car details */}
+            {carDetails && (
+              <div className="max-w-[700px] mx-auto mb-8 p-4 bg-gray rounded-md">
+                <h3 className="text-xl font-bold mb-2">Selected Car Details</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-semibold">Car Name:</p>
+                    <p>{carDetails.name}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Model:</p>
+                    <p>{carDetails.model}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Daily Rate:</p>
+                    <p>${carDetails.dailyRate}/day</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Weekly Rate:</p>
+                    <p>${carDetails.weeklyRate}/week</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Progress Steps */}
             <div className="flex items-center justify-center ">
