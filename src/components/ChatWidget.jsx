@@ -13,7 +13,7 @@ const ChatWidget = () => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(true);
-    const [chatId, setChatId] = useState(null);
+    const [chatId, setChatId] = useState(localStorage.getItem('activeChatId') || null);
     const [agents, setAgents] = useState([]);
     const [selectedAgent, setSelectedAgent] = useState(null);
     const [isTyping, setIsTyping] = useState(false);
@@ -21,11 +21,38 @@ const ChatWidget = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const messagesEndRef = useRef(null);
 
+    // Auto-open chat if there's an active chat ID
+    useEffect(() => {
+        const activeChatId = localStorage.getItem('activeChatId');
+        if (activeChatId) {
+            setIsOpen(true);
+            // Find and set the agent for this chat
+            const fetchChatDetails = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:5000/api/chats/${activeChatId}`);
+                    if (response.data.success) {
+                        const agent = response.data.data.agentId;
+                        setSelectedAgent(agent);
+                        setChatId(activeChatId);
+                    }
+                } catch (error) {
+                    console.error('Error fetching chat details:', error);
+                }
+            };
+            fetchChatDetails();
+        }
+    }, []);
+
     // Listen for auth state changes from Firebase
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
             console.log("Firebase auth user:", user ? user.uid : "No user");
+            
+            // If user is logged in and has an active chat, load it
+            if (user && localStorage.getItem('activeChatId')) {
+                setIsOpen(true);
+            }
         });
 
         return () => unsubscribe();

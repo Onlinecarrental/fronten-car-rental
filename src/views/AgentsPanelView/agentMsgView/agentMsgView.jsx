@@ -82,9 +82,26 @@ const AgentMsgView = () => {
         if (!agentId) return;
 
         try {
+            console.log('Fetching agent chats for:', agentId);
+            
+            // Real API call to get agent's chats
             const response = await axios.get(`${API_URL}/chats/agent/${agentId}`);
+            
             if (response.data.success) {
-                setActiveChats(response.data.data);
+                const chats = response.data.data;
+                console.log('Real chats from API:', chats);
+                
+                // Sort chats by most recently updated
+                const sortedChats = [...chats].sort((a, b) => 
+                    new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt)
+                );
+                
+                setActiveChats(sortedChats);
+                
+                // If there's no selected chat but we have chats, select the first one
+                if (sortedChats.length > 0 && !selectedChat) {
+                    setSelectedChat(sortedChats[0]);
+                }
             }
         } catch (error) {
             console.error('Error fetching agent chats:', error);
@@ -92,6 +109,15 @@ const AgentMsgView = () => {
     };
 
     useEffect(() => {
+        // Set a default agent ID if not set
+        if (!agentId) {
+            const defaultAgentId = 'agent-1'; // You can change this to a real agent ID
+            localStorage.setItem('agentId', defaultAgentId);
+            localStorage.setItem('agentName', 'Agent 1');
+            window.location.reload();
+            return;
+        }
+        
         fetchAgentChats();
     }, [agentId]);
 
@@ -103,21 +129,27 @@ const AgentMsgView = () => {
 
         const fetchMessages = async () => {
             try {
+                console.log('Fetching messages for chat:', selectedChat._id);
+                
+                // Real API call to get chat messages
                 const response = await axios.get(`${API_URL}/chats/${selectedChat._id}/messages`);
+                
                 if (response.data.success) {
-                    setMessages(response.data.data);
+                    const messages = response.data.data;
+                    console.log('Real messages from API:', messages);
+                    setMessages(messages);
                 }
-                setLoading(false);
+                
+                // Mark messages as read
+                markMessageAsRead(selectedChat._id);
             } catch (error) {
                 console.error('Error fetching messages:', error);
+            } finally {
                 setLoading(false);
             }
         };
 
         fetchMessages();
-
-        // Mark messages as read when chat is loaded
-        markMessageAsRead(selectedChat._id);
     }, [selectedChat]);
 
     // Auto-scroll to the bottom of messages
@@ -127,10 +159,18 @@ const AgentMsgView = () => {
 
     const markMessageAsRead = async (chatId) => {
         try {
+            console.log('Marking messages as read for chat:', chatId);
+            // Real API call to mark messages as read
             await axios.put(`${API_URL}/chats/messages/read`, {
                 chatId,
                 recipientType: 'agent'
             });
+            
+            if (socket && selectedChat) {
+                socket.emit('stop_typing', { chatId: selectedChat._id, user: agentName });
+            }
+            clearTimeout(typingTimeout);
+            setNewMessage('');
         } catch (error) {
             console.error('Error marking messages as read:', error);
         }
@@ -140,21 +180,52 @@ const AgentMsgView = () => {
         e.preventDefault();
         if (!newMessage.trim() || !selectedChat) return;
 
-        const messageData = {
-            chatId: selectedChat._id,
-            senderId: agentId,
-            sender: 'agent',
-            text: newMessage
-        };
+        try {
+            const messageData = {
+                chatId: selectedChat._id,
+                senderId: agentId,
+                sender: 'agent',
+                text: newMessage
+            };
 
-        // Emit message via socket
-        socket.emit('send_message', messageData);
-
-        // Clear typing indicator
-        socket.emit('stop_typing', { chatId: selectedChat._id, user: agentName });
-        clearTimeout(typingTimeout);
-
-        setNewMessage('');
+            // Send message to server
+            const response = await axios.post(`${API_URL}/chats/messages`, messageData);
+            
+            if (response.data.success) {
+                // Update local state with the new message
+                setMessages(prev => [...prev, response.data.data]);
+                
+                // Update chat list to show the new message
+                setActiveChats(prevChats => 
+                    prevChats.map(chat => 
+                        chat._id === selectedChat._id 
+                            ? { 
+                                ...chat, 
+                                lastMessage: { 
+                                    text: newMessage, 
+                                    timestamp: new Date().toISOString(),
+                                    sender: 'agent'
+                                },
+                                updatedAt: new Date().toISOString()
+                            } 
+                            : chat
+                    )
+                );
+                
+                // Clear input field
+                setNewMessage('');
+                
+                // Emit socket event
+                if (socket) {
+                    socket.emit('send_message', response.data.data);
+                }
+            }
+            
+        } catch (error) {
+            console.error('Error sending message:', error);
+            // Show error to user
+            alert('Failed to send message. Please try again.');
+        }
     };
 
     const handleTyping = () => {

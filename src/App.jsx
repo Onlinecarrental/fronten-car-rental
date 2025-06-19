@@ -11,6 +11,7 @@ import BlogsView from './views/BlogsView/blogView';
 import DetailCar from './views/BestCarsView/cardetailview';
 import BlogPost from './views/BlogsView/showblog';
 import BookingView from './views/BookingFormView/bookingFormView';
+import CustomerChatView from './views/CustomerChatView/CustomerChatView';
 import CarRentalLoginScreen from './views/HomeView/mainHompage';
 import Login from './components/login';
 import Signup from './components/signup';
@@ -45,64 +46,65 @@ const App = () => {
                 <Route
                     path="/home"
                     element={
-
-                        <Layout><HomeView /></Layout>
-
+                        <ProtectedRoute type="customer">
+                            <Layout><HomeView /></Layout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/home/best-cars"
                     element={
-
-                        <Layout><BestCarsView /></Layout>
-
+                        <ProtectedRoute type="customer">
+                            <Layout><BestCarsView /></Layout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/home/about-us"
                     element={
-
-                        <Layout><AboutUsView /></Layout>
+                        <ProtectedRoute type="customer">
+                            <Layout><AboutUsView /></Layout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/home/customerreviews"
                     element={
-
-                        <Layout><CustomerReviewView /></Layout>
-
+                        <ProtectedRoute type="customer">
+                            <Layout><CustomerReviewView /></Layout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/home/contactus"
                     element={
-
-                        <Layout><ContactUsView /></Layout>
-
+                        <ProtectedRoute type="customer">
+                            <Layout><ContactUsView /></Layout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/home/blogs"
                     element={
-
-                        <Layout><BlogsView /></Layout>
-
+                        <ProtectedRoute type="customer">
+                            <Layout><BlogsView /></Layout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/home/best-cars/:id"
                     element={
-
-                        <Layout><DetailCar /></Layout>
-
+                        <ProtectedRoute type="customer">
+                            <Layout><DetailCar /></Layout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/chatwidget"
                     element={
-
-                        <Layout><ChatWidget /></Layout>
-
+                        <ProtectedRoute type="customer">
+                            <Layout><ChatWidget /></Layout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
@@ -114,11 +116,19 @@ const App = () => {
                     }
                 />
                 <Route
+                    path="/customer-chat"
+                    element={
+                        <ProtectedRoute type="customer">
+                            <Layout><CustomerChatView /></Layout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
                     path="/home/blogs/:id"
                     element={
-
-                        <Layout><BlogPost /></Layout>
-
+                        <ProtectedRoute type="customer">
+                            <Layout><BlogPost /></Layout>
+                        </ProtectedRoute>
                     }
                 />
 
@@ -126,59 +136,57 @@ const App = () => {
                 <Route
                     path="/agent"
                     element={
-
-                        <MainLayout><AgentPanelHomeView /></MainLayout>
-
+                        <ProtectedRoute type="agent">
+                            <MainLayout><AgentPanelHomeView /></MainLayout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/agent/addcar"
                     element={
-
-                        <MainLayout><AddCarView /></MainLayout>
-
+                        <ProtectedRoute type="agent">
+                            <MainLayout><AddCarView /></MainLayout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/agent/addcar/:id"
                     element={
-
-                        <MainLayout><AddCarView /></MainLayout>
-
+                        <ProtectedRoute type="agent">
+                            <MainLayout><AddCarView /></MainLayout>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/agent/booking-management"
                     element={
                         <ProtectedRoute type="agent">
-                            <BookingManagementView />
+                            <MainLayout><BookingManagementView /></MainLayout>
                         </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/agent/carlist"
                     element={
-                        <MainLayout>
-                            <MyCarListView />
-                        </MainLayout>
+                        <ProtectedRoute type="agent">
+                            <MainLayout><MyCarListView /></MainLayout>
+                        </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/agent/contactus"
                     element={
                         <ProtectedRoute type="agent">
-                            <AgentContactUsView />
+                            <MainLayout><AgentContactUsView /></MainLayout>
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/agent/messages"
                     element={
-
-                        <MainLayout><AgentMsgView /></MainLayout>
-
+                        <ProtectedRoute type="agent">
+                            <MainLayout><AgentMsgView /></MainLayout>
+                        </ProtectedRoute>
                     }
                 />
 
@@ -186,14 +194,17 @@ const App = () => {
                 <Route
                     path="/admin"
                     element={
-
-                        <AdminDashboard />
+                        <ProtectedRoute type="admin">
+                            <AdminDashboard />
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/admin/blogs"
                     element={
-                        <BlogManagement />
+                        <ProtectedRoute type="admin">
+                            <BlogManagement />
+                        </ProtectedRoute>
                     }
                 />
 

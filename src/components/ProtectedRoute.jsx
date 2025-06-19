@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { auth } from "../firebase/config";
+import { auth, db } from "../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const ProtectedRoute = ({ children, type }) => {
   const location = useLocation();
@@ -10,15 +11,42 @@ const ProtectedRoute = ({ children, type }) => {
   const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         // User is signed in
         const userStr = localStorage.getItem('user');
         if (userStr) {
           try {
             const userData = JSON.parse(userStr);
-            setUserRole(userData.role);
-            setIsAuthenticated(true);
+            
+            // For admin role, check both collections
+            if (type === 'admin') {
+              // Check in users collection first
+              const userDoc = await getDoc(doc(db, "users", user.uid));
+              if (userDoc.exists() && userDoc.data().role === "admin") {
+                setUserRole('admin');
+                setIsAuthenticated(true);
+                setLoading(false);
+                return;
+              }
+              
+              // Check in agent collection
+              const agentDoc = await getDoc(doc(db, "agent", user.uid));
+              if (agentDoc.exists() && agentDoc.data().role === "admin") {
+                setUserRole('admin');
+                setIsAuthenticated(true);
+                setLoading(false);
+                return;
+              }
+              
+              // If not admin in either collection
+              setUserRole(userData.role);
+              setIsAuthenticated(false);
+            } else {
+              // For customer and agent roles, use stored data
+              setUserRole(userData.role);
+              setIsAuthenticated(true);
+            }
           } catch (error) {
             console.error('Error parsing user data:', error);
             setIsAuthenticated(false);
@@ -38,7 +66,7 @@ const ProtectedRoute = ({ children, type }) => {
 
     // Cleanup subscription
     return () => unsubscribe();
-  }, []);
+  }, [type]);
 
   // Show loading state
   if (loading) {

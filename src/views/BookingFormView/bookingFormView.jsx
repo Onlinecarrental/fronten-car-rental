@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import 'flatpickr/dist/flatpickr.css';
 import flatpickr from 'flatpickr';
+import axios from 'axios';
+import { auth } from '../../firebase/config';
 
 export default function BookingForm() {
   const location = useLocation();
+  const navigate = useNavigate();
   const carDetails = location.state?.carDetails;
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -25,6 +28,7 @@ export default function BookingForm() {
 
   const [errors, setErrors] = useState({});
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +49,7 @@ export default function BookingForm() {
   };
 
   const validatePhone = (phone) => {
-    const re = /^[0-9]{11}$/; // Exactly 10 digits for Indian mobile numbers
+    const re = /^[0-9]{11}$/; // Exactly 11 digits for mobile numbers
     return re.test(phone);
   };
   const parseDMY = (dateStr) => {
@@ -69,7 +73,7 @@ export default function BookingForm() {
       if (!formData.mobile.trim()) {
         stepErrors.mobile = 'Mobile number is required';
       } else if (!validatePhone(formData.mobile)) {
-        stepErrors.mobile = 'Please enter a valid 10-digit phone number';
+        stepErrors.mobile = 'Please enter a valid 11-digit phone number';
       }
     }
 
@@ -112,10 +116,88 @@ export default function BookingForm() {
     setCurrentStep(currentStep - 1);
   };
 
-  const handleSubmit = () => {
+  const createChatWithAgent = async () => {
+    console.log('Creating chat with agent...');
+    
+    try {
+      // Get current user ID from Firebase or localStorage
+      const currentUser = auth.currentUser;
+      const userId = currentUser?.uid || localStorage.getItem('userId') || 'user-' + Date.now();
+      
+      // Use the specific agent ID from the car details
+      const agentId = carDetails?.agentId || 'agent-1'; // Fallback to default if not available
+      
+      console.log('Creating chat with agent ID:', agentId);
+      
+      // Create chat via API
+      const chatResponse = await axios.post('http://localhost:5000/api/chats', {
+        userId,
+        agentId
+      });
+      
+      if (chatResponse.data.success) {
+        const chatId = chatResponse.data.data._id;
+        
+        // Store chat ID for customer
+        localStorage.setItem('activeChatId', chatId);
+        localStorage.setItem('currentAgentId', agentId);
+        
+        // Send initial booking notification message
+        const messageData = {
+          chatId,
+          senderId: 'system',
+          sender: 'system',
+          text: `New booking: ${formData.carName} ${formData.carModel} from ${formData.dateFrom} to ${formData.dateTo} at ${formData.location}. Customer: ${formData.name} (${formData.email})`
+        };
+        
+        await axios.post('http://localhost:5000/api/chats/messages', messageData);
+        
+        console.log('Chat created successfully with ID:', chatId, 'for agent:', agentId);
+        return { success: true, chatId };
+      }
+    } catch (error) {
+      console.error('Error creating chat:', error);
+      throw error;
+    }
+  };
+
+  const [submitError, setSubmitError] = useState('');
+
+  const handleSubmit = async () => {
     if (validateStep()) {
-      setBookingSuccess(true);
-      console.log('Booking submitted:', formData);
+      setSubmitError('');
+      setLoading(true);
+      
+      try {
+        console.log('Submitting booking...', formData);
+        
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Simulate successful booking
+        console.log('Booking submitted successfully');
+        
+        // Create chat with agent
+        try {
+          const chatResult = await createChatWithAgent();
+          setBookingSuccess(true);
+          
+          // Redirect to chat page after 2 seconds
+          setTimeout(() => {
+            navigate('/customer-chat');
+          }, 2000);
+          
+        } catch (chatError) {
+          console.error('Error creating chat:', chatError);
+          setSubmitError('Booking successful, but there was an issue starting the chat. Please contact support.');
+          setBookingSuccess(true);
+        }
+      } catch (error) {
+        console.error('Error in booking process:', error);
+        setSubmitError('An error occurred while processing your booking. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -173,16 +255,23 @@ export default function BookingForm() {
     <div className="w-full mx-auto font-jakarta bg-white">
       <div className="p-4">
         {bookingSuccess ? (
-          <div className="text-center max-w-[700px]  mx-auto p-14">
+          <div className="text-center max-w-[700px] mx-auto p-14">
             <div className="text-green-500 text-5xl mb-4">✓</div>
-            <h2 className="text-3xl font-[600]   mb-2">Booking Successful!</h2>
+            <h2 className="text-3xl font-[600] mb-2">Booking Successful!</h2>
             <p className="text-[18px]">Your booking has been confirmed.</p>
-            <p className="mb-6 text-[18px]">Agent when see you they give you message.</p>
+            {submitError ? (
+              <div className="text-yellow-600 mb-4 p-3 bg-yellow-100 rounded-md">
+                {submitError}
+              </div>
+            ) : (
+              <p className="mb-6 text-[18px]">Redirecting you to chat with agent...</p>
+            )}
             <button 
               onClick={resetForm}
-              className="px-4 py-4 bg-Blue text-[18px] text-white rounded-md"
+              className="px-4 py-4 bg-Blue text-[18px] text-white rounded-md hover:bg-blue-600 transition-colors"
+              disabled={loading}
             >
-              Make Another Booking
+              {loading ? 'Processing...' : 'Make Another Booking'}
             </button>
           </div>
         ) : (

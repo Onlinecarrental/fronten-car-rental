@@ -66,27 +66,52 @@ const AgentLogin = () => {
       
       if (userDoc.exists()) {
         const role = userDoc.data().role;
-        if (role !== 'agent') {
+        if (role === 'admin') {
+          // Allow admin to login through agent login
+          const userData = {
+            email: userEmail,
+            role: 'admin',
+            uid: userId
+          };
+
+          localStorage.setItem('user', JSON.stringify(userData));
+          localStorage.setItem('admin', 'true');
+
+          navigate('/admin', { replace: true });
+        } else if (role !== 'agent') {
           setError('Please use appropriate login page');
           return;
+        } else {
+          // Store user data and role type for agent
+          const userData = {
+            email: userEmail,
+            role: 'agent',
+            uid: userId
+          };
+
+          localStorage.setItem('user', JSON.stringify(userData));
+          localStorage.setItem('agent', 'true');
+
+          navigate('/agent', { replace: true });
         }
-
-        // Store user data and role type
-        const userData = {
-          email: userEmail,
-          role: 'agent',
-          uid: userId
-        };
-
-        localStorage.setItem('user', JSON.stringify(userData));
-        localStorage.setItem('agent', 'true');
-
-        navigate('/agent', { replace: true });
       } else {
         // Check if user exists in regular users collection
         const regularUserDoc = await getDoc(doc(db, "users", userId));
         if (regularUserDoc.exists()) {
-          setError('Please use customer login page');
+          const role = regularUserDoc.data().role;
+          if (role === 'admin') {
+            // Allow admin to login from users collection
+            const userData = {
+              email: userEmail,
+              role: 'admin',
+              uid: userId
+            };
+            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('admin', 'true');
+            navigate('/admin', { replace: true });
+          } else {
+            setError('Please use customer login page');
+          }
           return;
         }
         

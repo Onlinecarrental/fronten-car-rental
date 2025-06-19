@@ -68,27 +68,46 @@ const Login = () => {
       
       if (userDoc.exists()) {
         const role = userDoc.data().role;
-        if (role === 'agent' || role === 'admin') {
-          setError('Please use agent/admin login page');
+        if (role === 'agent') {
+          setError('Please use agent login page');
           return;
         }
         
         // Store user data and role type
         const userData = {
           email: userEmail,
-          role: 'customer',
+          role: role, // Use the actual role from database
           uid: userId
         };
 
         localStorage.setItem('user', JSON.stringify(userData));
-        localStorage.setItem('customer', 'true');
-
-        navigate('/home', { replace: true });
+        
+        // Redirect based on role
+        if (role === 'admin') {
+          localStorage.setItem('admin', 'true');
+          navigate('/admin', { replace: true });
+        } else {
+          localStorage.setItem('customer', 'true');
+          navigate('/home', { replace: true });
+        }
       } else {
         // If not found in users collection, check in agent collection
         const agentDoc = await getDoc(doc(db, "agent", userId));
         if (agentDoc.exists()) {
-          setError('Please use agent login page');
+          const role = agentDoc.data().role;
+          if (role === 'admin') {
+            // Allow admin to login from agent collection
+            const userData = {
+              email: userEmail,
+              role: 'admin',
+              uid: userId
+            };
+            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('admin', 'true');
+            navigate('/admin', { replace: true });
+          } else {
+            setError('Please use agent login page');
+          }
           return;
         }
         

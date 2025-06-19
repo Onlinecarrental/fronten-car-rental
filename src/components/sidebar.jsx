@@ -2,15 +2,32 @@ import React from "react";
 import Button from "./button"; // Importing your existing Button component
 import { FaEnvelope, FaCarAlt, FaCalendarAlt, FaListAlt, FaPhoneAlt, FaSignOutAlt, FaComments } from "react-icons/fa"; // You may need to install this package
 import { useNavigate } from "react-router-dom"; // <-- Add this
+import { auth } from "../firebase/config";
+import { signOut } from "firebase/auth";
 
 function Sidebar() {
   const navigate = useNavigate(); // <-- Add this
 
   // Logout handler for agent
-  const handleLogout = () => {
-    sessionStorage.removeItem('agent');
-    localStorage.removeItem('agent');
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      // Sign out from Firebase
+      await signOut(auth);
+      
+      // Clear all local and session storage
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Navigate to login page
+      navigate('/');
+      
+      // Force a full page reload to clear any remaining state
+      window.location.reload();
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Still navigate to login page even if there's an error
+      navigate('/');
+    }
   };
 
 

@@ -66,15 +66,22 @@ export default function AllBestCars() {
   }
 
   const handleRentNow = (car) => {
-    // Navigate to booking form with car details
-    navigate('/booking-form', { 
+    // Navigate to booking form with car details including agent information
+    navigate('/home/bookingform', { 
       state: { 
         carDetails: {
           id: car._id,
           name: car.name,
           model: car.model,
           dailyRate: car.dailyRate,
-          weeklyRate: car.weeklyRate
+          weeklyRate: car.weeklyRate,
+          coverImage: car.coverImage,
+          year: car.year,
+          transmission: car.transmission,
+          fuelType: car.fuelType,
+          seats: car.seats,
+          ac: car.ac,
+          agentId: car.agentId // Include the agent ID who owns this car
         }
       }
     });
