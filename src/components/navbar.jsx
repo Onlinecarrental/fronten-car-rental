@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Button from "./button";
 import logo from "../assets/logo.svg";
-import ChatWidget from "./ChatWidget";
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +33,7 @@ const Navbar = () => {
               <li><Link to="/home/about-us" className="hover:text-[#efff11]">About Us</Link></li>
               <li><Link to="/home/contactus" className="hover:text-[#efff11]">Contact Us</Link></li>
               <li><Link to="/home/bookingform" className="hover:text-[#efff11]">Booking</Link></li>
-              <li><Link to="/chatwidget" className="hover:text-[#efff11]">ChatWidget </Link></li>
+              <li><Link to="/customer-chat" className="hover:text-[#efff11]">Chat</Link></li>
 
             </ul>
           </div>
@@ -64,6 +64,7 @@ const Navbar = () => {
             <li><Link to="/home/about-us" className="hover:text-[#efff11]">About Us</Link></li>
             <li><Link to="/home/contactus" className="hover:text-[#efff11]">Contact Us</Link></li>
             <li><Link to="/home/bookingform" className="hover:text-[#efff11]">Booking</Link></li>
+            <li><Link to="/customer-chat" className="hover:text-[#efff11]">Chat</Link></li>
             <li>
               <Button height="43px" to="/" width="125px" title="Log Out" onClick={handleLogout} />
             </li>
@@ -72,7 +73,7 @@ const Navbar = () => {
       </nav>
 
       {/* Chat Widget - always visible */}
-      <ChatWidget />
+
     </>
   );
 };

@@ -11,7 +11,8 @@ import BlogsView from './views/BlogsView/blogView';
 import DetailCar from './views/BestCarsView/cardetailview';
 import BlogPost from './views/BlogsView/showblog';
 import BookingView from './views/BookingFormView/bookingFormView';
-import CustomerChatView from './views/CustomerChatView/CustomerChatView';
+import CustomerChat from './views/CustomerChatView/CustomerChat';
+import AgentChat from './views/AgentsPanelView/agentMsgView/AgentChat';
 import CarRentalLoginScreen from './views/HomeView/mainHompage';
 import Login from './components/login';
 import Signup from './components/signup';
@@ -20,7 +21,6 @@ import AgentPanelHomeView from './views/AgentsPanelView/agentHomeView/agentHomev
 import AddCarView from './views/AgentsPanelView/addCarView/addCarView';
 import BookingManagementView from './views/AgentsPanelView/bookingManagementView/bookingManagementView';
 import MyCarListView from './views/AgentsPanelView/myCarListView/myCarListView';
-import AgentMsgView from './views/AgentsPanelView/agentMsgView/agentMsgView';
 import AgentSignup from './components/AgentSignup';
 import AgentLogin from './components/AgentLogin';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -28,7 +28,7 @@ import AgentContactUsView from './views/AgentsPanelView/agentContactUsView/agent
 import AdminDashboard from './views/AdminDashboardView/adminpanel';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import BlogManagement from './views/AdminDashboardView/BlogManagement/BlogManagement';
-import ChatWidget from './components/ChatWidget';
+
 
 const isAuthenticated = false;
 const App = () => {
@@ -99,14 +99,7 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
-                <Route
-                    path="/chatwidget"
-                    element={
-                        <ProtectedRoute type="customer">
-                            <Layout><ChatWidget /></Layout>
-                        </ProtectedRoute>
-                    }
-                />
+
                 <Route
                     path="/home/bookingform"
                     element={
@@ -115,14 +108,7 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
-                <Route
-                    path="/customer-chat"
-                    element={
-                        <ProtectedRoute type="customer">
-                            <Layout><CustomerChatView /></Layout>
-                        </ProtectedRoute>
-                    }
-                />
+
                 <Route
                     path="/home/blogs/:id"
                     element={
@@ -182,13 +168,22 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/agent/messages"
+                    path="/customer-chat"
                     element={
-                        <ProtectedRoute type="agent">
-                            <MainLayout><AgentMsgView /></MainLayout>
+                        <ProtectedRoute type="customer">
+                            <Layout><CustomerChat /></Layout>
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="/agent/messages"
+                    element={
+                        <ProtectedRoute type="agent">
+                            <MainLayout><AgentChat /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
 
                 {/* Admin routes */}
                 <Route
