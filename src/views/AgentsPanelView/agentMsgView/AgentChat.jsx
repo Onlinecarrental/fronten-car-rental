@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useChat } from '../../../modules/chat/useChat';
 import { getCustomerNameById } from '../../../modules/chat/chatUtils';
+import { getCustomerNameById } from '../../../modules/chat/chatUtils';
 
 export default function AgentChat() {
     // Assume agent info is stored in localStorage
