@@ -22,4 +22,24 @@ export const sendMessage = async (chatId, senderId, senderRole, text) => {
         chatId, senderId, senderRole, text
     });
     return res.data.data;
+};
+
+export const deleteMessage = async (messageId, userId, role) => {
+    const res = await axios.delete(`http://localhost:5000/api/chats/messages/${messageId}?userId=${userId}&role=${role}`);
+    return res.data;
+};
+
+export const editMessage = async (messageId, text, userId, role) => {
+    const res = await axios.patch(`http://localhost:5000/api/chats/messages/${messageId}?userId=${userId}&role=${role}`, { text });
+    return res.data;
+};
+
+export const deleteChat = async (chatId, userId, role) => {
+    const res = await axios.delete(`http://localhost:5000/api/chats/${chatId}?userId=${userId}&role=${role}`);
+    return res.data;
+};
+
+export const clearChat = async (chatId, userId, role) => {
+    const res = await axios.delete(`http://localhost:5000/api/chats/${chatId}/messages?userId=${userId}&role=${role}`);
+    return res.data;
 }; 

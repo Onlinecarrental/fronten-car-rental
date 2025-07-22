@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { 
-  Bell, 
-  Search, 
-  Menu, 
-  User, 
-  BarChart2, 
-  Users, 
-  Package, 
-  Settings, 
-  LogOut, 
-  ChevronDown, 
+import {
+  Bell,
+  Search,
+  Menu,
+  User,
+  BarChart2,
+  Users,
+  Package,
+  Settings,
+  LogOut,
+  ChevronDown,
   Activity,
   DollarSign,
   ShoppingCart,
@@ -27,6 +27,7 @@ import CategoryManagement from './CategoryManagement/CategoryManagement'; // Add
 import ReviewManagement from './ReviewManagement/ReviewManagement'; // Add this import for review management
 import HomepageManagement from './HomepageManagement/HomepageManagement';
 import AboutUsManagement from './AboutUsManagement/AboutUsManagement';
+import AdminChat from './AdminChat';
 
 function SidebarItem({ icon, text, isOpen, isActive, onClick, badge }) {
   return (
@@ -68,9 +69,8 @@ function SidebarDropdownItem({ icon, text, isOpen, isActive, items, activeTab, s
       <a
         href="#"
         onClick={handleMainClick}
-        className={`flex items-center py-3 px-4 ${
-          items.some(item => item.id === activeTab) ? 'bg-blue-600' : 'hover:bg-gray-700'
-        }`}
+        className={`flex items-center py-3 px-4 ${items.some(item => item.id === activeTab) ? 'bg-blue-600' : 'hover:bg-gray-700'
+          }`}
       >
         <div className="flex items-center justify-center">{icon}</div>
         {isOpen && (
@@ -89,9 +89,8 @@ function SidebarDropdownItem({ icon, text, isOpen, isActive, items, activeTab, s
             <button
               key={item.id}
               onClick={(e) => handleItemClick(e, item.id)}
-              className={`w-full text-left flex items-center py-2 px-4 pl-12 ${
-                activeTab === item.id ? 'bg-blue-600' : 'hover:bg-gray-700'
-              }`}
+              className={`w-full text-left flex items-center py-2 px-4 pl-12 ${activeTab === item.id ? 'bg-blue-600' : 'hover:bg-gray-700'
+                }`}
             >
               {item.text}
             </button>
@@ -127,10 +126,10 @@ function DashboardContent() {
                 <p className="text-gray-500 text-sm">{stat.title}</p>
                 <h3 className="text-2xl font-bold mt-1">{stat.value}</h3>
               </div>
-              <div className={`p-3 rounded-full ${stat.title === 'Revenue' ? 'bg-green-100 text-green-600' : 
-                             stat.title === 'Users' ? 'bg-blue-100 text-blue-600' : 
-                             stat.title === 'Orders' ? 'bg-purple-100 text-purple-600' : 
-                             'bg-yellow-100 text-yellow-600'}`}>
+              <div className={`p-3 rounded-full ${stat.title === 'Revenue' ? 'bg-green-100 text-green-600' :
+                stat.title === 'Users' ? 'bg-blue-100 text-blue-600' :
+                  stat.title === 'Orders' ? 'bg-purple-100 text-purple-600' :
+                    'bg-yellow-100 text-yellow-600'}`}>
                 {stat.icon}
               </div>
             </div>
@@ -169,9 +168,8 @@ function DashboardContent() {
                     <div className="text-gray-500">{user.role}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      user.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      }`}>
                       {user.status}
                     </span>
                   </td>
@@ -241,7 +239,7 @@ function MessagesContent() {
         if (showInactive) {
           url.searchParams.append('includeInactive', 'true');
         }
-        
+
         const response = await fetch(url, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -308,28 +306,28 @@ function MessagesContent() {
 
       if (response.ok) {
         const newMsg = await response.json();
-        
+
         // Update messages in the current view
         setMessages(prev => [...prev, newMsg.data]);
         setNewMessage('');
-        
+
         // Update the chat in the chats list with the new last message
-        setChats(prevChats => 
-          prevChats.map(chat => 
-            chat._id === selectedChat._id 
-              ? { 
-                  ...chat, 
-                  lastMessage: { 
-                    text: newMessage,
-                    timestamp: new Date(),
-                    sender: 'admin'
-                  },
-                  updatedAt: new Date().toISOString()
-                } 
+        setChats(prevChats =>
+          prevChats.map(chat =>
+            chat._id === selectedChat._id
+              ? {
+                ...chat,
+                lastMessage: {
+                  text: newMessage,
+                  timestamp: new Date(),
+                  sender: 'admin'
+                },
+                updatedAt: new Date().toISOString()
+              }
               : chat
           )
         );
-        
+
         // Move the updated chat to the top of the list
         setChats(prevChats => [
           ...prevChats.filter(c => c._id === selectedChat._id),
@@ -343,7 +341,7 @@ function MessagesContent() {
 
   const handleCloseChat = async () => {
     if (!selectedChat) return;
-    
+
     if (window.confirm('Are you sure you want to close this chat? This will archive the conversation.')) {
       try {
         const response = await fetch(`http://localhost:5000/api/chats/${selectedChat._id}/close`, {
@@ -356,7 +354,7 @@ function MessagesContent() {
             userId: selectedChat.userId?._id
           })
         });
-        
+
         if (response.ok) {
           // Remove the chat from the list
           setChats(prevChats => prevChats.filter(chat => chat._id !== selectedChat._id));
@@ -383,17 +381,15 @@ function MessagesContent() {
                 checked={showInactive}
                 onChange={() => setShowInactive(!showInactive)}
               />
-              <div className={`w-12 h-6 rounded-full shadow-inner transition-colors duration-200 ${
-                showInactive ? 'bg-blue-500' : 'bg-gray-300'
-              }`}></div>
-              <div className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${
-                showInactive ? 'translate-x-6' : 'translate-x-0'
-              }`}></div>
+              <div className={`w-12 h-6 rounded-full shadow-inner transition-colors duration-200 ${showInactive ? 'bg-blue-500' : 'bg-gray-300'
+                }`}></div>
+              <div className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ${showInactive ? 'translate-x-6' : 'translate-x-0'
+                }`}></div>
             </div>
           </label>
         </div>
       </div>
-      
+
       <div className="flex-1 flex gap-6 h-[calc(100vh-200px)]">
         {/* Chat List */}
         <div className="w-1/3 bg-white rounded-lg shadow p-4 overflow-y-auto">
@@ -410,12 +406,11 @@ function MessagesContent() {
           ) : (
             <div className="space-y-2">
               {chats.map(chat => (
-                <div 
+                <div
                   key={chat._id}
                   onClick={() => setSelectedChat(chat)}
-                  className={`p-3 rounded-lg cursor-pointer hover:bg-gray-100 ${
-                    selectedChat?._id === chat._id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
-                  }`}
+                  className={`p-3 rounded-lg cursor-pointer hover:bg-gray-100 ${selectedChat?._id === chat._id ? 'bg-blue-50 border-l-4 border-blue-500' : ''
+                    }`}
                 >
                   <div className="font-medium">
                     {chat.userId?.name || 'Customer'}
@@ -455,7 +450,7 @@ function MessagesContent() {
                   Close Chat
                 </button>
               </div>
-              
+
               <div className="flex-1 p-4 overflow-y-auto">
                 {messageLoading ? (
                   <div className="flex justify-center items-center h-full">
@@ -468,27 +463,25 @@ function MessagesContent() {
                 ) : (
                   <div className="space-y-4">
                     {messages.map((message) => (
-                      <div 
-                        key={message._id} 
-                        className={`flex ${
-                          message.sender === 'admin' ? 'justify-end' : 'justify-start'
-                        }`}
-                      >
-                        <div 
-                          className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                            message.sender === 'admin' 
-                              ? 'bg-blue-500 text-white' 
-                              : message.sender === 'agent'
-                                ? 'bg-green-100'
-                                : 'bg-gray-100'
+                      <div
+                        key={message._id}
+                        className={`flex ${message.sender === 'admin' ? 'justify-end' : 'justify-start'
                           }`}
+                      >
+                        <div
+                          className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${message.sender === 'admin'
+                            ? 'bg-blue-500 text-white'
+                            : message.sender === 'agent'
+                              ? 'bg-green-100'
+                              : 'bg-gray-100'
+                            }`}
                         >
                           <div className="font-medium text-xs text-gray-600 mb-1">
                             {message.user?.name || message.sender}
                           </div>
                           <div>{message.text}</div>
                           <div className="text-right text-xs mt-1 opacity-70">
-                            {new Date(message.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                            {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         </div>
                       </div>
@@ -670,6 +663,8 @@ export default function AdminDashboard() {
         return <ReviewManagement />;
       case 'settings':
         return <SettingsContent />;
+      case 'adminchat':
+        return <AdminChat />;
       default:
         return <DashboardContent />;
     }
@@ -688,12 +683,12 @@ export default function AdminDashboard() {
           </button>
         </div>
         <nav className="mt-5 flex flex-col h-[calc(100vh-80px)]">
-          <SidebarItem 
-            icon={<BarChart2 size={20} />} 
-            text="Dashboard" 
-            isOpen={sidebarOpen} 
+          <SidebarItem
+            icon={<BarChart2 size={20} />}
+            text="Dashboard"
+            isOpen={sidebarOpen}
             isActive={activeTab === 'dashboard'}
-            onClick={() => setActiveTab('dashboard')} 
+            onClick={() => setActiveTab('dashboard')}
           />
           <SidebarDropdownItem
             icon={<Home size={20} />}
@@ -726,63 +721,70 @@ export default function AdminDashboard() {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <SidebarItem 
-            icon={<Users size={20} />} 
-            text="Users" 
-            isOpen={sidebarOpen} 
+          <SidebarItem
+            icon={<Users size={20} />}
+            text="Users"
+            isOpen={sidebarOpen}
             isActive={activeTab === 'users'}
-            onClick={() => setActiveTab('users')} 
+            onClick={() => setActiveTab('users')}
           />
-          <SidebarItem 
-            icon={<Package size={20} />} 
-            text="Products" 
-            isOpen={sidebarOpen} 
+          <SidebarItem
+            icon={<Package size={20} />}
+            text="Products"
+            isOpen={sidebarOpen}
             isActive={activeTab === 'products'}
-            onClick={() => setActiveTab('products')} 
+            onClick={() => setActiveTab('products')}
           />
-          <SidebarItem 
-            icon={<FileText size={20} />} 
-            text="Blogs" 
+          <SidebarItem
+            icon={<FileText size={20} />}
+            text="Blogs"
             isOpen={sidebarOpen}
             isActive={activeTab === 'blogs'}
-            onClick={() => setActiveTab('blogs')} 
+            onClick={() => setActiveTab('blogs')}
           />
-          <SidebarItem 
-            icon={<MessageSquare size={20} />} 
-            text="Messages" 
+          <SidebarItem
+            icon={<MessageSquare size={20} />}
+            text="Messages"
             isOpen={sidebarOpen}
-            isActive={activeTab === 'messages'} 
-            onClick={() => setActiveTab('messages')} 
+            isActive={activeTab === 'messages'}
+            onClick={() => setActiveTab('messages')}
             badge="5"
           />
-          <SidebarItem 
-            icon={<Folder size={20} />} 
-            text="Categories" 
+          <SidebarItem
+            icon={<Folder size={20} />}
+            text="Categories"
             isOpen={sidebarOpen}
             isActive={activeTab === 'categories'}
-            onClick={() => setActiveTab('categories')} 
+            onClick={() => setActiveTab('categories')}
           />
-          <SidebarItem 
-            icon={<MessageSquare size={20} />} 
-            text="Reviews" 
+          <SidebarItem
+            icon={<MessageSquare size={20} />}
+            text="Reviews"
             isOpen={sidebarOpen}
             isActive={activeTab === 'reviews'}
-            onClick={() => setActiveTab('reviews')} 
+            onClick={() => setActiveTab('reviews')}
           />
-          <SidebarItem 
-            icon={<Settings size={20} />} 
-            text="Settings" 
+          <SidebarItem
+            icon={<Settings size={20} />}
+            text="Settings"
             isOpen={sidebarOpen}
-            isActive={activeTab === 'settings'} 
-            onClick={() => setActiveTab('settings')} 
+            isActive={activeTab === 'settings'}
+            onClick={() => setActiveTab('settings')}
+          />
+          <SidebarItem
+            icon={<MessageSquare size={20} />}
+            text="Admin Chat"
+            isOpen={sidebarOpen}
+            isActive={activeTab === 'adminchat'}
+            onClick={() => setActiveTab('adminchat')}
           />
           <div className="mt-auto pt-5">
-            <SidebarItem 
-              icon={<LogOut size={20} />} 
-              text="Logout" 
+            <SidebarItem
+              icon={<LogOut size={20} />}
+              text="Logout"
               isOpen={sidebarOpen}
               isActive={false}
-              onClick={handleLogout} 
+              onClick={handleLogout}
             />
           </div>
         </nav>
@@ -794,9 +796,9 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center rounded-md bg-gray-100 px-3 py-2 w-64">
               <Search size={18} className="text-gray-500" />
-              <input 
-                type="text" 
-                placeholder="Search..." 
+              <input
+                type="text"
+                placeholder="Search..."
                 className="bg-transparent border-none outline-none ml-2 w-full"
               />
             </div>
