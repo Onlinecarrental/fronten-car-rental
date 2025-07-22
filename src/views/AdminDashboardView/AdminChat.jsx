@@ -5,7 +5,7 @@ import { getCustomerNameById, getAgentNameById } from '../../modules/chat/chatUt
 export default function AdminChat() {
     // Assume admin info is stored in localStorage
     const user = JSON.parse(localStorage.getItem('user'));
-    const { chats, messages, setActiveChatId, send, activeChatId, loading, error } = useChat({
+    const { chats, messages, setActiveChatId, send, activeChatId, loading, error, deleteMessage } = useChat({
         userId: user?.uid,
         role: user?.role,
         isAdmin: true
@@ -53,7 +53,9 @@ export default function AdminChat() {
         <div className="w-full h-[80vh] flex bg-white rounded-lg shadow overflow-hidden font-jakarta">
             {/* Sidebar: Chat List */}
             <div className="w-[340px] min-w-[260px] border-r bg-gray-50 flex flex-col">
-                <div className="p-4 border-b font-bold text-lg flex items-center bg-white">All Conversations</div>
+                <div className="p-4 border-b font-bold text-lg flex items-center bg-white">
+                    Admin Chat — All Conversations
+                </div>
                 <div className="flex-1 overflow-y-auto space-y-2 px-2 pb-2">
                     {loading ? (
                         <div className="text-center text-gray-400 mt-10">Loading chats...</div>
@@ -104,11 +106,35 @@ export default function AdminChat() {
                         <div className="text-gray-400 text-center mt-10">No messages yet</div>
                     ) : (
                         messages.map(msg => (
-                            <div key={msg._id} className={`flex ${msg.senderId === user?.uid ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`max-w-xs px-4 py-2 rounded-[12px] shadow ${msg.senderId === user?.uid ? 'bg-blue-100 text-blue-900' : 'bg-gray-100 text-gray-900'}`}> {/* modern bubble */}
-                                    <div className="text-base font-medium mb-1 text-gray-600">{msg.senderName || ''}</div>
+                            <div key={msg._id} className={`flex ${msg.senderRole === 'admin' ? 'justify-end' : 'justify-start'} group`}>
+                                <div className={`relative max-w-xs px-4 py-2 rounded-[12px] shadow
+  ${msg.senderRole === 'admin'
+                                        ? 'bg-blue-100 text-blue-900'
+                                        : msg.senderRole === 'agent'
+                                            ? 'bg-green-100 text-green-900'
+                                            : 'bg-gray-100 text-gray-900'}`}>
+                                    <div className="text-xs font-semibold mb-1 text-gray-500">
+                                        {msg.senderRole === 'admin' ? 'Admin' : msg.senderRole === 'agent' ? 'Agent' : 'Customer'}
+                                    </div>
                                     <div className="text-lg">{msg.text}</div>
                                     <div className="text-xs text-right text-gray-400 mt-1">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                    {/* Delete button for admin's own messages */}
+                                    {msg.senderRole === 'admin' && (
+                                        <button
+                                            className="absolute top-1 right-1 p-1 rounded-full bg-red-400 text-white hover:bg-red-600 transition-colors"
+                                            title="Delete message"
+                                            onClick={() => {
+                                                if (window.confirm('Delete this message?')) {
+                                                    deleteMessage(msg._id);
+                                                }
+                                            }}
+                                        >
+                                            {/* Trash icon */}
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ))

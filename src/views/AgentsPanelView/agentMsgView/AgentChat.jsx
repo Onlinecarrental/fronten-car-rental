@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useChat } from '../../../modules/chat/useChat';
 import { getCustomerNameById } from '../../../modules/chat/chatUtils';
-import { getCustomerNameById } from '../../../modules/chat/chatUtils';
 
 export default function AgentChat() {
     // Assume agent info is stored in localStorage
@@ -50,17 +49,11 @@ export default function AgentChat() {
         }
     }, [filteredChats, customerNames]);
 
-    // Lock scroll position when messages change (no scroll movement)
+    // Remove scroll lock logic and scroll to bottom on messages change or send
     useEffect(() => {
         const container = messagesContainerRef.current;
         if (!container) return;
-        const prevScrollTop = container.scrollTop;
-        const prevScrollHeight = container.scrollHeight;
-        // Wait for DOM update
-        setTimeout(() => {
-            // If height increased, keep the same scrollTop (no jump)
-            container.scrollTop = prevScrollTop + (container.scrollHeight - prevScrollHeight);
-        }, 0);
+        container.scrollTop = container.scrollHeight;
     }, [messages]);
 
     const activeChat = filteredChats.find(c => c._id === activeChatId);
