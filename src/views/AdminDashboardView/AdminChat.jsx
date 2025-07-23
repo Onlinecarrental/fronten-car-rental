@@ -5,7 +5,7 @@ import { getCustomerNameById, getAgentNameById } from '../../modules/chat/chatUt
 export default function AdminChat() {
     // Assume admin info is stored in localStorage
     const user = JSON.parse(localStorage.getItem('user'));
-    const { chats, messages, setActiveChatId, send, activeChatId, loading, error, deleteMessage } = useChat({
+    const { chats, messages, setActiveChatId, send, activeChatId, loading, error, deleteMessage, clearChat, deleteChat } = useChat({
         userId: user?.uid,
         role: user?.role,
         isAdmin: true
@@ -92,12 +92,37 @@ export default function AdminChat() {
                     <div className="w-12 h-12 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold text-2xl">
                         {activeChatId && names[activeChatId]?.customerName ? names[activeChatId].customerName[0] : 'U'}
                     </div>
-                    <div className="font-semibold text-lg text-gray-900">
+                    <div className="font-semibold text-lg text-gray-900 flex-1">
                         {activeChatId && names[activeChatId]?.customerName ? names[activeChatId].customerName : 'Select a chat'}
                         {activeChatId && names[activeChatId]?.agentName && (
                             <span className="text-gray-400 font-normal"> &nbsp;↔&nbsp; {names[activeChatId].agentName}</span>
                         )}
                     </div>
+                    {/* Clear Chat Button for Admin */}
+                    {activeChatId && (
+                        <>
+                            <button
+                                className="ml-auto px-3 py-1 rounded bg-red-500 text-white hover:bg-red-700 transition-colors"
+                                onClick={() => {
+                                    if (window.confirm('Are you sure you want to clear all messages in this chat for everyone?')) {
+                                        clearChat(activeChatId);
+                                    }
+                                }}
+                            >
+                                Clear Chat
+                            </button>
+                            <button
+                                className="ml-2 px-3 py-1 rounded bg-red-700 text-white hover:bg-red-900 transition-colors"
+                                onClick={() => {
+                                    if (window.confirm('Are you sure you want to delete this chat and all its messages for everyone?')) {
+                                        deleteChat(activeChatId);
+                                    }
+                                }}
+                            >
+                                Delete Chat
+                            </button>
+                        </>
+                    )}
                 </div>
                 {/* Messages */}
                 <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6 bg-white flex flex-col gap-4">
