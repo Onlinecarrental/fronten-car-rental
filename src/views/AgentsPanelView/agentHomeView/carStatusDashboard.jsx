@@ -1,30 +1,55 @@
-import React from "react";
-import BaseCard from "../../../components/card"; // Assuming BaseCard is in the same folder
+import React, { useEffect, useState } from "react";
+import BaseCard from "../../../components/card";
 import { PieChart, Pie, Cell } from "recharts";
+import axios from "axios";
 
-const data = [
-  { name: "Booked", value: 60 },
-  { name: "Not Booked", value: 40 },
-];
-
-const COLORS = ["#000000", "#5F38F3"]; // Black, Purple
+const COLORS = ["#000000", "#5F38F3"];
 
 function CarStatusDashboard() {
+  const [data, setData] = useState([
+    { name: "Approved", value: 0 },
+    { name: "Pending", value: 0 },
+  ]);
+  const [total, setTotal] = useState(0);
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        if (!user.uid) return;
+        const res = await axios.get('http://localhost:5000/api/cars');
+        const agentCars = (res.data.data || []).filter(car => car.agentId === user.uid);
+        const approved = agentCars.filter(car => car.status === 'rented').length;
+        const pending = agentCars.filter(car => car.status === 'pending').length;
+        setData([
+          { name: "Approved", value: approved },
+          { name: "Pending", value: pending },
+        ]);
+        setTotal(approved + pending);
+      } catch (err) {
+        setData([
+          { name: "Approved", value: 0 },
+          { name: "Pending", value: 0 },
+        ]);
+        setTotal(0);
+      }
+    };
+    fetchCars();
+  }, [user.uid]);
+
   return (
     <BaseCard width="w-full" height="h-[250px]" bgColor="bg-white" className="border">
       <div className="flex items-center  h-full">
         {/* Legend */}
         <div className="flex flex-col justify-center pl-4 pr-8 space-y-4">
-          <div className="flex items-center space-x-2">
-            <span className="w-4 h-4 rounded-full bg-black" />
-            <span className="text-sm font-medium">Booked</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <span className="w-4 h-4 rounded-full bg-[#5F38F3]" />
-            <span className="text-sm font-medium">Not Booked</span>
-          </div>
+          {data.map((entry, idx) => (
+            <div key={entry.name} className="flex items-center space-x-2">
+              <span className={`w-4 h-4 rounded-full ${idx === 0 ? 'bg-black' : 'bg-[#5F38F3]'}`} />
+              <span className="text-sm font-medium">{entry.name}</span>
+              <span className="text-xs text-gray-700 font-semibold">{total > 0 ? `${Math.round((entry.value / total) * 100)}%` : '0%'}</span>
+            </div>
+          ))}
         </div>
-
         {/* Donut Chart */}
         <div className="flex-1">
           <h2 className="text-center text-xl font-bold mb-2">Car Status</h2>

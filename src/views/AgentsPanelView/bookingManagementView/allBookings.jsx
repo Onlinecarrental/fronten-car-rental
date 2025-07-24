@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import BaseCard from "../../../components/card";
 import Button from "../../../components/button";
+import { getCustomerNameById } from '../../../modules/chat/chatUtils'; // adjust path if needed
 
 export default function AllBookings() {
   const [bookings, setBookings] = useState([]);
@@ -10,6 +11,7 @@ export default function AllBookings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const itemsPerPage = 6;
+  const [customerNames, setCustomerNames] = useState({});
 
   // Get agent from localStorage
   const user = JSON.parse(localStorage.getItem('user')) || {};
@@ -41,6 +43,20 @@ export default function AllBookings() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
+
+  // Fetch customer names for bookings without a name
+  useEffect(() => {
+    const fetchNames = async () => {
+      const currentPageBookings = filteredData.slice(startIndex, endIndex);
+      const missing = currentPageBookings.map(b => b.customer).filter(Boolean).filter(uid => !customerNames[uid]);
+      for (const uid of missing) {
+        const name = await getCustomerNameById(uid);
+        if (name) setCustomerNames(prev => ({ ...prev, [uid]: name }));
+      }
+    };
+    if (filteredData.length > 0) fetchNames();
+    // eslint-disable-next-line
+  }, [filteredData, startIndex, endIndex]);
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -113,7 +129,7 @@ export default function AllBookings() {
               >
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-gray-200 rounded-full ml-4 mr-2"></div>
-                  {item.customer?.name || 'N/A'}
+                  {customerNames[item.customer] || 'Customer'}
                 </div>
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-gray-200 rounded-md ml-4 mr-2"></div>
@@ -166,7 +182,7 @@ export default function AllBookings() {
           Previous
         </button>
 
-        {[...Array(Math.max(5, totalPages))].map((_, index) => {
+        {[...Array(totalPages)].map((_, index) => {
           const pageNumber = index + 1;
           const isActive = currentPage === pageNumber;
           const isAvailable = pageNumber <= totalPages;
@@ -176,10 +192,10 @@ export default function AllBookings() {
               key={index}
               onClick={() => isAvailable && goToPage(pageNumber)}
               className={`h-9 w-9 text-sm font-medium rounded-lg shadow-lg ${isActive
-                  ? "bg-indigo-600 text-white"
-                  : isAvailable
-                    ? "bg-gray-300 text-black"
-                    : "bg-gray-200 text-gray-400"
+                ? "bg-indigo-600 text-white"
+                : isAvailable
+                  ? "bg-gray-300 text-black"
+                  : "bg-gray-200 text-gray-400"
                 }`}
               disabled={!isAvailable}
             >

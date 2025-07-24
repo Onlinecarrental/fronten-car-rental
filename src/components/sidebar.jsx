@@ -13,14 +13,14 @@ function Sidebar() {
     try {
       // Sign out from Firebase
       await signOut(auth);
-      
+
       // Clear all local and session storage
       localStorage.clear();
       sessionStorage.clear();
-      
+
       // Navigate to login page
       navigate('/');
-      
+
       // Force a full page reload to clear any remaining state
       window.location.reload();
     } catch (error) {
@@ -43,6 +43,18 @@ function Sidebar() {
 
       {/* Navigation Menu */}
       <div className="flex flex-col flex-grow space-y-2">
+
+        <Button
+          title="Dashboard"
+          to="/agent"
+          bgColor="bg-white"
+          textColor="text-black"
+          width="100%"
+          rounded="rounded-md"
+          hoverBgColor="hover:bg-gray"
+          className="justify-center"
+          iconLeft={<FaListAlt />}
+        />
 
         <Button
           title="Messages"
