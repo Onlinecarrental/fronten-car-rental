@@ -28,6 +28,7 @@ import AgentContactUsView from './views/AgentsPanelView/agentContactUsView/agent
 import AdminDashboard from './views/AdminDashboardView/adminpanel';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import BlogManagement from './views/AdminDashboardView/BlogManagement/BlogManagement';
+import CustomerBookings from './views/CustomerAddCarView/customerBookings';
 
 
 const isAuthenticated = false;
@@ -114,6 +115,15 @@ const App = () => {
                     element={
                         <ProtectedRoute type="customer">
                             <Layout><BlogPost /></Layout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/home/my-bookings"
+                    element={
+                        <ProtectedRoute type="customer">
+                            <Layout><CustomerBookings /></Layout>
                         </ProtectedRoute>
                     }
                 />

@@ -16,7 +16,7 @@ export default function AllBestCars() {
       try {
         setLoading(true);
         const response = await axios.get('http://localhost:5000/api/cars');
-        
+
         // Check if response has the correct structure and data is an array
         if (response.data && response.data.data && Array.isArray(response.data.data)) {
           setCars(response.data.data);
@@ -46,11 +46,12 @@ export default function AllBestCars() {
     </div>
   );
 
-  // Get current cars
+  // Only show available cars
+  const availableCars = cars.filter(car => car.status === 'available');
   const indexOfLastCar = currentPage * carsPerPage;
   const indexOfFirstCar = indexOfLastCar - carsPerPage;
-  const currentCars = cars.slice(indexOfFirstCar, indexOfLastCar);
-  const totalPages = Math.ceil(cars.length / carsPerPage);
+  const currentCars = availableCars.slice(indexOfFirstCar, indexOfLastCar);
+  const totalPages = Math.ceil(availableCars.length / carsPerPage);
 
   // Handle page changes
   const goToPage = (pageNumber) => {
@@ -67,8 +68,8 @@ export default function AllBestCars() {
 
   const handleRentNow = (car) => {
     // Navigate to booking form with car details including agent information
-    navigate('/home/bookingform', { 
-      state: { 
+    navigate('/home/bookingform', {
+      state: {
         carDetails: {
           id: car._id,
           name: car.name,
@@ -93,10 +94,10 @@ export default function AllBestCars() {
         {currentCars.map((car) => (
           <BaseCard width='w-[380px]' padding='p-[8px]' height='h-full' key={car._id}>
             <div className="relative h-48 overflow-hidden">
-              <img 
+              <img
                 src={`http://localhost:5000/${car.coverImage}`}
-                alt={car.name} 
-                className="w-full h-full rounded-[15px] object-cover" 
+                alt={car.name}
+                className="w-full h-full rounded-[15px] object-cover"
               />
             </div>
             <div className="p-4">
@@ -129,9 +130,8 @@ export default function AllBestCars() {
           <button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`bg-Blue text-white px-4 py-2 rounded-[10px] ${
-              currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'
-            }`}
+            className={`bg-Blue text-white px-4 py-2 rounded-[10px] ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'
+              }`}
           >
             <div className="flex justify-between gap-2 items-center">
               <span>Previous</span>
@@ -143,11 +143,10 @@ export default function AllBestCars() {
             <button
               key={number}
               onClick={() => goToPage(number)}
-              className={`px-4 py-2 rounded ${
-                currentPage === number
-                  ? 'bg-Blue text-white'
-                  : 'bg-gray text-white hover:bg-Blue'
-              }`}
+              className={`px-4 py-2 rounded ${currentPage === number
+                ? 'bg-Blue text-white'
+                : 'bg-gray text-white hover:bg-Blue'
+                }`}
             >
               {number}
             </button>
@@ -157,9 +156,8 @@ export default function AllBestCars() {
           <button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`bg-Blue text-white px-4 py-2 rounded-[10px] ${
-              currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'
-            }`}
+            className={`bg-Blue text-white px-4 py-2 rounded-[10px] ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'
+              }`}
           >
             <div className="flex items-center gap-2">
               <span>Next</span>

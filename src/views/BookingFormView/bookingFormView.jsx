@@ -122,10 +122,24 @@ export default function BookingForm() {
       setSubmitError('');
       setLoading(true);
       try {
+        // 1. Create booking in backend
+        const bookingPayload = {
+          car: carDetails?.id,
+          customer: user.uid,
+          agent: carDetails?.agentId,
+          dateFrom: parseDMY(formData.dateFrom),
+          dateTo: parseDMY(formData.dateTo),
+          location: formData.location,
+          price: Number(formData.price),
+          paymentMethod: formData.paymentMethod,
+          paymentNumber: formData.paymentNumber
+        };
+        await axios.post('http://localhost:5000/api/bookings', bookingPayload);
+        // 2. Proceed with chat system as before
         const chatResult = await createChatWithAgent();
         setBookingSuccess(true);
         navigate('/customer-chat', { state: { chatId: chatResult.chatId } });
-      } catch (chatError) {
+      } catch (error) {
         setSubmitError('Booking successful, but there was an issue starting the chat. Please contact support.');
         setBookingSuccess(true);
       } finally {

@@ -49,17 +49,17 @@ const Card = ({ car, onEdit, onDelete }) => {
         </div>
       </div>
       <div className="flex justify-between gap-2 px-3 pt-3 pb-1">
-        <Button 
-          title="Edit" 
-          width="100%" 
-          className="text-[14px] px-0 bg-blue-600 hover:bg-blue-700 text-white" 
-          onClick={() => onEdit(car)} 
+        <Button
+          title="Edit"
+          width="100%"
+          className="text-[14px] px-0 bg-blue-600 hover:bg-blue-700 text-white"
+          onClick={() => onEdit(car)}
         />
-        <Button 
-          title="Delete" 
-          width="100%" 
-          className="text-[14px] px-0 bg-red-600 hover:bg-red-700 text-white" 
-          onClick={() => onDelete(car)} 
+        <Button
+          title="Delete"
+          width="100%"
+          className="text-[14px] px-0 bg-red-600 hover:bg-red-700 text-white"
+          onClick={() => onDelete(car)}
         />
       </div>
     </BaseCard>
@@ -78,9 +78,8 @@ const Pagination = ({ totalPages, currentPage, setPage }) => {
       {[...Array(totalPages)].map((_, i) => (
         <button
           key={i}
-          className={`w-[30px] h-[30px] rounded-[5px] font-bold ${
-            currentPage === i + 1 ? "bg-[#5937e0] text-white" : "bg-gray-200"
-          }`}
+          className={`w-[30px] h-[30px] rounded-[5px] font-bold ${currentPage === i + 1 ? "bg-[#5937e0] text-white" : "bg-gray-200"
+            }`}
           onClick={() => setPage(i + 1)}
         >
           {i + 1}
@@ -109,11 +108,11 @@ const AllCarsList = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Get the logged-in agent's ID
       const userData = JSON.parse(localStorage.getItem('user'));
       console.log('Raw user data from localStorage:', userData);
-      
+
       if (!userData) {
         console.error('No user data found in localStorage');
         navigate('/agent-login');
@@ -138,11 +137,11 @@ const AllCarsList = () => {
         email: userData.email,
         role: userData.role
       });
-      
+
       // Fetch all cars
       const response = await axios.get('http://localhost:5000/api/cars');
       console.log('Full API Response:', JSON.stringify(response.data, null, 2));
-      
+
       if (response.data.success) {
         // Log the first car to see its structure
         if (response.data.data.length > 0) {
@@ -163,13 +162,13 @@ const AllCarsList = () => {
             user_id: car.user_id,
             currentAgentId: agentId
           }, null, 2));
-          
+
           // Check all possible agent ID fields
           const carAgentId = car.agentId || car.agent_id || car.agent || car.userId || car.user_id;
           console.log('Car agent ID:', carAgentId);
           console.log('Current agent ID:', agentId);
           console.log('Match:', carAgentId === agentId);
-          
+
           // If no agent ID is found, log a warning
           if (!carAgentId) {
             console.warn('Car has no agent ID:', {
@@ -179,12 +178,12 @@ const AllCarsList = () => {
             });
             return false; // Don't include cars without an agent ID
           }
-          
-          return carAgentId === agentId;
+
+          return carAgentId === agentId && car.status !== 'rented';
         });
-        
+
         console.log('Filtered agent cars:', JSON.stringify(agentCars, null, 2));
-        
+
         // Apply status filter if not 'all'
         if (statusFilter !== 'all') {
           const filteredCars = agentCars.filter(car => car.status === statusFilter);
@@ -201,8 +200,8 @@ const AllCarsList = () => {
         setError('Cannot connect to server. Please check if the server is running.');
       } else {
         setError(
-          error.response?.data?.message || 
-          error.message || 
+          error.response?.data?.message ||
+          error.message ||
           'An unexpected error occurred'
         );
       }
@@ -240,7 +239,7 @@ const AllCarsList = () => {
     try {
       // First fetch the car details
       const response = await axios.get(`http://localhost:5000/api/cars/${car._id}`);
-      
+
       if (response.data.success) {
         // Store car data in localStorage for the form
         localStorage.setItem('editCarData', JSON.stringify(response.data.data));
@@ -263,7 +262,7 @@ const AllCarsList = () => {
     try {
       setLoading(true);
       const response = await axios.delete(`http://localhost:5000/api/cars/${car._id}`);
-      
+
       if (response.data.success) {
         alert('Car deleted successfully!');
         await fetchCars(); // Refresh the list
@@ -283,7 +282,7 @@ const AllCarsList = () => {
       <div className="flex justify-between mb-8">
         <h1 className="text-2xl font-bold">My Cars</h1>
         <div className="flex gap-4">
-          <select 
+          <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-4 py-2 border rounded-md"
@@ -292,16 +291,16 @@ const AllCarsList = () => {
             <option value="available">Available</option>
             <option value="rented">Rented</option>
           </select>
-          <Button 
-            title="Add New Car" 
-            bgColor="bg-blue-600" 
+          <Button
+            title="Add New Car"
+            bgColor="bg-blue-600"
             textColor="text-white"
             width="120px"
             onClick={() => navigate('/agent/addcar')}
           />
         </div>
       </div>
-      
+
       {loading ? (
         <div className="flex justify-center items-center min-h-[400px]">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -309,7 +308,7 @@ const AllCarsList = () => {
       ) : error ? (
         <div className="text-center py-8 text-red-500">
           <p>{error}</p>
-          <button 
+          <button
             onClick={fetchCars}
             className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
@@ -319,9 +318,9 @@ const AllCarsList = () => {
       ) : cars.length === 0 ? (
         <div className="text-center py-16 text-gray-500">
           <p className="text-xl mb-4">No cars available</p>
-          <Button 
-            title="Add Your First Car" 
-            bgColor="bg-blue-600" 
+          <Button
+            title="Add Your First Car"
+            bgColor="bg-blue-600"
             textColor="text-white"
             width="160px"
             onClick={() => navigate('/agent/addcar')}
@@ -331,11 +330,11 @@ const AllCarsList = () => {
         <div className="flex flex-col items-center justify-center py-10">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-8">
             {cars.slice((currentPage - 1) * carsPerPage, currentPage * carsPerPage).map((car) => (
-              <Card 
-                key={car._id} 
-                car={car} 
-                onEdit={handleEdit} 
-                onDelete={handleDelete} 
+              <Card
+                key={car._id}
+                car={car}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
               />
             ))}
           </div>

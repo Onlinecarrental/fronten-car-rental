@@ -28,6 +28,7 @@ import ReviewManagement from './ReviewManagement/ReviewManagement'; // Add this 
 import HomepageManagement from './HomepageManagement/HomepageManagement';
 import AboutUsManagement from './AboutUsManagement/AboutUsManagement';
 import AdminChat from './AdminChat';
+import BookingManagement from './BookingManagement/BookingManagement';
 
 function SidebarItem({ icon, text, isOpen, isActive, onClick, badge }) {
   return (
@@ -649,10 +650,8 @@ export default function AdminDashboard() {
     switch (activeTab) {
       case 'dashboard':
         return <DashboardContent />;
-      case 'users':
-        return <UsersContent />;
-      case 'products':
-        return <ProductsContent />;
+      case 'bookings':
+        return <BookingManagement />;
       case 'messages':
         return <MessagesContent />;
       case 'blogs':
@@ -690,6 +689,13 @@ export default function AdminDashboard() {
             isActive={activeTab === 'dashboard'}
             onClick={() => setActiveTab('dashboard')}
           />
+          <SidebarItem
+            icon={<ShoppingCart size={20} />}
+            text="Booking Management"
+            isOpen={sidebarOpen}
+            isActive={activeTab === 'bookings'}
+            onClick={() => setActiveTab('bookings')}
+          />
           <SidebarDropdownItem
             icon={<Home size={20} />}
             text="Homepage"
@@ -720,20 +726,6 @@ export default function AdminDashboard() {
             ]}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
-          />
-          <SidebarItem
-            icon={<Users size={20} />}
-            text="Users"
-            isOpen={sidebarOpen}
-            isActive={activeTab === 'users'}
-            onClick={() => setActiveTab('users')}
-          />
-          <SidebarItem
-            icon={<Package size={20} />}
-            text="Products"
-            isOpen={sidebarOpen}
-            isActive={activeTab === 'products'}
-            onClick={() => setActiveTab('products')}
           />
           <SidebarItem
             icon={<FileText size={20} />}
