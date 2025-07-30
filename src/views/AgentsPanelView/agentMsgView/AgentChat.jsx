@@ -14,8 +14,7 @@ export default function AgentChat() {
     const [customerNames, setCustomerNames] = useState({});
     const messagesContainerRef = useRef(null);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [selectMode, setSelectMode] = useState(false);
-    const [selectedChats, setSelectedChats] = useState([]);
+    // selectMode and selectedChats removed
     const [editingMsgId, setEditingMsgId] = useState(null);
     const [editText, setEditText] = useState('');
     const [msgMenuOpen, setMsgMenuOpen] = useState(null); // messageId or null
@@ -74,60 +73,15 @@ export default function AgentChat() {
                     />
                 </div>
                 <div className="flex-1 overflow-y-auto space-y-2 px-2 pb-2">
-                    {selectMode && (
-                        <div className="flex items-center gap-2 p-2">
-                            <button
-                                className="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-                                onClick={() => setSelectMode(false)}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-700"
-                                onClick={() => {
-                                    // TODO: Implement multi-delete
-                                    setSelectMode(false);
-                                    setSelectedChats([]);
-                                }}
-                                disabled={selectedChats.length === 0}
-                            >
-                                Delete selected ({selectedChats.length})
-                            </button>
-                        </div>
-                    )}
                     {filteredChats.map(chat => (
                         <div
                             key={chat._id}
-                            className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer shadow-sm mb-2 transition-all ${activeChatId === chat._id && !selectMode ? 'bg-gray-300' : 'bg-white hover:bg-gray-200'} ${selectMode && selectedChats.includes(chat._id) ? 'ring-2 ring-blue-500' : ''}`}
+                            className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer shadow-sm mb-2 transition-all ${activeChatId === chat._id ? 'bg-gray-300' : 'bg-white hover:bg-gray-200'}`}
                         >
-                            {selectMode && (
-                                <input
-                                    type="checkbox"
-                                    checked={selectedChats.includes(chat._id)}
-                                    onChange={() => {
-                                        setSelectedChats(selected =>
-                                            selected.includes(chat._id)
-                                                ? selected.filter(id => id !== chat._id)
-                                                : [...selected, chat._id]
-                                        );
-                                    }}
-                                    onClick={e => e.stopPropagation()}
-                                />
-                            )}
                             <div
                                 className="flex-1 flex items-center gap-3 min-w-0"
-                                onClick={() => {
-                                    if (selectMode) {
-                                        setSelectedChats(selected =>
-                                            selected.includes(chat._id)
-                                                ? selected.filter(id => id !== chat._id)
-                                                : [...selected, chat._id]
-                                        );
-                                    } else {
-                                        setActiveChatId(chat._id);
-                                    }
-                                }}
-                                style={{ cursor: selectMode ? 'pointer' : 'pointer' }}
+                                onClick={() => setActiveChatId(chat._id)}
+                                style={{ cursor: 'pointer' }}
                             >
                                 <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-bold text-xl">
                                     {/* Placeholder avatar */}
@@ -196,15 +150,7 @@ export default function AgentChat() {
                                 >
                                     Delete this chat
                                 </button>
-                                <button
-                                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                                    onClick={() => {
-                                        setMenuOpen(false);
-                                        setSelectMode(true);
-                                    }}
-                                >
-                                    Select chats
-                                </button>
+                                {/* Select chats option removed */}
                             </div>
                         )}
                     </div>

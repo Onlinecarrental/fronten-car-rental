@@ -1,11 +1,112 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../../firebase/config';
 import axios from 'axios';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+
+// Initialize Stripe with Vite environment variables
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51RqC2THEE3qJceYUqEXZeK9wtxUMlcrD6WXqHby7DX2K6DO7E5w2YlpXGHVhZorCk84jqbMsAItJrSCSkaXko1KC00C0MIdUCD');
+
+// Payment Form Component
+function PaymentForm({ booking, onPaymentSuccess, onPaymentError }) {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        setError('');
+
+        if (!stripe || !elements) {
+            setError('Stripe has not loaded yet.');
+            setLoading(false);
+            return;
+        }
+
+        try {
+            // Create payment intent
+            const paymentIntentResponse = await axios.post('http://localhost:5000/api/payments/create-payment-intent', {
+                bookingId: booking._id,
+                amount: booking.price,
+                currency: 'usd'
+            });
+
+            const { clientSecret, paymentIntentId, paymentId } = paymentIntentResponse.data.data;
+
+            // Confirm payment with Stripe
+            const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: elements.getElement(CardElement),
+                }
+            });
+
+            if (stripeError) {
+                setError(stripeError.message);
+                setLoading(false);
+                return;
+            }
+
+            if (paymentIntent.status === 'succeeded') {
+                // Confirm payment with backend
+                await axios.post('http://localhost:5000/api/payments/confirm-payment', {
+                    paymentIntentId,
+                    paymentId
+                });
+
+                onPaymentSuccess(booking._id);
+            }
+        } catch (err) {
+            setError('Payment failed. Please try again.');
+            onPaymentError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="border rounded-lg p-4">
+                <CardElement
+                    options={{
+                        style: {
+                            base: {
+                                fontSize: '16px',
+                                color: '#424770',
+                                '::placeholder': {
+                                    color: '#aab7c4',
+                                },
+                            },
+                            invalid: {
+                                color: '#9e2146',
+                            },
+                        },
+                    }}
+                />
+            </div>
+            {error && <div className="text-red-500 text-sm">{error}</div>}
+            <button
+                type="submit"
+                disabled={!stripe || loading}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            >
+                {loading ? 'Processing...' : `Pay $${booking.price}`}
+            </button>
+        </form>
+    );
+}
+
 
 export default function CustomerBookings() {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
+    const navigate = useNavigate();
     // Get logged-in user from localStorage
     const user = JSON.parse(localStorage.getItem('user')) || {};
 
@@ -30,8 +131,80 @@ export default function CustomerBookings() {
         fetchBookings();
     }, [user.uid]);
 
+    // After payment, show success, create/find chat, send message, and redirect to chat (same as bookingFormView)
+    const handlePaymentSuccess = async (bookingId) => {
+        setBookings(prev => prev.map(booking => 
+            booking._id === bookingId 
+                ? { ...booking, paymentStatus: 'paid' }
+                : booking
+        ));
+        setShowPaymentModal(false);
+        setSelectedBooking(null);
+        setPaymentSuccess(true);
+
+        let chatId = null;
+        try {
+            const booking = bookings.find(b => b._id === bookingId);
+            if (booking && booking.agent) {
+                const currentUser = auth.currentUser;
+                const userFromStorage = JSON.parse(localStorage.getItem('user')) || {};
+                const userId = currentUser?.uid || userFromStorage.uid;
+                const agentId = booking.agent;
+                // Create chat if not exists
+                const chatRes = await axios.post('http://localhost:5000/api/chats', { userId, agentId });
+                chatId = chatRes.data.data._id;
+                // Send payment confirmation message as customer
+                const paymentMsg = `Payment of $${booking.price} has been successfully processed for your car booking. The booking is now confirmed and ready for pickup.`;
+                await axios.post('http://localhost:5000/api/chats/messages', {
+                    chatId,
+                    senderId: userId,
+                    senderRole: 'customer',
+                    text: paymentMsg
+                });
+            }
+        } catch (err) {
+            // If chat creation fails, still proceed to chat page
+            console.error('Failed to send payment chat message:', err);
+        }
+
+        // Show success message, then redirect to chat (same as bookingFormView)
+        setTimeout(() => {
+            setPaymentSuccess(false);
+            if (chatId) {
+                navigate('/customer-chat', { state: { chatId } });
+            } else {
+                navigate('/customer-chat');
+            }
+        }, 2000);
+    };
+
+    const handlePaymentError = (error) => {
+        console.error('Payment error:', error);
+    };
+
+
+    // Delete booking handler
+    const handleDeleteBooking = async (bookingId) => {
+        const confirmDelete = window.confirm('Are you sure you want to delete this booking? This action cannot be undone.');
+        if (!confirmDelete) return;
+        try {
+            await axios.delete(`http://localhost:5000/api/bookings/${bookingId}`);
+            setBookings(prev => prev.filter(b => b._id !== bookingId));
+        } catch (err) {
+            alert('Failed to delete booking. Please try again.');
+        }
+    };
+
+
     if (loading) return <div className="text-center py-10">Loading bookings...</div>;
     if (error) return <div className="text-center text-red-500 py-10">{error}</div>;
+    if (paymentSuccess) return (
+        <div className="flex flex-col items-center justify-center py-20">
+            <div className="text-green-500 text-5xl mb-4">✓</div>
+            <h2 className="text-2xl font-bold mb-2">Payment Successful!</h2>
+            <p className="text-lg mb-4">Your payment has been processed. Redirecting you to chat with the agent...</p>
+        </div>
+    );
 
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow">
@@ -52,10 +225,52 @@ export default function CustomerBookings() {
                                 <div className="flex flex-col items-end gap-2">
                                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${booking.status === 'pending' ? 'bg-yellow-200 text-yellow-800' : booking.status === 'approved' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>{booking.status}</span>
                                     <span className={`px-3 py-1 rounded-full text-xs ${booking.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700'}`}>{booking.paymentStatus === 'paid' ? 'Paid' : 'Unpaid'}</span>
+                                    {booking.paymentStatus === 'unpaid' && booking.status === 'pending' && (
+                                        <button
+                                            onClick={() => openPaymentModal(booking)}
+                                            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700"
+                                        >
+                                            Pay Now
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => handleDeleteBooking(booking._id)}
+                                        className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 mt-2"
+                                    >
+                                        Delete
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     ))}
+                </div>
+            )}
+
+            {/* Payment Modal */}
+            {showPaymentModal && selectedBooking && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-semibold">Payment for {selectedBooking.car?.name}</h3>
+                            <button
+                                onClick={() => setShowPaymentModal(false)}
+                                className="text-gray-500 hover:text-gray-700"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <div className="mb-4">
+                            <p className="text-sm text-gray-600 mb-2">Amount: ${selectedBooking.price}</p>
+                            <p className="text-sm text-gray-600">Car: {selectedBooking.car?.name} ({selectedBooking.car?.model})</p>
+                        </div>
+                        <Elements stripe={stripePromise}>
+                            <PaymentForm
+                                booking={selectedBooking}
+                                onPaymentSuccess={handlePaymentSuccess}
+                                onPaymentError={handlePaymentError}
+                            />
+                        </Elements>
+                    </div>
                 </div>
             )}
         </div>

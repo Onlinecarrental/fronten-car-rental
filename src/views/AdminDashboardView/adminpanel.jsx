@@ -29,6 +29,7 @@ import HomepageManagement from './HomepageManagement/HomepageManagement';
 import AboutUsManagement from './AboutUsManagement/AboutUsManagement';
 import AdminChat from './AdminChat';
 import BookingManagement from './BookingManagement/BookingManagement';
+import PaymentManagement from './paymentManagemnt/PaymentManagement';
 
 function SidebarItem({ icon, text, isOpen, isActive, onClick, badge }) {
   return (
@@ -664,6 +665,8 @@ export default function AdminDashboard() {
         return <SettingsContent />;
       case 'adminchat':
         return <AdminChat />;
+      case 'payments':
+        return <PaymentManagement />;
       default:
         return <DashboardContent />;
     }
@@ -755,6 +758,13 @@ export default function AdminDashboard() {
             isOpen={sidebarOpen}
             isActive={activeTab === 'reviews'}
             onClick={() => setActiveTab('reviews')}
+          />
+          <SidebarItem
+            icon={<DollarSign size={20} />}
+            text="Payments"
+            isOpen={sidebarOpen}
+            isActive={activeTab === 'payments'}
+            onClick={() => setActiveTab('payments')}
           />
           <SidebarItem
             icon={<Settings size={20} />}

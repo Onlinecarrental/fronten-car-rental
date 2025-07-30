@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.svg"
 const Footer = () => {
   return (
@@ -24,8 +25,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-gray-400">
               <li>Landing Page</li>
               <li>Popup Builder</li>
-              <li>Web design</li>
-              <li>Content</li>
+           <li><Link to="/home/about-us" className="hover:text-[#efff11]">About Us</Link></li>
               <li>Integrations</li>
             </ul>
           </div>

@@ -20,8 +20,6 @@ export default function BookingForm() {
     dateFrom: '',
     dateTo: '',
     price: carDetails?.dailyRate || '',
-    paymentMethod: 'Credit Card',
-    paymentNumber: '',
     carId: carDetails?.id || '',
     carName: carDetails?.name || '',
     carModel: carDetails?.model || ''
@@ -32,7 +30,7 @@ export default function BookingForm() {
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  // Validate each step
+  // Validate each step (move price, payment method, payment number to step 2)
   const validateStep = () => {
     const stepErrors = {};
     if (currentStep === 1) {
@@ -49,10 +47,8 @@ export default function BookingForm() {
       if (!formData.dateFrom || isNaN(from.getTime())) stepErrors.dateFrom = 'Valid start date required (DD/MM/YYYY)';
       if (!formData.dateTo || isNaN(to.getTime())) stepErrors.dateTo = 'Valid end date required (DD/MM/YYYY)';
       if (!stepErrors.dateFrom && !stepErrors.dateTo && from > to) stepErrors.dateTo = 'End date must be after start date';
-    }
-    if (currentStep === 3) {
-      if (!formData.price.trim()) stepErrors.price = 'Price is required';
-      if (!formData.paymentNumber.trim()) stepErrors.paymentNumber = 'Payment number is required';
+      // Add payment fields validation to step 2
+      if (!formData.price.toString().trim()) stepErrors.price = 'Price is required';
     }
     setErrors(stepErrors);
     return Object.keys(stepErrors).length === 0;
@@ -130,9 +126,7 @@ export default function BookingForm() {
           dateFrom: parseDMY(formData.dateFrom),
           dateTo: parseDMY(formData.dateTo),
           location: formData.location,
-          price: Number(formData.price),
-          paymentMethod: formData.paymentMethod,
-          paymentNumber: formData.paymentNumber
+          price: Number(formData.price)
         };
         await axios.post('http://localhost:5000/api/bookings', bookingPayload);
         // 2. Proceed with chat system as before
@@ -158,8 +152,6 @@ export default function BookingForm() {
       dateFrom: '',
       dateTo: '',
       price: carDetails?.dailyRate || '',
-      paymentMethod: 'Credit Card',
-      paymentNumber: '',
       carId: carDetails?.id || '',
       carName: carDetails?.name || '',
       carModel: carDetails?.model || ''
@@ -236,10 +228,10 @@ export default function BookingForm() {
               </div>
             )}
             <div className="flex items-center justify-center ">
-              {[1, 2, 3].map((step, i) => (
+              {[1, 2].map((step, i) => (
                 <div key={i} className="flex items-center">
                   <div className={` w-20  h-20 rounded-md flex items-center text-[24px] font-[500] justify-center ${step <= currentStep ? 'bg-black text-white' : 'bg-gray text-white'}`}>{step}</div>
-                  {step < 3 && <div className={`h-[10px] w-[8rem] ${step < currentStep ? 'bg-black' : 'bg-gray'}`}></div>}
+                  {step < 2 && <div className={`h-[10px] w-[8rem] ${step < currentStep ? 'bg-black' : 'bg-gray'}`}></div>}
                 </div>
               ))}
             </div>
@@ -270,7 +262,7 @@ export default function BookingForm() {
               )}
               {currentStep === 2 && (
                 <div className="bg-gray mx-auto max-w-[700px] p-4 rounded-md">
-                  <div className=" text-center  text-[28px] font-bold">Booking Details</div>
+                  <div className=" text-center  text-[28px] font-bold">Booking & Payment Details</div>
                   <div className="mb-4 ">
                     <label className="block text-lg font-[500] mb-1">Location:</label>
                     <input type="text" name="location" value={formData.location} onChange={handleInputChange} placeholder="Enter location" className="w-full p-2 border border-gray-300 rounded-md" />
@@ -284,35 +276,13 @@ export default function BookingForm() {
                     <label className="block text-lg font-[500] mb-1">Date To:</label>
                     <input type="text" id="dateTo" value={formData.dateTo} onChange={(e) => setFormData({ ...formData, dateTo: e.target.value })} placeholder="DD/MM/YYYY" className="w-full p-2 border border-gray-300 rounded-md" />
                     {errors.dateTo && <p className="text-red-500 text-sm">{errors.dateTo}</p>}</div>
-                  <div className="flex justify-between mt-6">
-                    <button onClick={prevStep} className="px-4 py-2 bg-white text-black rounded-md">Previous</button>
-                    <button onClick={nextStep} className="px-4 py-2 bg-Blue text-white rounded-md">Next</button>
-                  </div>
-                </div>
-              )}
-              {currentStep === 3 && (
-                <div className="bg-gray mx-auto max-w-[700px] p-4 rounded-md">
-                  <div className=" text-center  text-[28px] font-bold">Payment Details</div>
+                  {/* Price field only, read-only, set from car details */}
                   <div className="mb-4 ">
                     <label className="block text-lg font-[500] mb-1">Price:</label>
                     <div className="relative">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
-                      <input type="number" name="price" value={formData.price} onChange={handleInputChange} onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(); }} placeholder="Enter price" className="w-full p-2 pl-8 border border-gray-300 rounded-md" />
+                      <input type="number" name="price" value={formData.price} readOnly className="w-full p-2 pl-8 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed" />
                     </div>
-                    {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
-                  </div>
-                  <div className="mb-4 ">
-                    <label className="block text-lg font-[500] mb-1">Payment Method:</label>
-                    <select name="paymentMethod" value={formData.paymentMethod} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-md">
-                      {paymentMethods.map((method, i) => (
-                        <option key={i} value={method}>{method}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-4 ">
-                    <label className="block text-lg font-[500] mb-1">Payment Number:</label>
-                    <input type="text" name="paymentNumber" value={formData.paymentNumber} onChange={handleInputChange} placeholder="Enter card/account number" className="w-full p-2 border border-gray-300 rounded-md" />
-                    {errors.paymentNumber && <p className="text-red-500 text-sm">{errors.paymentNumber}</p>}
                   </div>
                   <div className="flex justify-between mt-6">
                     <button onClick={prevStep} className="px-4 py-2 bg-white text-black rounded-md">Previous</button>

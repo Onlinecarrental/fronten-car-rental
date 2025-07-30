@@ -1,3 +1,13 @@
+  // Delete booking handler
+  const handleDelete = async (bookingId) => {
+    if (!window.confirm('Are you sure you want to delete this booking? This action cannot be undone.')) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/bookings/${bookingId}`);
+      setBookings(prev => prev.filter(b => b._id !== bookingId));
+    } catch (err) {
+      alert('Failed to delete booking.');
+    }
+  };
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import BaseCard from "../../../components/card";
@@ -12,6 +22,15 @@ export default function AllBookings() {
   const [error, setError] = useState("");
   const itemsPerPage = 6;
   const [customerNames, setCustomerNames] = useState({});
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [approvalForm, setApprovalForm] = useState({
+    agentName: '',
+    bankName: '',
+    accountNumber: '',
+    accountTitle: '',
+    branchCode: ''
+  });
 
   // Get agent from localStorage
   const user = JSON.parse(localStorage.getItem('user')) || {};
@@ -82,6 +101,30 @@ export default function AllBookings() {
       setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, status: 'rejected' } : b));
     } catch (err) {
       alert('Failed to reject booking.');
+    }
+  };
+
+  const openApprovalModal = (booking) => {
+    setSelectedBooking(booking);
+    setApprovalForm({
+      agentName: user.name || '',
+      bankName: '',
+      accountNumber: '',
+      accountTitle: '',
+      branchCode: ''
+    });
+    setShowApprovalModal(true);
+  };
+  const handleApprovalSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`http://localhost:5000/api/payments/booking/${selectedBooking._id}/approve-with-bank-details`, approvalForm);
+      setBookings(prev => prev.map(b => b._id === selectedBooking._id ? { ...b, agentBankDetails: { ...approvalForm } } : b));
+      setShowApprovalModal(false);
+      setSelectedBooking(null);
+      window.dispatchEvent(new Event('carListShouldRefresh'));
+    } catch (err) {
+      alert('Failed to submit bank details.');
     }
   };
 
@@ -166,6 +209,51 @@ export default function AllBookings() {
                       />
                     </>
                   )}
+                  {item.status === 'approved' && (
+                    <>
+                      {!item.agentBankDetails ? (
+                        <Button
+                          title="Add Bank Details"
+                          bgColor="bg-blue-600"
+                          textColor="text-white"
+                          height="36px"
+                          width="120px"
+                          className="text-sm"
+                          onClick={() => openApprovalModal(item)}
+                        />
+                      ) : (
+                        <Button
+                          title="Submitted"
+                          bgColor="bg-green-500"
+                          textColor="text-white"
+                          height="36px"
+                          width="120px"
+                          className="text-sm cursor-default"
+                          disabled
+                        />
+                      )}
+                      <Button
+                        title="Delete"
+                        bgColor="bg-red-500"
+                        textColor="text-white"
+                        height="36px"
+                        width="80px"
+                        className="text-sm"
+                        onClick={() => handleDelete(item._id)}
+                      />
+                    </>
+                  )}
+                  {item.status === 'rejected' && (
+                    <Button
+                      title="Delete"
+                      bgColor="bg-red-500"
+                      textColor="text-white"
+                      height="36px"
+                      width="80px"
+                      className="text-sm"
+                      onClick={() => handleDelete(item._id)}
+                    />
+                  )}
                 </div>
               </div>
             ))
@@ -211,6 +299,89 @@ export default function AllBookings() {
           Next
         </button>
       </div>
+
+      {showApprovalModal && selectedBooking && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Agent Bank Details</h3>
+              <button
+                onClick={() => setShowApprovalModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={handleApprovalSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Agent Name</label>
+                <input
+                  type="text"
+                  value={approvalForm.agentName}
+                  onChange={(e) => setApprovalForm(prev => ({ ...prev, agentName: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
+                <input
+                  type="text"
+                  value={approvalForm.bankName}
+                  onChange={(e) => setApprovalForm(prev => ({ ...prev, bankName: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
+                <input
+                  type="text"
+                  value={approvalForm.accountNumber}
+                  onChange={(e) => setApprovalForm(prev => ({ ...prev, accountNumber: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Account Title</label>
+                <input
+                  type="text"
+                  value={approvalForm.accountTitle}
+                  onChange={(e) => setApprovalForm(prev => ({ ...prev, accountTitle: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Branch Code</label>
+                <input
+                  type="text"
+                  value={approvalForm.branchCode}
+                  onChange={(e) => setApprovalForm(prev => ({ ...prev, branchCode: e.target.value }))}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700"
+                >
+                  Submit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowApprovalModal(false)}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

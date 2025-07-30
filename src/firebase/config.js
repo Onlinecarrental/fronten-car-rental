@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { getAnalytics, isSupported } from 'firebase/analytics';
+// import { getAnalytics, isSupported } from 'firebase/analytics';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA-yFdLVn5LA8iu81C2seW5nt6OHiAk5x0',
@@ -16,21 +16,21 @@ const firebaseConfig = {
 
 // Initialize Firebase
 let app;
-let analytics;
+// let analytics;
 
 try {
   app = initializeApp(firebaseConfig);
   console.log('Firebase initialized successfully');
 
-  // Initialize analytics only if supported
-  isSupported().then(yes => {
-    if (yes) {
-      analytics = getAnalytics(app);
-      console.log('Analytics initialized successfully');
-    }
-  }).catch(error => {
-    console.warn('Analytics not supported:', error);
-  });
+  // Disable analytics for development to prevent ad blocker issues
+  // isSupported().then(yes => {
+  //   if (yes) {
+  //     analytics = getAnalytics(app);
+  //     console.log('Analytics initialized successfully');
+  //   }
+  // }).catch(error => {
+  //   console.warn('Analytics not supported:', error);
+  // });
 } catch (error) {
   console.error('Error initializing Firebase:', error);
   throw error;
@@ -52,4 +52,4 @@ auth.onAuthStateChanged((user) => {
   console.error('Auth state change error:', error);
 });
 
-export { app, auth, db, storage, analytics };
+export { app, auth, db, storage };
