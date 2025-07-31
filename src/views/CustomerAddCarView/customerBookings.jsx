@@ -195,6 +195,12 @@ export default function CustomerBookings() {
         }
     };
 
+    // Add this function to open the payment modal
+    const openPaymentModal = (booking) => {
+        setSelectedBooking(booking);
+        setShowPaymentModal(true);
+    };
+
 
     if (loading) return <div className="text-center py-10">Loading bookings...</div>;
     if (error) return <div className="text-center text-red-500 py-10">{error}</div>;
