@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logo from '../assets/logo.png';
 import { auth, db } from '../firebase/config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
@@ -142,46 +143,45 @@ const AgentSignup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-7xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#5937E0] via-[#a9a9a9] to-[#ffffff] p-4">
+      <div className="w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden backdrop-blur-lg bg-white/80 border border-[#5937E0]/20">
         <div className="flex flex-col lg:flex-row">
           {/* Left: Logo and Branding */}
-          <div className="lg:w-2/5 bg-gradient-to-br from-blue-500 to-purple-600 p-8 lg:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-10 left-10 w-20 h-20 border-2 border-white rounded-full"></div>
-              <div className="absolute bottom-10 right-10 w-16 h-16 border-2 border-white rounded-full"></div>
-              <div className="absolute top-1/2 left-1/4 w-12 h-12 border-2 border-white rounded-full"></div>
+          <div className="lg:w-1/2 flex flex-col justify-center items-center relative overflow-hidden bg-gradient-to-br from-[#a9a9a9] via-[#ffffff] to-[#5937E0] p-8 lg:p-12">
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-10 left-10 w-24 h-24 border-4 border-[#5937E0] rounded-full opacity-20"></div>
+              <div className="absolute bottom-10 right-10 w-16 h-16 border-4 border-[#000000] rounded-full opacity-20"></div>
+              <div className="absolute top-1/2 left-1/4 w-16 h-16 border-4 border-[#ffffff] rounded-full opacity-20"></div>
+              <div className="absolute top-1/3 right-1/3 w-10 h-10 border-2 border-[#5937E0] rounded-full opacity-10"></div>
             </div>
-            
             <div className="relative z-10 text-center">
-              <div className="bg-white rounded-full p-4 mb-6 shadow-lg">
+              <div className="bg-white/90 rounded-full p-5 mb-6 shadow-xl border-4 border-[#5937E0] flex items-center justify-center transition-transform duration-300 hover:scale-105">
                 <img
-                  src="https://i.ibb.co/6b7bQ7y/gpgcws-logo.png"
+                  src={logo}
                   alt="Logo"
-                  className="h-24 w-24 object-contain"
+                  className="h-24 w-24 object-contain drop-shadow-lg"
                 />
               </div>
-              <h1 className="text-3xl font-bold mb-2 tracking-wide">
-                GPGCWS
+              <h1 className="text-4xl font-extrabold mb-2 tracking-wide text-[#000000] drop-shadow-sm">
+                AA CAR
               </h1>
-              <p className="text-xl font-medium opacity-90">
+              <p className="text-2xl font-semibold opacity-90 text-[#5937E0] tracking-wide mb-2">
                 AGENT PORTAL
               </p>
-              <p className="mt-6 text-lg opacity-80">
+              <p className="mt-6 text-lg opacity-80 text-[#000000] font-medium">
                 Join our agent network! Create your agent account to start managing cars.
               </p>
             </div>
           </div>
 
           {/* Right: Signup Form */}
-          <div className="lg:w-3/5 p-8 lg:p-12">
-            <div className="max-w-2xl mx-auto">
+          <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-white/80 backdrop-blur-xl">
+            <div className="max-w-md mx-auto w-full">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                <h2 className="text-4xl font-extrabold text-[#5937E0] mb-2 drop-shadow-sm">
                   Agent Registration
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-gray-700 text-lg font-medium">
                   Fill in your details to become an agent
                 </p>
               </div>

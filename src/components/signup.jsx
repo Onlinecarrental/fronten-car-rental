@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logo from '../assets/logo.png';
 import { auth, db } from '../firebase/config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
@@ -135,29 +136,28 @@ const Signup = () => {
       <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden">
         <div className="flex flex-col lg:flex-row">
           {/* Left: Logo and Branding */}
-          <div className="lg:w-2/5 bg-gradient-to-br from-yellow-400 to-orange-500 p-8 lg:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-10 left-10 w-20 h-20 border-2 border-white rounded-full"></div>
-              <div className="absolute bottom-10 right-10 w-16 h-16 border-2 border-white rounded-full"></div>
-              <div className="absolute top-1/2 left-1/4 w-12 h-12 border-2 border-white rounded-full"></div>
+  <div className="lg:w-1/2 flex flex-col justify-center items-center relative overflow-hidden bg-gradient-to-br from-[#a9a9a9] via-[#ffffff] to-[#5937E0] p-8 lg:p-12">
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-10 left-10 w-24 h-24 border-4 border-[#5937E0] rounded-full opacity-20"></div>
+              <div className="absolute bottom-10 right-10 w-16 h-16 border-4 border-[#000000] rounded-full opacity-20"></div>
+              <div className="absolute top-1/2 left-1/4 w-16 h-16 border-4 border-[#ffffff] rounded-full opacity-20"></div>
+              <div className="absolute top-1/3 right-1/3 w-10 h-10 border-2 border-[#5937E0] rounded-full opacity-10"></div>
             </div>
-            
             <div className="relative z-10 text-center">
-              <div className="bg-white rounded-full p-4 mb-6 shadow-lg">
+              <div className="bg-white/90 rounded-full p-5 mb-6 shadow-xl border-4 border-[#5937E0] flex items-center justify-center transition-transform duration-300 hover:scale-105">
                 <img
-                  src="https://i.ibb.co/6b7bQ7y/gpgcws-logo.png"
+                  src={logo}
                   alt="Logo"
-                  className="h-24 w-24 object-contain"
+                  className="h-24 w-24 object-contain drop-shadow-lg"
                 />
               </div>
-              <h1 className="text-3xl font-bold mb-2 tracking-wide">
-                GPGCWS
+              <h1 className="text-4xl font-extrabold mb-2 tracking-wide text-[#000000] drop-shadow-sm">
+                AA CAR
               </h1>
-              <p className="text-xl font-medium opacity-90">
-                WEB PORTAL
+              <p className="text-2xl font-semibold opacity-90 text-[#5937E0] tracking-wide mb-2">
+                CAR RENTAL
               </p>
-              <p className="mt-6 text-lg opacity-80">
+              <p className="mt-6 text-lg opacity-80 text-[#000000] font-medium">
                 Join us today! Create your account to get started.
               </p>
             </div>
@@ -357,10 +357,10 @@ const Signup = () => {
 
                 <button
                   type="submit"
-                  className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition duration-200 transform hover:scale-105 ${
+                className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition duration-200 transform hover:scale-105 ${
                     loading 
                       ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 shadow-lg'
+                      : 'bg-gradient-to-r from-[#5937E0] via-[#a9a9a9] to-[#000000] hover:from-[#5937E0] hover:to-[#000000] shadow-xl'
                   }`}
                   disabled={loading}
                 >
