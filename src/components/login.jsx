@@ -145,63 +145,139 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="flex bg-white rounded-xl shadow-lg overflow-hidden">
-        {/* Left: Logo */}
-        <div className="bg-gray-300 flex flex-col justify-center items-center px-10 py-8">
-          <div className="rounded-full border-4 border-yellow-400 p-2 mb-4">
-            <img
-              src="https://i.ibb.co/6b7bQ7y/gpgcws-logo.png"
-              alt="Logo"
-              className="h-32 w-32 object-contain"
-            />
-          </div>
-          <div className="text-center font-bold text-lg tracking-widest">
-            GPGCWS<br />WEB PORTAL
-          </div>
-        </div>
-        {/* Right: Form */}
-        <div className="flex flex-col justify-center px-10 py-8 w-96">
-          <h2 className="text-xl font-bold mb-2">Welcome to Login</h2>
-          {error && (
-            <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div className="flex flex-col lg:flex-row">
+          {/* Left: Logo and Branding */}
+          <div className="lg:w-1/2 bg-gradient-to-br from-yellow-400 to-orange-500 p-8 lg:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-10 left-10 w-20 h-20 border-2 border-white rounded-full"></div>
+              <div className="absolute bottom-10 right-10 w-16 h-16 border-2 border-white rounded-full"></div>
+              <div className="absolute top-1/2 left-1/4 w-12 h-12 border-2 border-white rounded-full"></div>
             </div>
-          )}
-          <form onSubmit={handleLogin} className="space-y-3">
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              disabled={loading}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={loading}
-            />
-            <button
-              type="submit"
-              className={`w-full bg-yellow-300 text-black font-semibold py-2 rounded-md mt-2 transition ${
-                loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-yellow-400'
-              }`}
-              disabled={loading}
-            >
-              {loading ? 'Logging in...' : 'Login'}
-            </button>
-          </form>
-          <div className="text-xs mt-3 text-center">
-            Don't have an account?{' '}
-            <a href="/signup" className="text-blue-600 hover:underline">
-              Signup Now
-            </a>
+            
+            <div className="relative z-10 text-center">
+              <div className="bg-white rounded-full p-4 mb-6 shadow-lg">
+                <img
+                  src="https://i.ibb.co/6b7bQ7y/gpgcws-logo.png"
+                  alt="Logo"
+                  className="h-24 w-24 object-contain"
+                />
+              </div>
+              <h1 className="text-3xl font-bold mb-2 tracking-wide">
+                GPGCWS
+              </h1>
+              <p className="text-xl font-medium opacity-90">
+                WEB PORTAL
+              </p>
+              <p className="mt-6 text-lg opacity-80">
+                Welcome back! Please sign in to your account.
+              </p>
+            </div>
+          </div>
+
+          {/* Right: Login Form */}
+          <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
+            <div className="max-w-md mx-auto w-full">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                  Welcome Back
+                </h2>
+                <p className="text-gray-600">
+                  Sign in to access your account
+                </p>
+              </div>
+
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center">
+                  <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                      </svg>
+                    </div>
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      disabled={loading}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                    </div>
+                    <input
+                      type="password"
+                      placeholder="Enter your password"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={loading}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition duration-200 transform hover:scale-105 ${
+                    loading 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 shadow-lg'
+                  }`}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <div className="flex items-center justify-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Signing in...
+                    </div>
+                  ) : (
+                    'Sign In'
+                  )}
+                </button>
+              </form>
+
+              <div className="mt-8 text-center">
+                <p className="text-gray-600">
+                  Don't have an account?{' '}
+                  <a 
+                    href="/signup" 
+                    className="text-yellow-600 hover:text-yellow-700 font-semibold transition duration-200 hover:underline"
+                  >
+                    Sign up now
+                  </a>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
