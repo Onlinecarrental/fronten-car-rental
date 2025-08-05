@@ -62,6 +62,34 @@ const AgentSignup = () => {
     setCnic(value);
   };
 
+  const handlePhoneChange = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+    if (!value.startsWith('92')) {
+      value = '92' + value; // Ensure it starts with '92'
+    }
+    if (value.length > 12) {
+      value = value.slice(0, 12); // Limit to +92XXXXXXXXXX format
+    }
+    setPhone('+' + value);
+  };
+
+  const handleLicenseChange = (e) => {
+    let value = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, ''); // Allow only uppercase letters, numbers, and dashes
+    if (value.length > 2 && !value.includes('-')) {
+      value = value.slice(0, 2) + '-' + value.slice(2); // Add dash after first 2 characters
+    }
+    if (value.length > 5 && value.split('-').length === 2) {
+      value = value.slice(0, 5) + '-' + value.slice(5); // Add dash after year
+    }
+    if (!/^[A-Z]{2}-/.test(value)) {
+      value = value.replace(/^[^A-Z]{0,2}/, ''); // Ensure first two characters are alphabets
+    }
+    if (value.length > 12) {
+      value = value.slice(0, 12); // Limit to XX-23-123456 format
+    }
+    setLicense(value);
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
     setError('');
@@ -143,8 +171,8 @@ const AgentSignup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#5937E0] via-[#a9a9a9] to-[#ffffff] p-4">
-      <div className="w-full max-w-6xl rounded-3xl shadow-2xl overflow-hidden backdrop-blur-lg bg-white/80 border border-[#5937E0]/20">
+    <div className="min-h-screen font-jakarta bg-gradient-to-br from-blue-50 via-white to-yellow-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden">
         <div className="flex flex-col lg:flex-row">
           {/* Left: Logo and Branding */}
           <div className="lg:w-[40%] flex flex-col justify-center items-center relative overflow-hidden bg-gradient-to-br from-[#a9a9a9] via-[#ffffff] to-[#5937E0] p-8 lg:p-12">
@@ -163,7 +191,7 @@ const AgentSignup = () => {
                 />
               </div>
               <h1 className="text-4xl font-extrabold mb-2 tracking-wide text-[#000000] drop-shadow-sm">
-                AA CAR
+              Onlne Car Rental
               </h1>
               <p className="text-2xl font-semibold opacity-90 text-[#5937E0] tracking-wide mb-2">
                 AGENT PORTAL
@@ -175,8 +203,8 @@ const AgentSignup = () => {
           </div>
 
           {/* Right: Signup Form */}
-          <div className="lg:w-[60%] p-8  flex flex-col justify-center bg-white/80 backdrop-blur-xl">
-            <div className="max-w-md mx-auto w-full">
+          <div className="lg:w-3/5 p-8 lg:p-12">
+            <div className="max-w-2xl mx-auto">
               <div className="text-center mb-8">
                 <h2 className="text-4xl font-extrabold text-[#5937E0] mb-2 drop-shadow-sm">
                   Agent Registration
@@ -297,12 +325,12 @@ const AgentSignup = () => {
                       </div>
                       <input
                         type="tel"
-                        placeholder="11-digit phone number"
+                        placeholder="+92XXXXXXXXXX"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={handlePhoneChange}
                         required
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
-                        maxLength={11}
+                        maxLength={13}
                         disabled={loading}
                       />
                     </div>
@@ -343,18 +371,33 @@ const AgentSignup = () => {
                       </div>
                       <input
                         type="text"
-                        placeholder="Enter license card number"
+                        placeholder="LE-23-123456"
                         value={license}
-                        onChange={(e) => setLicense(e.target.value)}
+                        onChange={handleLicenseChange}
                         required
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200"
                         disabled={loading}
                       />
                     </div>
                   </div>
+                    <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      License Card Image
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setLicensePic(e.target.files[0])}
+                        required
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-Blue file:text-white file:hover:bg-Blue"
+                       disabled={loading}
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       CNIC Front Image
@@ -387,29 +430,15 @@ const AgentSignup = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      License Card Image
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setLicensePic(e.target.files[0])}
-                        required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-Blue file:text-white file:hover:bg-Blue"
-                       disabled={loading}
-                      />
-                    </div>
-                  </div>
+                
                 </div>
 
                 <button
                   type="submit"
-                  className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition duration-200 transform hover:scale-105 ${
+                   className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition duration-200 transform hover:scale-105 ${
                     loading 
                       ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg'
+                      : 'bg-gradient-to-r from-[#5937E0]  to-[#000000] hover:from-[#5937E0] hover:to-[#000000] shadow-xl'
                   }`}
                   disabled={loading}
                 >
@@ -432,8 +461,8 @@ const AgentSignup = () => {
                   Already have an agent account?{' '}
                   <Link 
                     to="/agent-login" 
-                    className="text-blue-600 hover:text-blue-700 font-semibold transition duration-200 hover:underline"
-                  >
+                  className="text-[#5937E0] hover:text-[#000000] font-semibold transition duration-200 hover:underline"
+                   >
                     Sign in now
                   </Link>
                 </p>

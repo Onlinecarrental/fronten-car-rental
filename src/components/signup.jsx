@@ -63,6 +63,17 @@ const Signup = () => {
     setCnic(value);
   };
 
+  const handlePhoneChange = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+    if (!value.startsWith('92')) {
+      value = '92' + value; // Ensure it starts with '92'
+    }
+    if (value.length > 12) {
+      value = value.slice(0, 12); // Limit to +92XXXXXXXXXX format
+    }
+    setPhone('+' + value);
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
     setError('');
@@ -132,7 +143,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50 flex items-center justify-center p-4">
+    <div className="min-h-screen font-jakarta bg-gradient-to-br from-blue-50 via-white to-yellow-50 flex items-center justify-center p-4">
       <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden">
         <div className="flex flex-col lg:flex-row">
           {/* Left: Logo and Branding */}
@@ -144,6 +155,7 @@ const Signup = () => {
               <div className="absolute top-1/3 right-1/3 w-10 h-10 border-2 border-[#5937E0] rounded-full opacity-10"></div>
             </div>
             <div className="relative z-10 text-center">
+                <Link to="/" >
               <div className="bg-white/90 rounded-full p-5 mb-6 shadow-xl border-4 border-[#5937E0] flex items-center justify-center transition-transform duration-300 hover:scale-105">
                 <img
                   src={logo}
@@ -151,12 +163,14 @@ const Signup = () => {
                   className="h-24 w-24 object-contain drop-shadow-lg"
                 />
               </div>
+             
               <h1 className="text-4xl font-extrabold mb-2 tracking-wide text-[#000000] drop-shadow-sm">
-                AA CAR
+               ONLine Car Rental
               </h1>
               <p className="text-2xl font-semibold opacity-90 text-[#5937E0] tracking-wide mb-2">
-                CAR RENTAL
+                CUSTOMER PORTAL
               </p>
+               </Link>
               <p className="mt-6 text-lg opacity-80 text-[#000000] font-medium">
                 Join us today! Create your account to get started.
               </p>
@@ -167,10 +181,10 @@ const Signup = () => {
           <div className="lg:w-3/5 p-8 lg:p-12">
             <div className="max-w-2xl mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                <h2 className="text-4xl font-extrabold font-jakarta text-[#5937E0] mb-2 drop-shadow-sm">
                   Create Account
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-gray-700 text-lg font-medium font-jakarta">
                   Fill in your details to get started
                 </p>
               </div>
@@ -286,12 +300,12 @@ const Signup = () => {
                       </div>
                       <input
                         type="tel"
-                        placeholder="11-digit phone number"
+                        placeholder="+92XXXXXXXXXX"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={handlePhoneChange}
                         required
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200"
-                        maxLength={11}
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200"
+                        maxLength={13}
                         disabled={loading}
                       />
                     </div>

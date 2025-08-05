@@ -3,7 +3,7 @@ import logo from '../assets/logo.png';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../firebase/config';
 import { getDoc, doc } from 'firebase/firestore';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link  } from 'react-router-dom';
 
 const AgentLogin = () => {
   const navigate = useNavigate();
@@ -150,7 +150,7 @@ const AgentLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#5937E0] via-[#a9a9a9] to-[#ffffff] p-4">
+    <div className="min-h-screen flex font-jakarta items-center justify-center bg-gradient-to-br from-[#5937E0] via-[#a9a9a9] to-[#ffffff] p-4">
       <div className="w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden backdrop-blur-lg bg-white/80 border border-[#5937E0]/20">
         <div className="flex flex-col lg:flex-row">
           {/* Left: Logo and Branding */}
@@ -162,6 +162,7 @@ const AgentLogin = () => {
               <div className="absolute top-1/3 right-1/3 w-10 h-10 border-2 border-[#5937E0] rounded-full opacity-10"></div>
             </div>
             <div className="relative z-10 text-center">
+                <Link to="/" >
               <div className="bg-white/90 rounded-full p-5 mb-6 shadow-xl border-4 border-[#5937E0] flex items-center justify-center transition-transform duration-300 hover:scale-105">
                 <img
                   src={logo}
@@ -170,11 +171,12 @@ const AgentLogin = () => {
                 />
               </div>
               <h1 className="text-4xl font-extrabold mb-2 tracking-wide text-[#000000] drop-shadow-sm">
-                AA CAR
+               Online Car Rental
               </h1>
               <p className="text-2xl font-semibold opacity-90 text-[#5937E0] tracking-wide mb-2">
                 AGENT PORTAL
               </p>
+              </Link>
               <p className="mt-6 text-lg opacity-80 text-[#000000] font-medium">
                 Welcome back! Please sign in to your agent account.
               </p>
@@ -194,7 +196,7 @@ const AgentLogin = () => {
               </div>
 
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center">
+                <div className="mb-6 p-4 bg-Blue border border-red-200 text-white rounded-xl flex items-center">
                   <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
@@ -249,15 +251,15 @@ const AgentLogin = () => {
 
                 <button
                   type="submit"
-                  className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition duration-200 transform hover:scale-105 ${
+                    className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition duration-200 transform hover:scale-105 ${
                     loading 
                       ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg'
+                      : 'bg-gradient-to-r from-[#5937E0]  to-[#000000] hover:from-[#5937E0] hover:to-[#000000] shadow-xl'
                   }`}
                   disabled={loading}
                 >
                   {loading ? (
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-center rounded-xl  py-3 px-4 bg-black justify-center">
                       <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -273,12 +275,12 @@ const AgentLogin = () => {
               <div className="mt-8 text-center">
                 <p className="text-gray-600">
                   Don't have an agent account?{' '}
-                  <a 
-                    href="/agent-signup" 
+                  <Link
+                    to="/agent-signup" 
                     className="text-blue-600 hover:text-blue-700 font-semibold transition duration-200 hover:underline"
                   >
                     Sign up now
-                  </a>
+                  </Link>
                 </p>
               </div>
             </div>

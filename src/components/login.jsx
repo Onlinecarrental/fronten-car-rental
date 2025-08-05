@@ -146,7 +146,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#5937E0] via-[#a9a9a9] to-[#ffffff] p-4">
+    <div className="min-h-screen font-jakarta flex items-center justify-center bg-gradient-to-br from-[#5937E0] via-[#a9a9a9] to-[#ffffff] p-4">
       <div className="w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden backdrop-blur-lg bg-white/80 border border-[#5937E0]/20">
         <div className="flex flex-col lg:flex-row">
           {/* Left: Logo and Branding */}
@@ -159,19 +159,25 @@ const Login = () => {
               <div className="absolute top-1/3 right-1/3 w-10 h-10 border-2 border-[#5937E0] rounded-full opacity-10"></div>
             </div>
             <div className="relative z-10 text-center">
+            <Link to="/" >
               <div className="bg-white/90 rounded-full p-5 mb-6 shadow-xl border-4 border-[#5937E0] flex items-center justify-center transition-transform duration-300 hover:scale-105">
+             
                 <img
                   src={logo}
                   alt="Logo"
                   className="h-24 w-24 object-contain drop-shadow-lg"
                 />
+              
               </div>
+              
               <h1 className="text-4xl font-extrabold mb-2 tracking-wide text-[#000000] drop-shadow-sm">
-                AA CAR
+                Online Car Rental
               </h1>
+              </Link>
               <p className="text-2xl font-semibold opacity-90 text-[#5937E0] tracking-wide mb-2">
-                CAR RENTAL
+              CUSTOMER PORTAL
               </p>
+               
               <p className="mt-6 text-lg opacity-80 text-[#000000] font-medium">
                 Welcome back! Please sign in to your account.
               </p>
@@ -182,16 +188,16 @@ const Login = () => {
           <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-white/80 backdrop-blur-xl">
             <div className="max-w-md mx-auto w-full">
               <div className="text-center mb-8">
-                <h2 className="text-4xl font-extrabold text-[#5937E0] mb-2 drop-shadow-sm">
-                  Welcome Back
+                <h2 className="text-4xl font-extrabold font-jakarta text-[#5937E0] mb-2 drop-shadow-sm">
+                Customer Login
                 </h2>
-                <p className="text-gray-700 text-lg font-medium">
+                <p className="text-gray-700 font-jakarta text-lg font-medium">
                   Sign in to access your account
                 </p>
               </div>
 
               {error && (
-                <div className="mb-6 p-4 bg-red-100 border border-red-300 text-red-800 rounded-xl flex items-center shadow">
+                <div className="mb-6 p-4 bg-Blue border border-red-300 text-white rounded-xl flex items-center shadow">
                   <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
@@ -254,7 +260,7 @@ const Login = () => {
                   disabled={loading}
                 >
                   {loading ? (
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-center rounded-xl  py-3 px-4 bg-black justify-center w-full ">
                       <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
