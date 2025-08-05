@@ -202,7 +202,7 @@ const Signup = () => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200"
                         disabled={loading}
                       />
                     </div>
@@ -224,7 +224,7 @@ const Signup = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200"
                         disabled={loading}
                       />
                     </div>
@@ -246,7 +246,7 @@ const Signup = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200"
                         disabled={loading}
                       />
                     </div>
@@ -268,7 +268,7 @@ const Signup = () => {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200"
                         disabled={loading}
                       />
                     </div>
@@ -290,7 +290,7 @@ const Signup = () => {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         required
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200"
                         maxLength={11}
                         disabled={loading}
                       />
@@ -313,7 +313,7 @@ const Signup = () => {
                         value={cnic}
                         onChange={handleCnicChange}
                         required
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200"
                         maxLength={15}
                         disabled={loading}
                       />
@@ -332,8 +332,8 @@ const Signup = () => {
                         accept="image/*"
                         onChange={(e) => setCnicFront(e.target.files[0])}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100"
-                        disabled={loading}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-Blue file:text-white file:hover:bg-Blue"
+                      disabled={loading}
                       />
                     </div>
                   </div>
@@ -348,7 +348,7 @@ const Signup = () => {
                         accept="image/*"
                         onChange={(e) => setCnicBack(e.target.files[0])}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-Blue file:text-white file:hover:bg-Blue"
                         disabled={loading}
                       />
                     </div>
@@ -360,7 +360,7 @@ const Signup = () => {
                 className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition duration-200 transform hover:scale-105 ${
                     loading 
                       ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-gradient-to-r from-[#5937E0] via-[#a9a9a9] to-[#000000] hover:from-[#5937E0] hover:to-[#000000] shadow-xl'
+                      : 'bg-gradient-to-r from-[#5937E0]  to-[#000000] hover:from-[#5937E0] hover:to-[#000000] shadow-xl'
                   }`}
                   disabled={loading}
                 >
@@ -383,7 +383,7 @@ const Signup = () => {
                   Already have an account?{' '}
                   <Link 
                     to="/login" 
-                    className="text-yellow-600 hover:text-yellow-700 font-semibold transition duration-200 hover:underline"
+                    className="text-[#5937E0] hover:text-[#000000] font-semibold transition duration-200 hover:underline"
                   >
                     Sign in now
                   </Link>

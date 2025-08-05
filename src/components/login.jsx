@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/config';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase/config';
 
@@ -249,7 +249,7 @@ const Login = () => {
                   className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition duration-200 transform hover:scale-105 ${
                     loading 
                       ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-gradient-to-r from-[#5937E0] via-[#a9a9a9] to-[#000000] hover:from-[#5937E0] hover:to-[#000000] shadow-xl'
+                      : 'bg-gradient-to-r from-[#5937E0]  to-[#000000] hover:from-[#5937E0] hover:to-[#000000] shadow-xl'
                   }`}
                   disabled={loading}
                 >
@@ -270,12 +270,12 @@ const Login = () => {
               <div className="mt-8 text-center">
                 <p className="text-gray-700 text-base font-medium">
                   Don't have an account?{' '}
-                  <a 
-                    href="/signup" 
+                  <Link
+                  to="/signup" 
                     className="text-[#5937E0] hover:text-[#000000] font-semibold transition duration-200 hover:underline"
                   >
                     Sign up now
-                  </a>
+                  </Link>
                 </p>
               </div>
             </div>

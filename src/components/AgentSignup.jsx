@@ -144,10 +144,10 @@ const AgentSignup = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#5937E0] via-[#a9a9a9] to-[#ffffff] p-4">
-      <div className="w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden backdrop-blur-lg bg-white/80 border border-[#5937E0]/20">
+      <div className="w-full max-w-6xl rounded-3xl shadow-2xl overflow-hidden backdrop-blur-lg bg-white/80 border border-[#5937E0]/20">
         <div className="flex flex-col lg:flex-row">
           {/* Left: Logo and Branding */}
-          <div className="lg:w-1/2 flex flex-col justify-center items-center relative overflow-hidden bg-gradient-to-br from-[#a9a9a9] via-[#ffffff] to-[#5937E0] p-8 lg:p-12">
+          <div className="lg:w-[40%] flex flex-col justify-center items-center relative overflow-hidden bg-gradient-to-br from-[#a9a9a9] via-[#ffffff] to-[#5937E0] p-8 lg:p-12">
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute top-10 left-10 w-24 h-24 border-4 border-[#5937E0] rounded-full opacity-20"></div>
               <div className="absolute bottom-10 right-10 w-16 h-16 border-4 border-[#000000] rounded-full opacity-20"></div>
@@ -175,7 +175,7 @@ const AgentSignup = () => {
           </div>
 
           {/* Right: Signup Form */}
-          <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-white/80 backdrop-blur-xl">
+          <div className="lg:w-[60%] p-8  flex flex-col justify-center bg-white/80 backdrop-blur-xl">
             <div className="max-w-md mx-auto w-full">
               <div className="text-center mb-8">
                 <h2 className="text-4xl font-extrabold text-[#5937E0] mb-2 drop-shadow-sm">
@@ -365,7 +365,7 @@ const AgentSignup = () => {
                         accept="image/*"
                         onChange={(e) => setCnicFront(e.target.files[0])}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-Blue file:text-white file:hover:bg-Blue"
                         disabled={loading}
                       />
                     </div>
@@ -381,7 +381,7 @@ const AgentSignup = () => {
                         accept="image/*"
                         onChange={(e) => setCnicBack(e.target.files[0])}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-Blue file:text-white file:hover:bg-Blue"
                         disabled={loading}
                       />
                     </div>
@@ -397,8 +397,8 @@ const AgentSignup = () => {
                         accept="image/*"
                         onChange={(e) => setLicensePic(e.target.files[0])}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                        disabled={loading}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2  transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-Blue file:text-white file:hover:bg-Blue"
+                       disabled={loading}
                       />
                     </div>
                   </div>
