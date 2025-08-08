@@ -238,11 +238,11 @@ export default function BlogManagement() {
       category: blog.category,
       content: blog.content,
       image: null,
-      imagePreview: null,
+      imagePreview: blog.image ? `http://localhost:5000/${blog.image}` : null,
       author: {
-        name: blog.authorName || '',
+        name: blog.author?.name || '',
         image: null,
-        imagePreview: null
+        imagePreview: blog.author?.image ? `http://localhost:5000/${blog.author.image}` : null
       }
     });
     setIsEditing(true);

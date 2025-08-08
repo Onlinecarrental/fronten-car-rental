@@ -48,8 +48,8 @@ const Signup = () => {
   const validateEmail = (email) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const validatePhone = (phone) =>
-    /^\d{11}$/.test(phone);
+ const validatePhone = (phone) =>
+  /^\+92\d{10}$/.test(phone);
 
   const validateCnic = (cnic) =>
     /^\d{5}-\d{7}-\d{1}$/.test(cnic);
@@ -84,11 +84,11 @@ const Signup = () => {
       setLoading(false);
       return;
     }
-    if (!validatePhone(phone)) {
-      setError('Phone number must be exactly 11 digits.');
-      setLoading(false);
-      return;
-    }
+   if (!validatePhone(phone)) {
+  setError('Phone number must be in the format +92XXXXXXXXXX (e.g., +923001234567).');
+  setLoading(false);
+  return;
+}
     if (!validateCnic(cnic)) {
       setError('CNIC must be in the format 12345-1234567-1');
       setLoading(false);

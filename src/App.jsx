@@ -2,10 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/layout';
 import './index.css';
-import HomeView from './views/homeView/homeView';
+import HomeView from './views/HomeView/homeView';
 import BestCarsView from './views/BestCarsView/bestCarsView';
 import AboutUsView from './views/AboutUsView/aboutUsView';
-import CustomerReviewView from './views/customerREviewView/customerREview';
+import CustomerReviewView from './views/customerReviewView/customerReviewView';
 import ContactUsView from './views/ContactUsView/contactUsView';
 import BlogsView from './views/BlogsView/blogView';
 import DetailCar from './views/BestCarsView/cardetailview';
@@ -26,12 +26,11 @@ import AgentLogin from './components/AgentLogin';
 import ProtectedRoute from './components/ProtectedRoute';
 import AgentContactUsView from './views/AgentsPanelView/agentContactUsView/agentContactUsView';
 import AdminDashboard from './views/AdminDashboardView/adminpanel';
-import AdminProtectedRoute from './components/AdminProtectedRoute';
 import BlogManagement from './views/AdminDashboardView/BlogManagement/BlogManagement';
 import CustomerBookings from './views/CustomerAddCarView/customerBookings';
 
 
-const isAuthenticated = false;
+
 const App = () => {
     React.useEffect(() => {
         // Check if user is on login page and has stored data
